@@ -36,7 +36,8 @@ class TPToWorkoutConverter {
         val workoutsStructure = toWorkoutStructure(tpWorkout)
 
         var description = tpWorkout.description.orEmpty()
-        description += tpWorkout.coachComments?.let { "\n- - - -\n$it" }.orEmpty()
+//        description += tpWorkout.coachComments?.let { "\n- - - -\n$it" }.orEmpty()
+        description += tpWorkout.coachComments.orEmpty()
 
         return Workout(
             WorkoutDetails(
