@@ -11,6 +11,8 @@ Runs on MacOS (DMG), Windows (EXE installer), Linux (AppImage). Alternatively th
 
 All files are available for download on [Release page](https://github.com/freekode/tp2intervals/releases/latest).
 
+**Only for educational purposes**
+
 <img src="https://github.com/freekode/tp2intervals/blob/main/docs/tp.png?raw=true" width="25%"><img src="https://github.com/freekode/tp2intervals/blob/main/docs/tr.png?raw=true" width="25%">
 
 * [List of features](#list-of-features)
@@ -23,38 +25,46 @@ All files are available for download on [Release page](https://github.com/freeko
     + [Docker](#docker)
 * [FAQ](#faq)
     + [General](#general)
-    + [Sync automatically planned workouts to TrainingPeaks](#sync-automatically-planned-workouts-to-trainingpeaks)
     + [Info regarding scheduling for the next day with TrainingPeaks free account](#info-regarding-scheduling-for-the-next-day-with-trainingpeaks-free-account)
 * [Troubleshooting](#troubleshooting)
     + [How to get logs](#how-to-get-logs)
     + [How to record HAR file](#how-to-record-har-file)
 
 
-**TrainerRoad Updates ⚠️**
+
+**New Docker image location ⚠️**
+
+**New image url: `ghcr.io/freekode/tp2intervals`**
+
+Old image url: `ghcr.io/freekode/tp2intervals/tp2intervals`
+
+**TrainerRoad Updates**
 
 I don't have access to TrainerRoad anymore. Account, which I used, cancelled subscription. I don't use the platform and it's too expensive to have it for occasional fixes.
 To fix issues I can only relay on logs and HAR files from you.
 
 ## List of features
 
-### TrainingPeaks features
-**Athlete account**
+**TrainingPeaks**
+
+Athlete account
 * Sync planned workouts in calendar between Intervals.icu and TrainingPeaks (for today and tomorrow with free TP account)
 * Copy whole training plan from TrainingPeaks
 * Create training plan or workout folder on Intervals.icu from planned workouts on TrainingPeaks
 
-**Coach account**
+Coach account
 * Copy whole training plan and workout library from TrainingPeaks
 
-### TrainerRoad features
+**TrainerRoad**
 * Sync planned workouts in calendar from TrainerRoad to TrainingPeaks or Intervals.icu
 * Copy workouts from TrainerRoad library to Intervals
 * Create training plan or workout folder on Intervals.icu from planned workouts on TrainerRoad
 
-**Only for educational purposes**
+Automatically schedule workouts for today, by checking your calendar every 20 minutes.
+To clear up scheduled jobs just restart the application.
+
 
 ## Configuration
-
 Before using the application you need to configure access to platforms.
 Access to Intervals.icu is required, access to other platforms is optional.
 
@@ -87,7 +97,6 @@ Cookie `SharedTrainerRoadAuth` (key and value, smth like `SharedTrainerRoadAuth=
 Be aware, Firefox cuts long strings in Dev Tool window. Copy cookie value with right click -> Copy Value.
 
 ## Other ways to run the app
-
 ### Executable JAR
 The project has executable jar with web UI. It requires JDK 21. To run jar:
 ```shell
@@ -102,19 +111,13 @@ java -Dserver.port=9090 -jar tp2intervals.jar
 ### Docker
 Docker image also built for every release
 
-To run docker execute:
-
-```shell
-docker run --rm --name tp2intervals -p 8080:8080 ghcr.io/freekode/tp2intervals/tp2intervals:latest
-```
-
-Or with `docker compose`
-
 ```yaml
 services:
   app:
-    image: ghcr.io/freekode/tp2intervals/tp2intervals:latest
+    image: ghcr.io/freekode/tp2intervals:latest
     container_name: tp2intervals
+    volumes:
+      - ./tp2intervals.sqlite:/tp2intervals.sqlite
     ports:
       - '8080:8080'
 ```
@@ -125,31 +128,9 @@ services:
 * Ramp steps in TrainerRoad are not supported
 * **MacOS arm64** Error: `"tp2intervals" is damaged and can’t be opened.`
   Run command in terminal `xattr -d com.apple.quarantine /Applications/tp2intervals.app` and then open app again
-* **MacOS** app is not signed. Usually you need to open it twice. After opening it, be patient, it takes some time to
-  start
+* **MacOS** app is not signed. Usually you need to open it twice
 * **Windows** The app will ask to access local network and Internet, you need to allow it. After all it makes HTTP requests
 * More info you can find on the forum https://forum.intervals.icu/t/tp2intervals-copy-trainingpeaks-and-trainerroad-workouts-plans-to-intervals/63375
-
-
-### Bash script to sync planned workouts
-To sync workouts without clicking buttons on UI there is a script [sync-planned-workouts.sh](scripts/sync-planned-workouts.sh).
-
-```sh
-./sync-planned-workouts.sh <sync date or just tomorrow> <source platform> <target platform> <is standalone app>
-```
-
-Example, sync workouts from TrainerRoad to TrainingPeaks for tomorrow in standalone app:
-```sh
-./sync-planned-workouts.sh tomorrow TRAINER_ROAD TRAINING_PEAKS standalone
-```
-
-Example, sync workouts from Intervals.icu to TrainingPeaks for 2025-01-05 in docker:
-```sh
-./sync-planned-workouts.sh 2025-01-05 INTERVALS TRAINING_PEAKS
-```
-
-Docker image has build in cron, you can edit its configuration and add script to run it on schedule
-
 
 ### Info regarding scheduling for the next day with TrainingPeaks free account
 Officially if you have a free TP account, you can't plan workouts for future dates, but practically you can.

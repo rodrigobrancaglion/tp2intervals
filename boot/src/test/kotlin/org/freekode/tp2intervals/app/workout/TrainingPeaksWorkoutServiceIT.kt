@@ -32,12 +32,12 @@ class TrainingPeaksWorkoutServiceIT : BaseSpringITConfig() {
 
         val copyRequest = CopyFromCalendarToCalendarRequest(
             startDate, endDate,
-            TrainingType.Companion.DEFAULT_LIST,
+            TrainingType.DEFAULT_LIST,
             true,
             Platform.INTERVALS,
             platform
         )
-        val response = workoutService.copyWorkoutsFromCalendarToCalendar(copyRequest)
+        val response = workoutService.copyWorkoutsC2C(copyRequest)
 
         workoutService.deleteWorkoutsFromCalendar(deleteRequest)
 
@@ -65,7 +65,7 @@ class TrainingPeaksWorkoutServiceIT : BaseSpringITConfig() {
 
     @Test
     fun `should copy planned workouts to library`() {
-        val response = workoutService.copyWorkoutsFromCalendarToLibrary(
+        val response = workoutService.copyWorkoutsC2L(
             CopyFromCalendarToLibraryRequest(
                 LocalDate.parse("2024-03-04"),
                 LocalDate.parse("2024-03-10"),

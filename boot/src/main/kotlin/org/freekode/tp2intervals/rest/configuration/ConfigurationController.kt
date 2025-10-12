@@ -2,8 +2,6 @@ package org.freekode.tp2intervals.rest.configuration
 
 import org.freekode.tp2intervals.app.confguration.ConfigurationService
 import org.freekode.tp2intervals.domain.Platform
-import org.freekode.tp2intervals.domain.TrainingType
-import org.freekode.tp2intervals.domain.config.PlatformInfo
 import org.freekode.tp2intervals.domain.config.UpdateConfigurationRequest
 import org.freekode.tp2intervals.domain.workout.structure.StepModifier
 import org.freekode.tp2intervals.rest.ErrorResponseDTO
@@ -23,14 +21,14 @@ class ConfigurationController(
 
     @GetMapping("/api/configuration")
     fun getConfigurations(): AppConfigurationDTO {
-        log.info("Received request for getting all configurations")
+        log.debug("Received request for getting all configurations")
         val configurations = configurationService.getConfigurations()
         return AppConfigurationDTO(configurations.configMap)
     }
 
     @PutMapping("/api/configuration")
     fun updateConfiguration(@RequestBody requestDTO: UpdateConfigurationRequestDTO): ResponseEntity<ErrorResponseDTO> {
-        log.info("Received request for updating configuration: $requestDTO")
+        log.debug("Received request for updating configuration: {}", requestDTO)
         val errors = configurationService.updateConfiguration(UpdateConfigurationRequest(requestDTO.config))
         if (errors.isNotEmpty()) {
             return ResponseEntity.badRequest().body(ErrorResponseDTO(errors.joinToString()))
@@ -38,20 +36,16 @@ class ConfigurationController(
         return ResponseEntity.ok().build()
     }
 
-    @Deprecated("all config on ui")
-    @GetMapping("/api/configuration/training-types")
-    fun getTrainingTypes(): List<TrainingTypeDTO> {
-        return TrainingType.entries.map { TrainingTypeDTO(it) }
-    }
-
     @GetMapping("/api/configuration/intervals-step-modifiers")
     fun getIntervalsStepModifiers(): List<StepModifier> {
         return StepModifier.entries
     }
 
+    @GetMapping("/api/configuration/platform")
+    fun getAllPlatformInfo() =
+        configurationService.platformInfo()
+
     @GetMapping("/api/configuration/{platform}")
-    fun getConfigurations(@PathVariable platform: Platform): PlatformInfo {
-        log.info("Received request for getting configurations for platform: $platform")
-        return configurationService.platformInfo(platform)
-    }
+    fun getConfigurations(@PathVariable platform: Platform) =
+        configurationService.platformInfo(platform)
 }
