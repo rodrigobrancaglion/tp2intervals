@@ -1,10 +1,10 @@
-name: Update Version
+name: Create Tag
 
 on:
   workflow_dispatch:
     inputs:
       new-version:
-        description: 'New version'
+        description: 'Version'
         required: true
         type: string
 
@@ -13,30 +13,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.MY_PAT }}
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20.10.0
-
-      - name: Update boot version
-        run: echo ${{ inputs.new-version }} > boot/version
-
-      - name: Update executable version
-        run: npm version ${{ inputs.new-version }} --prefix electron
-
-      - name: Set git user
-        run: |
-          git config --global user.email "iam@freekode.org"
-          git config --global user.name "Evgeny"
-
-      - name: Commit version
-        run: |
-          git commit -am 'version ${{ inputs.new-version }}'
-          git push
-
       - name: Create tag
         run: |
           git tag v${{ inputs.new-version }}
@@ -45,5 +21,5 @@ jobs:
       - name: check all stuff
         run: |
           cat boot/version
-          cat electron/package.json
+          cat electron/package.json | grep version
           git log

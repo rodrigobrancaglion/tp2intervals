@@ -1,3 +1,6 @@
+### 0.12.3
+- Updated Java to 21.0.3
+
 ### 0.12.2
 - Fixed TP Premium users coulndt select future dates to sync workouts
 
