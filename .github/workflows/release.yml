@@ -14,18 +14,6 @@ jobs:
       jar-artifact-name: tp2intervals-jar
       dry-run: false
 
-  docker-image:
-    needs:
-      - jar
-    uses: ./.github/workflows/workflow-docker-image.yml
-    secrets: inherit
-    with:
-      jar-name: tp2intervals
-      jar-artifact-name: tp2intervals-jar
-      image-name: tp2intervals
-      image-tag: latest
-      dry-run: false
-
   docker-image-new:
     needs:
       - jar
