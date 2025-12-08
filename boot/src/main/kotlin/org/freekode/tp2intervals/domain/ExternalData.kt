@@ -42,9 +42,9 @@ data class ExternalData(
 
     fun toSimpleString(): String {
         val outList = mutableListOf<String>()
-//        if (trainingPeaksId != null) outList.add("trainingPeaksId=$trainingPeaksId")
-//        if (intervalsId != null) outList.add("intervalsId=$intervalsId")
-//        if (trainerRoadId != null) outList.add("trainerRoadId=$trainerRoadId")
+        if (trainingPeaksId != null) outList.add("trainingPeaksId=$trainingPeaksId")
+        if (intervalsId != null) outList.add("intervalsId=$intervalsId")
+        if (trainerRoadId != null) outList.add("trainerRoadId=$trainerRoadId")
         val simpleString = outList.joinToString(separator = "\n")
         return """
                 $externalDataDescriptionSeparator

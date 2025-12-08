@@ -64,10 +64,6 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-tasks.jar {
+tasks.bootJar {
     archiveFileName.set("${project.name}.jar")
-}
-
-tasks.test {
-    enabled = false
 }
