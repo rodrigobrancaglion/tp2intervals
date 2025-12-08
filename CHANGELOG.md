@@ -1,3 +1,16 @@
+### 0.12.3
+- Updated Java to 21.0.3
+
+### 0.12.2
+- Fixed TP Premium users coulndt select future dates to sync workouts
+
+### 0.12.1
+- Fixed invisible remove button for scheduled job
+
+### 0.12.0
+- Multiarch docker image
+- Persistent scheduled job
+
 ### 0.11.1
 - Fix docker image
 
@@ -16,7 +29,6 @@
 - Replaced Log Level by Debug Mode for troubleshooting
 - Added TrainerRoad configuration tutorial
 - Removed Strava support
-
 
 ### 0.9.0
 - Added support distance based steps in workouts

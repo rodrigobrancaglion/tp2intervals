@@ -25,7 +25,6 @@
     <mat-form-field class="form-field">
       <mat-label>Date Range</mat-label>
       <mat-date-range-input
-        [max]="(platformsInfo?.TRAINING_PEAKS.isPremium || direction.value.targetPlatform === Platform.INTERVALS.key) ? null : tomorrowDate"
         [rangePicker]="copyPlanDatePicker">
         <input matStartDate placeholder="Start Date" formControlName="startDate">
         <input matEndDate placeholder="End Date" formControlName="endDate">
@@ -33,6 +32,11 @@
       <mat-datepicker-toggle matIconSuffix [for]="copyPlanDatePicker"></mat-datepicker-toggle>
       <mat-date-range-picker #copyPlanDatePicker></mat-date-range-picker>
     </mat-form-field>
+
+    <i *ngIf="direction.value.targetPlatform === Platform.TRAINING_PEAKS.key && formGroup.controls['endDate'].value > tomorrowDate"
+       class="bi bi-exclamation-triangle-fill beta-icon"
+       matTooltip="Sync to futurte date will work only for TrainingPeaks Premium users"
+       matTooltipPosition="right"></i>
   </div>
 
   <div class="row" style="margin-bottom: 10px">
@@ -74,17 +78,24 @@
     </button>
   </div>
 
-  <div *ngIf="scheduledJobs.length > 0" style="margin-bottom: 10px">
+  <div *ngIf="scheduleRequests.length > 0" style="margin-bottom: 10px">
     <mat-list>
       <mat-list-item>
         Scheduled jobs
       </mat-list-item>
       <mat-divider></mat-divider>
-      @for (job of scheduledJobs; track job) {
+      @for (request of scheduleRequests; track request) {
         <mat-list-item>
-          Types: {{ mapTrainingTypesToTitles(job.types) }},
-          Skip synced: {{ job.skipSynced }},
-          {{ Platform.getTitle(job.sourcePlatform) }} -> {{ Platform.getTitle(job.targetPlatform) }}
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            (click)="deleteJob(request.id)">
+            <i class="bi bi-trash"></i>
+          </button>
+          Types: {{ mapTrainingTypesToTitles(request.request.types) }},
+          Skip synced: {{ request.request.skipSynced }},
+          {{ Platform.getTitle(request.request.sourcePlatform) }} -> {{ Platform.getTitle(request.request.targetPlatform) }}
         </mat-list-item>
       }
     </mat-list>
@@ -95,15 +106,16 @@
       mat-raised-button
       color="primary"
       type="button"
+      matTooltip="Scheduled job runs every 20 minutes and will sync workouts for today. Jobs won't persist after app restart"
       [disabled]="formGroup.invalid || inProgress"
       (click)="scheduleToday()"
     >
       Schedule for today
-      <i class="bi bi-question-circle"
-         matTooltip="Scheduled job runs every 20 minutes and will sync workouts for today. Jobs won't persist after app restart"
-         matTooltipPosition="right"></i>
     </button>
+    <i class="bi bi-stars beta-icon"
+       matTooltip="Beta feature"
+       matTooltipPosition="right"></i>
   </div>
 
-  <mat-progress-bar *ngIf="inProgress" mode="query"></mat-progress-bar>
+  <mat-progress-bar *ngIf="inProgress" mode="query" style="margin-top: 10px"></mat-progress-bar>
 </form>

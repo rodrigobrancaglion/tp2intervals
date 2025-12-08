@@ -30,16 +30,15 @@ jobs:
       jar-name: tp2intervals
       jar-artifact-name: tp2intervals-jar
 
-  docker-image:
+  docker-image-new:
     needs:
       - jar
-      - extract_branch_name
-    uses: ./.github/workflows/workflow-docker-image.yml
+    uses: ./.github/workflows/workflow-docker-image-new.yml
+    secrets: inherit
     with:
       jar-name: tp2intervals
       jar-artifact-name: tp2intervals-jar
-      image-name: tp2intervals
-      image-tag: ${{ needs.extract_branch_name.outputs.branch_name }}
+      dry-run: false
 
   electron:
     needs:
