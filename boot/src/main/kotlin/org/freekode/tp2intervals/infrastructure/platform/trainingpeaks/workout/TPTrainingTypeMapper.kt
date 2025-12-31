@@ -12,7 +12,7 @@ class TPTrainingTypeMapper {
             TrainingType.MTB to 8,
             TrainingType.WEIGHT to 9,
             TrainingType.NOTE to 7, // day off
-            TrainingType.UNKNOWN to 4, // brick
+            TrainingType.BRICK to 4, // brick
             TrainingType.UNKNOWN to 5, // crosstrain
             TrainingType.UNKNOWN to 9, // custom
             TrainingType.UNKNOWN to 11, // xc-ski

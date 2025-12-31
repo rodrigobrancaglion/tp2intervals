@@ -56,8 +56,8 @@ class IntervalsWorkoutRepository(
             configuration.paceRange,
         )
         return events
-            .filter { it.isWorkout() }
-            .mapNotNull { toWorkout(it) }
+            //.filter { it.isWorkout() } // Not only Workout
+            .mapNotNull { toEvent(it) }
     }
 
     override fun getWorkoutFromLibrary(externalData: ExternalData): Workout {
@@ -74,6 +74,10 @@ class IntervalsWorkoutRepository(
 
     override fun deleteWorkoutsFromCalendar(startDate: LocalDate, endDate: LocalDate) {
         TODO("Not yet implemented")
+    }
+
+    private fun toEvent(eventDTO: IntervalsEventDTO): Workout? {
+        return toWorkout(eventDTO)
     }
 
     private fun toWorkout(eventDTO: IntervalsEventDTO): Workout? {

@@ -6,4 +6,7 @@ class CreateEventRequestDTO(
     val type: String,
     val category: String,
     val description: String,
+
+    val moving_time: Long?,
+    val icu_training_load: Int?,
 )
