@@ -84,6 +84,7 @@ class ToTPStructureConverter(
 
         return TPStepDTO(
             workoutStep.name,
+            workoutStep.notes,
             TPLengthDTO.fromStepLength(workoutStep.length),
             targetList,
         )

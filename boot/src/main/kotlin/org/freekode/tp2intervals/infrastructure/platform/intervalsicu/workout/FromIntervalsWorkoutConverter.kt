@@ -77,6 +77,7 @@ class FromIntervalsWorkoutConverter(
 
         return SingleStep(
             stepDTO.text,
+            stepDTO.notes,
             getStepLength(stepDTO),
             mainTarget,
             cadenceTarget,

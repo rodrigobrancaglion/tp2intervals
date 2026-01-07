@@ -8,7 +8,7 @@ class ToIntervalsStructureConverter(
     private val structure: WorkoutStructure,
 ) {
 
-    private var cadenceWasReset: Boolean = false
+    private var cadenceWasReset: Boolean = true
 
     private val targetTypeMap = mapOf(
         WorkoutStructure.TargetUnit.FTP_PERCENTAGE to "%",
@@ -17,7 +17,7 @@ class ToIntervalsStructureConverter(
     )
 
     fun toIntervalsStructureStr(): String {
-        cadenceWasReset = false
+        cadenceWasReset = true
         return structure.steps.joinToString(separator = "\n") { toIntervalsStep(it) }
     }
 
@@ -36,6 +36,19 @@ class ToIntervalsStructureConverter(
 
     private fun getStepString(workoutStep: SingleStep): String {
         val name = workoutStep.name.orEmpty().replace("\\", "/")
+
+        //Note
+        val processedNotes = workoutStep.notes?.replace("\\", "/")
+        val notes = processedNotes?.takeIf { it.isNotEmpty() }
+            ?.let { "  \nNotes: $it" } ?: ""
+
+        //TODO Format Description
+//        val name = workoutStep.name?.replace("\\", "/")
+//            ?.takeIf { it.isNotEmpty() }
+//            ?.let { "<b>$it</b>" } ?: ""
+//        val notes = processedNotes?.takeIf { it.isNotEmpty() }
+//            ?.let { "  \n<i>Notes: $it</i>" } ?: ""
+
         val length = toStepLength(workoutStep.length)
         val targetUnitStr = targetTypeMap[structure.target]!!
         val target: String = if (workoutStep.target.isSingleValue()) {
@@ -57,7 +70,10 @@ class ToIntervalsStructureConverter(
             // Successive null steps show nothing to keep the description clean
             ""
         }
-        return "- $name $length $target$targetUnitStr ${structure.modifier.value} $cadence"
+
+        val stepLine = "- $name $length $target$targetUnitStr ${structure.modifier.value} $cadence".trim()
+
+        return "$stepLine$notes"
     }
 
     private fun toStepLength(length: StepLength) = when (length.unit) {

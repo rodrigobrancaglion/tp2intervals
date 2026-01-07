@@ -27,6 +27,7 @@ class FromTPStructureConverter(
     private fun mapSingleStep(tPStepDTO: TPStepDTO): SingleStep {
         return SingleStep(
             tPStepDTO.name,
+            tPStepDTO.notes,
             tPStepDTO.length!!.toStepLength(),
             tPStepDTO.toMainTarget(),
             tPStepDTO.toSecondaryTarget(),
