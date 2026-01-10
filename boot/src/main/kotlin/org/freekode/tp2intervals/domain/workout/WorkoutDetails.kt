@@ -22,7 +22,8 @@ data class WorkoutDetails(
 
         other as WorkoutDetails
 
-        if (name.uppercase() != other.name.uppercase()) return false
+        if (name.uppercase() != other.name.uppercase()
+            && !name.uppercase().startsWith(other.name.uppercase())) return false
         if (duration?.truncatedTo(ChronoUnit.MINUTES) != other.duration?.truncatedTo(ChronoUnit.MINUTES)) return false
         if (externalData != other.externalData) return false
 
