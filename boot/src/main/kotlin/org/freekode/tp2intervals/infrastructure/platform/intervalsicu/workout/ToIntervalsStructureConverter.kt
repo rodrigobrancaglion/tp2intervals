@@ -14,6 +14,7 @@ class ToIntervalsStructureConverter(
         WorkoutStructure.TargetUnit.FTP_PERCENTAGE to "%",
         WorkoutStructure.TargetUnit.LTHR_PERCENTAGE to "% LTHR",
         WorkoutStructure.TargetUnit.PACE_PERCENTAGE to "% Pace",
+        WorkoutStructure.TargetUnit.RELATIVE_PERCEIVED_EFFORT to "",
     )
 
     fun toIntervalsStructureStr(): String {
@@ -35,49 +36,73 @@ class ToIntervalsStructureConverter(
     }
 
     private fun getStepString(workoutStep: SingleStep): String {
-        val name = workoutStep.name.orEmpty().replace("\\", "/")
-
-        //Note
-        val processedNotes = workoutStep.notes?.replace("\\", "/")
-        val notes = processedNotes?.takeIf { it.isNotEmpty() }
-            ?.let { "  \nNotes: $it" } ?: ""
-
-        //TODO Format Description
-//        val name = workoutStep.name?.replace("\\", "/")
-//            ?.takeIf { it.isNotEmpty() }
-//            ?.let { "<b>$it</b>" } ?: ""
-//        val notes = processedNotes?.takeIf { it.isNotEmpty() }
-//            ?.let { "  \n<i>Notes: $it</i>" } ?: ""
-
+        val description = getDescription(structure.target, workoutStep)
+        val notes = getNotes(workoutStep)
         val length = toStepLength(workoutStep.length)
         val targetUnitStr = targetTypeMap[structure.target]!!
-        val target: String = if (workoutStep.target.isSingleValue()) {
-            "${workoutStep.target.start}"
-        } else {
-            "${workoutStep.target.start}-${workoutStep.target.end}"
-        }
-        // Improved cadence logic
-        val cadence = if (workoutStep.cadence != null) {
-            // If cadence is present, the next null step will require a reset
-            val it = workoutStep.cadence
-            cadenceWasReset = false
-            if (it.isSingleValue()) " ${it.start}rpm" else " ${it.start}-${it.end}rpm"
-        } else if (!cadenceWasReset) {
-            // Mark that the reset (0rpm) has been applied
-            cadenceWasReset = true
-            " 0rpm"
-        } else {
-            // Successive null steps show nothing to keep the description clean
-            ""
-        }
+        val target = toTarget(structure.target, workoutStep.target)
+        val cadence = toCadence(workoutStep)
 
-        val stepLine = "- $name $length $target$targetUnitStr ${structure.modifier.value} $cadence".trim()
+        val stepLine = "- $description $length $target$targetUnitStr ${structure.modifier.value} $cadence".trim()
 
         return "$stepLine$notes"
+    }
+
+    private fun getDescription(targetUnit: WorkoutStructure.TargetUnit, workoutStep: SingleStep) : String {
+        var description = workoutStep.name.orEmpty().replace("\\", "/")
+//            ?.takeIf { it.isNotEmpty() }
+//            ?.let { "<b>$it</b>" } ?: "" //TODO Format Description
+
+        if (targetUnit == WorkoutStructure.TargetUnit.RELATIVE_PERCEIVED_EFFORT) {
+            if (workoutStep.target.isSingleValue()) {
+                description += " RPE ${workoutStep.target.start}"
+            } else {
+                description += " RPE ${workoutStep.target.start}-${workoutStep.target.end}"
+            }
+        }
+
+        return description.trim()
+    }
+
+    private fun getNotes(workoutStep: SingleStep): String {
+        return workoutStep.notes?.replace("\\", "/")
+            ?.takeIf { it.isNotEmpty() }
+            ?.let { "  \nNotes: $it" } ?: ""
+//            ?.let { "  \n<i>Notes: $it</i>" } ?: "" //TODO Format Description
+    }
+
+    private fun toCadence(workoutStep: SingleStep): String {
+        if (workoutStep.cadence != null) {
+            val it = workoutStep.cadence
+            cadenceWasReset = false
+            return if (it.isSingleValue()) " ${it.start}rpm" else " ${it.start}-${it.end}rpm"
+        }
+
+        if (!cadenceWasReset) {
+            cadenceWasReset = true
+            return " 0rpm"
+        }
+
+        return ""
     }
 
     private fun toStepLength(length: StepLength) = when (length.unit) {
         LengthUnit.SECONDS -> Duration.ofSeconds(length.value).toString().substring(2).lowercase()
         LengthUnit.METERS -> (length.value / 1000.0).toString() + "km"
+    }
+
+    private fun toTarget(targetUnit: WorkoutStructure.TargetUnit, target: StepTarget) : String {
+        val targetVal =
+            if (targetUnit == WorkoutStructure.TargetUnit.RELATIVE_PERCEIVED_EFFORT) {
+                ""
+            } else {
+                if (target.isSingleValue()) {
+                    "${target.start}"
+                } else {
+                    "${target.start}-${target.end}"
+                }
+            }
+
+        return targetVal
     }
 }
