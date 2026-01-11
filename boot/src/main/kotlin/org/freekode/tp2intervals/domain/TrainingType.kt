@@ -17,7 +17,7 @@ enum class TrainingType(val title: String, val category: CategoryType) {
     UNKNOWN("Unknown",              CategoryType.WORKOUT),
 
     //WELLNESS (Metrics)
-    WEIGHT("Weight Wellness",       CategoryType.SET_FITNESS),
+    WEIGHT("Weight Wellness",       CategoryType.WELLNESS),
     ;
 
     companion object {
