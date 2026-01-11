@@ -39,7 +39,7 @@ class ToIntervalsWorkoutConverter {
             (workout.date ?: LocalDate.now()).atStartOfDay().toString(),
             workout.details.name,
             IntervalsTrainingTypeMapper.getByTrainingType(workout.details.type),
-            IntervalsTrainingTypeMapper.getByIntervalsType(workout.details.type.toString()).category.toString(), //"WORKOUT",
+            IntervalsTrainingTypeMapper.getByIntervalsType(workout.details.type.toString()).category.toString(),
             description,
             workout.details.duration?.seconds,
             workout.details.load,
