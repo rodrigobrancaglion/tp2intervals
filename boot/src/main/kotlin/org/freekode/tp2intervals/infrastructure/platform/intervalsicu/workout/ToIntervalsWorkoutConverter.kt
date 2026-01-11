@@ -2,7 +2,6 @@ package org.freekode.tp2intervals.infrastructure.platform.intervalsicu.workout
 
 import org.freekode.tp2intervals.domain.librarycontainer.LibraryContainer
 import org.freekode.tp2intervals.domain.workout.Workout
-import org.freekode.tp2intervals.infrastructure.Signature
 import org.freekode.tp2intervals.infrastructure.utils.Date
 import java.time.LocalDate
 
@@ -39,8 +38,10 @@ class ToIntervalsWorkoutConverter {
             (workout.date ?: LocalDate.now()).atStartOfDay().toString(),
             workout.details.name,
             IntervalsTrainingTypeMapper.getByTrainingType(workout.details.type),
-            "WORKOUT",
-            description
+            IntervalsTrainingTypeMapper.getByIntervalsType(workout.details.type.toString()).category.toString(), //"WORKOUT",
+            description,
+            workout.details.duration?.seconds,
+            workout.details.load,
         )
     }
 
@@ -49,12 +50,17 @@ class ToIntervalsWorkoutConverter {
         var description = workout.details.description
             .orEmpty()
             .replace(unwantedStepRegex, "`-")
-            .let { "$it\n- - - -\n${Signature.description}" }
+//            .let { "$it\n- - - -\n${Signature.description}" }
         description += workoutString
-            ?.let { "\n\n- - - -\n$it" }
+//            ?.let { "\n\n- - - -\n$it" }
             .orEmpty()
         description += "\n\n${workout.details.externalData.toSimpleString()}"
-        return description
+
+        val capitalizedDescription = description.replaceFirstChar {
+            if (it.isLowerCase()) it.titlecase() else it.toString()
+        }
+
+        return capitalizedDescription
     }
 
     private fun getWorkoutString(workout: Workout) =
