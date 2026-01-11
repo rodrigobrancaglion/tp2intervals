@@ -7,6 +7,9 @@ import java.time.Duration
 class ToIntervalsStructureConverter(
     private val structure: WorkoutStructure,
 ) {
+
+    private var cadenceWasReset: Boolean = false
+
     private val targetTypeMap = mapOf(
         WorkoutStructure.TargetUnit.FTP_PERCENTAGE to "%",
         WorkoutStructure.TargetUnit.LTHR_PERCENTAGE to "% LTHR",
@@ -14,6 +17,7 @@ class ToIntervalsStructureConverter(
     )
 
     fun toIntervalsStructureStr(): String {
+        cadenceWasReset = false
         return structure.steps.joinToString(separator = "\n") { toIntervalsStep(it) }
     }
 
@@ -39,14 +43,20 @@ class ToIntervalsStructureConverter(
         } else {
             "${workoutStep.target.start}-${workoutStep.target.end}"
         }
-        val cadence = workoutStep.cadence?.let {
-            if (it.isSingleValue()) {
-                "${it.start}rpm"
-            } else {
-                "${it.start}-${it.end}rpm"
-            }
-        } ?: ""
-
+        // Improved cadence logic
+        val cadence = if (workoutStep.cadence != null) {
+            // If cadence is present, the next null step will require a reset
+            val it = workoutStep.cadence
+            cadenceWasReset = false
+            if (it.isSingleValue()) " ${it.start}rpm" else " ${it.start}-${it.end}rpm"
+        } else if (!cadenceWasReset) {
+            // Mark that the reset (0rpm) has been applied
+            cadenceWasReset = true
+            " 0rpm"
+        } else {
+            // Successive null steps show nothing to keep the description clean
+            ""
+        }
         return "- $name $length $target$targetUnitStr ${structure.modifier.value} $cadence"
     }
 
