@@ -49,12 +49,12 @@ export class TpCopyCalendarToCalendarComponent implements OnInit {
     {title: "Run", value: "RUN"},
     {title: "Swim", value: "SWIM"},
     {title: "Walk", value: "WALK"},
-    {title: "Weight Training", value: "WEIGHT"},
+    {title: "Strength Training", value: "STRENGTH"},
     {title: "Any other", value: "UNKNOWN"},
-    {title: "Day-off", value: "NOTE"},
+    {title: "Day-off (Notes)", value: "DAY_OFF"},
     {title: "Brick", value: "BRICK"},
   ]
-  readonly selectedTrainingTypes = ['BIKE', 'VIRTUAL_BIKE', 'MTB', 'RUN', 'NOTE', 'BRICK'];
+  readonly selectedTrainingTypes = ['BIKE', 'VIRTUAL_BIKE', 'MTB', 'RUN', 'DAY_OFF', 'BRICK'];
 
   constructor() {
   }
