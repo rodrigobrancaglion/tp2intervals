@@ -1,6 +1,7 @@
 package org.freekode.tp2intervals.domain
 
-enum class TrainingType(val title: String, val category: CategoryType) {
+enum class TrainingType(override val title: String, override val category: CategoryType) : BaseType {
+    //WORKOUT
     SWIM("Swim",                    CategoryType.WORKOUT),
     BIKE("Ride",                    CategoryType.WORKOUT),
     RUN("Run",                      CategoryType.WORKOUT),
@@ -15,9 +16,6 @@ enum class TrainingType(val title: String, val category: CategoryType) {
     WALK("Walk",                    CategoryType.WORKOUT),
     NOTE("Note",                    CategoryType.NOTE),
     UNKNOWN("Unknown",              CategoryType.WORKOUT),
-
-    //WELLNESS (Metrics)
-    WEIGHT("Weight Wellness",       CategoryType.WELLNESS),
     ;
 
     companion object {

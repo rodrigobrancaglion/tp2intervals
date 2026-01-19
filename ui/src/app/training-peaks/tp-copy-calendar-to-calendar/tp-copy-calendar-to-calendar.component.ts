@@ -36,25 +36,25 @@ import {
   templateUrl: './tp-copy-calendar-to-calendar.component.html',
   styleUrl: './tp-copy-calendar-to-calendar.component.scss'
 })
-export class TpCopyCalendarToCalendarComponent implements OnInit {
-  readonly Platform = Platform;
-  readonly directions = [
-    {title: "TrainingPeaks -> Intervals.icu", value: Platform.DIRECTION_TP_INT},
-    {title: "Intervals.icu -> TrainingPeaks", value: Platform.DIRECTION_INT_TP},
-  ]
-  readonly trainingTypes = [
-    {title: "Ride", value: "BIKE"},
-    {title: "MTB", value: "MTB"},
-    {title: "Virtual Ride", value: "VIRTUAL_BIKE"},
-    {title: "Run", value: "RUN"},
-    {title: "Swim", value: "SWIM"},
-    {title: "Walk", value: "WALK"},
-    {title: "Strength Training", value: "STRENGTH"},
-    {title: "Any other", value: "UNKNOWN"},
-    {title: "Day-off (Notes)", value: "DAY_OFF"},
-    {title: "Brick", value: "BRICK"},
-  ]
-  readonly selectedTrainingTypes = ['BIKE', 'VIRTUAL_BIKE', 'MTB', 'RUN', 'DAY_OFF', 'BRICK'];
+  export class TpCopyCalendarToCalendarComponent implements OnInit {
+    readonly Platform = Platform;
+    readonly directions = [
+      {title: "TrainingPeaks -> Intervals.icu", value: Platform.DIRECTION_TP_INT},
+      {title: "Intervals.icu -> TrainingPeaks", value: Platform.DIRECTION_INT_TP},
+    ]
+    readonly trainingTypes = [
+      {title: "Ride", value: "BIKE"},
+      {title: "MTB", value: "MTB"},
+      {title: "Virtual Ride", value: "VIRTUAL_BIKE"},
+      {title: "Run", value: "RUN"},
+      {title: "Swim", value: "SWIM"},
+      {title: "Walk", value: "WALK"},
+      {title: "Weight/Strength Training", value: "STRENGTH"},
+      {title: "Any other", value: "UNKNOWN"},
+      {title: "Day-off (Notes)", value: "DAY_OFF"},
+      {title: "Brick", value: "BRICK"},
+    ]
+    readonly selectedTrainingTypes = ['BIKE', 'VIRTUAL_BIKE', 'MTB', 'RUN', 'DAY_OFF', 'BRICK'];
 
   constructor() {
   }

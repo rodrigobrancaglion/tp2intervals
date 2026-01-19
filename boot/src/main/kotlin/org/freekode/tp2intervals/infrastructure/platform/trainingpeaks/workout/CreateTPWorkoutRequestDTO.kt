@@ -1,8 +1,11 @@
 package org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.workout
 
-import java.time.LocalDate
 import org.freekode.tp2intervals.domain.activity.Activity
 import org.freekode.tp2intervals.domain.workout.Workout
+import java.math.BigDecimal
+import java.math.RoundingMode
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 class CreateTPWorkoutRequestDTO(
     var athleteId: String,
@@ -14,7 +17,9 @@ class CreateTPWorkoutRequestDTO(
     var totalTimePlanned: Double?,
     var tssActual: Int?,
     var tssPlanned: Int?,
-    var structure: String?
+    val ifPlanned: Double?,
+    var structure: String?,
+    val startTime: LocalDateTime?,
 ) {
 
     companion object {
@@ -24,20 +29,30 @@ class CreateTPWorkoutRequestDTO(
         ): CreateTPWorkoutRequestDTO {
             return CreateTPWorkoutRequestDTO(
                 athleteId,
-                workout.date ?: LocalDate.now(),
+                workout.date?.toLocalDate() ?: LocalDate.now(),
                 TPTrainingTypeMapper.getByType(workout.details.type),
                 workout.details.name,
                 workout.details.externalData.toSimpleString(),
                 null,
                 workout.details.duration?.toMinutes()?.toDouble()?.div(60),
                 null,
-                workout.details.load,
-                structureStr
+                workout.details.tssPlanned,
+                convertIcuIntensityToIf(workout.details.ifPlanned),
+                structureStr,
+                workout.date ?: LocalDateTime.now(),
             )
         }
 
         fun createActivity(athleteId: String, activity: Activity): CreateTPWorkoutRequestDTO {
             TODO("Not yet implemented")
+        }
+
+        fun convertIcuIntensityToIf(icuIntensity: Double?): Double? {
+            if (icuIntensity == null) return null
+
+            return BigDecimal(icuIntensity / 100.0)
+                .setScale(2, RoundingMode.HALF_UP)
+                .toDouble()
         }
 
     }

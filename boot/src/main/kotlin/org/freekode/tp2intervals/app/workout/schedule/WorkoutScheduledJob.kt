@@ -1,6 +1,8 @@
 package org.freekode.tp2intervals.app.workout.schedule
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.freekode.tp2intervals.app.schedule.C2CTodayScheduledRequest
+import org.freekode.tp2intervals.app.schedule.Schedulable
 import org.freekode.tp2intervals.app.workout.WorkoutService
 import org.freekode.tp2intervals.domain.TrainingType
 import org.freekode.tp2intervals.infrastructure.schedule.ScheduleRequestEntity
@@ -28,25 +30,9 @@ class WorkoutScheduledJob(
         scheduleRequestRepository.findAll()
             .filter { record ->
                 try {
-                    // Internal conversion just to check the types inside the JSON
-                    val request = objectMapper.readValue(
-                        record.requestJson,
-                        org.freekode.tp2intervals.app.wellness.schedule.C2CTodayScheduledRequest::class.java
-                    )
-                    request.types.contains(TrainingType.SWIM)
-                            || request.types.contains(TrainingType.BIKE)
-                            || request.types.contains(TrainingType.RUN)
-                            || request.types.contains(TrainingType.BRICK)
-                            || request.types.contains(TrainingType.RACE)
-                            || request.types.contains(TrainingType.DAY_OFF)
-                            || request.types.contains(TrainingType.STRENGTH)
-                            || request.types.contains(TrainingType.MTB)
-                            || request.types.contains(TrainingType.VIRTUAL_BIKE)
-                            || request.types.contains(TrainingType.WALK)
-                            || request.types.contains(TrainingType.NOTE)
-                            || request.types.contains(TrainingType.UNKNOWN)
+                    val request = objectMapper.readValue(record.requestJson, C2CTodayScheduledRequest::class.java)
+                    request.hasType<TrainingType>()
                 } catch (e: Exception) {
-                    // If JSON is incompatible, exclude it from the wellness list
                     false
                 }
             }
@@ -65,7 +51,7 @@ class WorkoutScheduledJob(
             handleCopyCalendarToCalendarRequest(request)
         }
 
-        log.info("Finished processing scheduled requests");
+        log.info("Finished processing scheduled requests")
     }
 
     private fun handleCopyCalendarToCalendarRequest(request: C2CTodayScheduledRequest) {

@@ -31,7 +31,7 @@ class LibraryService(
         val newPlan = targetPlanRepository.createLibraryContainer(
             request.newName,
             request.libraryContainer.isPlan,
-            workouts.first().date
+            workouts.first().date?.toLocalDate()
         )
         targetWorkoutRepository.saveWorkoutsToLibrary(newPlan, workouts)
         return CopyPlanResponse(newPlan.name, workouts.size, newPlan.externalData)

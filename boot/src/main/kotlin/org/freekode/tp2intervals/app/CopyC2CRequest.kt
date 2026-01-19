@@ -1,13 +1,13 @@
-package org.freekode.tp2intervals.app.wellness
+package org.freekode.tp2intervals.app
 
+import org.freekode.tp2intervals.domain.BaseType
 import org.freekode.tp2intervals.domain.Platform
-import org.freekode.tp2intervals.domain.TrainingType
 import java.time.LocalDate
 
 data class CopyFromCalendarToCalendarRequest(
     val startDate: LocalDate,
     val endDate: LocalDate,
-    val types: List<TrainingType>,
+    val types: List<BaseType>,
     val skipSynced: Boolean,
     val sourcePlatform: Platform,
     val targetPlatform: Platform

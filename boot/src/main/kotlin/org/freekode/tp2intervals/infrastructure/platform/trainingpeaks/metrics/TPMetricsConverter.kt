@@ -1,8 +1,8 @@
 package org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.metrics
 
-import org.freekode.tp2intervals.domain.TrainingType
+import org.freekode.tp2intervals.domain.WellnessType
 import org.freekode.tp2intervals.domain.wellness.Wellness
-import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.workout.TPTrainingTypeMapper
+import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.workout.TPMetricsTypeMapper
 
 class TPMetricsConverter {
 
@@ -21,7 +21,7 @@ class TPMetricsConverter {
 
     fun toDTO(athleteId: String): TPMetricsDTO {
         val timeWithHour = "${metrics?.date}T00:00:00"
-        val pType = TPTrainingTypeMapper.getByType(TrainingType.WEIGHT)
+        val pType = TPMetricsTypeMapper.getByType(WellnessType.WEIGHT)
 
         return TPMetricsDTO(
             id = null,
@@ -34,7 +34,7 @@ class TPMetricsConverter {
                     value = metrics?.weight,
                     isPotentiallyNegative = false,
                     uploadClient = null,
-                    label = TrainingType.WEIGHT.toString(),
+                    label = WellnessType.WEIGHT.toString(),
                     time = timeWithHour,
                     modifiedTime = null
                 )
@@ -45,7 +45,7 @@ class TPMetricsConverter {
     fun toDomain(): Wellness {
         return Wellness(
             date = metricsDTO?.timeStamp,
-            type = TrainingType.WEIGHT.toString(),
+            type = WellnessType.WEIGHT,
             weight = metricsDTO?.getMetricWeight()
         )
     }

@@ -3,14 +3,20 @@ package org.freekode.tp2intervals.infrastructure.platform.intervalsicu.workout
 import org.freekode.tp2intervals.domain.librarycontainer.LibraryContainer
 import org.freekode.tp2intervals.domain.workout.Workout
 import org.freekode.tp2intervals.infrastructure.Signature
+import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.workout.TPPowerCalculationService
+import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.workout.TPSettingsResponseDTO
 import org.freekode.tp2intervals.infrastructure.utils.Date
-import java.time.LocalDate
+import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 
-class ToIntervalsWorkoutConverter {
+@Component
+class ToIntervalsWorkoutConverter(
+    private val tpPowerCalculationService: TPPowerCalculationService
+) {
     private val unwantedStepRegex = "^[-*]".toRegex(RegexOption.MULTILINE)
 
-    fun createWorkoutRequestDTO(libraryContainer: LibraryContainer, workout: Workout): CreateWorkoutRequestDTO {
-        val workoutString = getWorkoutString(workout)
+    fun createWorkoutRequestDTO(libraryContainer: LibraryContainer, workout: Workout, settings: TPSettingsResponseDTO): CreateWorkoutRequestDTO {
+        val workoutString = getWorkoutString(workout, settings)
         var description = getDescription(workout, workoutString)
         val name: String
         if (workout.details.name.length > 80) {
@@ -21,28 +27,28 @@ class ToIntervalsWorkoutConverter {
         }
         val request = CreateWorkoutRequestDTO(
             libraryContainer.externalData.intervalsId.toString(),
-            Date.daysDiff(libraryContainer.startDate, workout.date ?: LocalDate.now()),
+            Date.daysDiff(libraryContainer.startDate, workout.date ?: LocalDateTime.now()),
             IntervalsTrainingTypeMapper.getByTrainingType(workout.details.type),
             name,
             workout.details.duration?.seconds,
-            workout.details.load,
+            workout.details.tssPlanned,
             description,
             null,
         )
         return request
     }
 
-    fun createEventRequestDTO(workout: Workout): CreateEventRequestDTO {
-        val workoutString = getWorkoutString(workout)
+    fun createEventRequestDTO(workout: Workout, settings: TPSettingsResponseDTO): CreateEventRequestDTO {
+        val workoutString = getWorkoutString(workout, settings)
         val description = getDescription(workout, workoutString)
         return CreateEventRequestDTO(
-            (workout.date ?: LocalDate.now()).atStartOfDay().toString(),
+            (workout.date ?: LocalDateTime.now()).toString(),
             workout.details.name,
             IntervalsTrainingTypeMapper.getByTrainingType(workout.details.type),
             IntervalsTrainingTypeMapper.getByIntervalsType(workout.details.type.toString()).category.toString(),
             description,
             workout.details.duration?.seconds,
-            workout.details.load,
+            workout.details.tssPlanned,
         )
     }
 
@@ -70,10 +76,14 @@ class ToIntervalsWorkoutConverter {
             .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
     }
 
-    private fun getWorkoutString(workout: Workout) =
-        if (workout.structure != null) {
-            ToIntervalsStructureConverter(workout.structure).toIntervalsStructureStr()
-        } else {
-            null
-        }
+    private fun getWorkoutString(workout: Workout, settings: TPSettingsResponseDTO): String? {
+        // Return null immediately if it's not a workout category
+        if (!workout.isWorkoutCategory()) return null
+
+        // Use let for structure if present, otherwise fallback to target intensity
+        return workout.structure?.let {
+            ToIntervalsStructureConverter(it).toIntervalsStructureStr()
+        } ?: tpPowerCalculationService.getTargetIntensity(workout, settings)
+    }
+
 }

@@ -1,12 +1,12 @@
-package org.freekode.tp2intervals.app.workout.schedule
+package org.freekode.tp2intervals.app.schedule
 
-import org.freekode.tp2intervals.app.workout.CopyFromCalendarToCalendarRequest
+import org.freekode.tp2intervals.app.CopyFromCalendarToCalendarRequest
+import org.freekode.tp2intervals.domain.BaseType
 import org.freekode.tp2intervals.domain.Platform
-import org.freekode.tp2intervals.domain.TrainingType
 import java.time.LocalDate
 
 data class C2CTodayScheduledRequest(
-    val types: List<TrainingType>,
+    val types: List<BaseType>,
     val skipSynced: Boolean,
     val sourcePlatform: Platform,
     val targetPlatform: Platform
@@ -19,4 +19,9 @@ data class C2CTodayScheduledRequest(
         sourcePlatform,
         targetPlatform
     )
+
+    inline fun <reified T : Enum<T>> hasType(): Boolean {
+        return this.types.any { it is T }
+    }
+
 }

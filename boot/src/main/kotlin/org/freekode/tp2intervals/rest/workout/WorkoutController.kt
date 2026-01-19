@@ -1,17 +1,12 @@
 package org.freekode.tp2intervals.rest.workout
 
-import org.freekode.tp2intervals.app.workout.CopyFromCalendarToCalendarRequest
+import org.freekode.tp2intervals.app.CopyFromCalendarToCalendarRequest
 import org.freekode.tp2intervals.app.workout.CopyFromCalendarToLibraryRequest
 import org.freekode.tp2intervals.app.workout.CopyFromLibraryToLibraryRequest
 import org.freekode.tp2intervals.app.workout.CopyWorkoutsResponse
 import org.freekode.tp2intervals.app.workout.WorkoutService
 import org.freekode.tp2intervals.domain.Platform
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 class WorkoutController(
@@ -39,7 +34,7 @@ class WorkoutController(
                 WorkoutDetailsDTO(
                     workoutDetails.name,
                     workoutDetails.duration.toString().replace("PT", "").lowercase(),
-                    workoutDetails.load,
+                    workoutDetails.tssPlanned,
                     workoutDetails.externalData
                 )
             }

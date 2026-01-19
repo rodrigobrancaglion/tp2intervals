@@ -18,7 +18,7 @@ import {ConfigurationClient} from "infrastructure/client/configuration.client";
 import {finalize, switchMap, tap} from "rxjs";
 import {NotificationService} from "infrastructure/notification.service";
 import {MatTooltipModule} from "@angular/material/tooltip";
-import {TrainingTypes} from "infrastructure/training-types";
+import {WellnessTypes} from "infrastructure/wellness-types";
 import {WellnessClient} from "infrastructure/client/wellness.client";
 
 @Component({
@@ -49,8 +49,8 @@ export class CopyWellnessToCalendarComponent implements OnInit {
   readonly todayDate = new Date()
   readonly tomorrowDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
 
-  @Input() trainingTypes: any[] = []
-  @Input() selectedTrainingTypes = ['WEIGHT']
+  @Input() wellnessTypes: any[] = []
+  @Input() selectedWellnessTypes = ['WEIGHT']
   @Input() directions: any[] = []
   @Input() inProgress = false
 
@@ -92,11 +92,11 @@ export class CopyWellnessToCalendarComponent implements OnInit {
     let startDate = null
     let endDate = null
     let direction = this.formGroup.value.direction
-    let trainingTypes = this.formGroup.value.trainingTypes
+    let wellnessTypes = this.formGroup.value.wellnessTypes
     let skipSynced = this.formGroup.value.skipSynced
 
     this.inProgress = true
-    this.wellnessClient.scheduleCopyCalendarToCalendar(startDate, endDate, trainingTypes, skipSynced, direction).pipe(
+    this.wellnessClient.scheduleCopyCalendarToCalendar(startDate, endDate, wellnessTypes, skipSynced, direction).pipe(
       switchMap(() => this.loadScheduleRequests()),
       finalize(() => this.inProgress = false)
     ).subscribe(() => {
@@ -104,8 +104,8 @@ export class CopyWellnessToCalendarComponent implements OnInit {
     })
   }
 
-  mapTrainingTypesToTitles(values) {
-    return values.map(value => TrainingTypes.getTitle(value))
+  mapWellnessTypesToTitles(values) {
+    return values.map(value => WellnessTypes.getTitle(value))
   }
 
   private copyWellnessForOneDay(date) {
@@ -114,11 +114,11 @@ export class CopyWellnessToCalendarComponent implements OnInit {
 
   private copyWellness(startDate, endDate) {
     let direction = this.formGroup.value.direction
-    let trainingTypes = this.formGroup.value.trainingTypes
+    let wellnessTypes = this.formGroup.value.wellnessTypes
     let skipSynced = this.formGroup.value.skipSynced
 
     this.inProgress = true
-    this.wellnessClient.copyCalendarToCalendar(startDate, endDate, trainingTypes, skipSynced, direction).pipe(
+    this.wellnessClient.copyCalendarToCalendar(startDate, endDate, wellnessTypes, skipSynced, direction).pipe(
       finalize(() => this.inProgress = false)
     ).subscribe((response) => {
       this.notificationService.success(
@@ -129,7 +129,7 @@ export class CopyWellnessToCalendarComponent implements OnInit {
   private getFormGroup() {
     return this.formBuilder.group({
       direction: [this.directions[0].value, Validators.required],
-      trainingTypes: [this.selectedTrainingTypes, Validators.required],
+      wellnessTypes: [this.selectedWellnessTypes, Validators.required],
       startDate: [this.todayDate, Validators.required],
       endDate: [this.tomorrowDate, Validators.required],
       skipSynced: [true, Validators.required],

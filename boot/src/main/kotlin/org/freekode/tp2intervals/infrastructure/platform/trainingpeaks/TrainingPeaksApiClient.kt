@@ -1,10 +1,7 @@
 package org.freekode.tp2intervals.infrastructure.platform.trainingpeaks
 
 import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.metrics.TPMetricsDTO
-import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.workout.CreateTPWorkoutRequestDTO
-import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.workout.TPNoteResponseDTO
-import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.workout.TPWorkoutCalendarResponseDTO
-import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.workout.TPWorkoutDetailsResponseDTO
+import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.workout.*
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.core.io.Resource
 import org.springframework.web.bind.annotation.*
@@ -22,7 +19,14 @@ interface TrainingPeaksApiClient {
         @PathVariable("userId") userId: String,
         @PathVariable("startDate") startDate: String,
         @PathVariable("endDate") endDate: String
-    ): List<TPWorkoutCalendarResponseDTO>
+    ): List<TPWorkoutCalendarDTO>
+
+    @GetMapping("/fitness/v6/athletes/{userId}/workouts/{workoutId}")
+    fun getWorkout(
+        @PathVariable("userId") userId: String,
+        @PathVariable("workoutId") workoutId: Long,
+    ): TPWorkoutCalendarDTO
+
 
     @GetMapping("/fitness/v1/athletes/{userId}/calendarNote/{startDate}/{endDate}")
     fun getNotes(
@@ -40,13 +44,13 @@ interface TrainingPeaksApiClient {
     @GetMapping("/fitness/v6/athletes/{userId}/workouts/{workoutId}/details")
     fun getWorkoutDetails(
         @PathVariable userId: String,
-        @PathVariable workoutId: String,
+        @PathVariable workoutId: Long,
     ): TPWorkoutDetailsResponseDTO
 
     @GetMapping("/fitness/v6/athletes/{userId}/workouts/{workoutId}/attachments/{attachmentId}/raw")
     fun downloadWorkoutAttachment(
         @PathVariable userId: String,
-        @PathVariable workoutId: String,
+        @PathVariable workoutId: Long,
         @PathVariable attachmentId: String,
     ): Resource
 
@@ -56,11 +60,25 @@ interface TrainingPeaksApiClient {
         @RequestBody requestDTO: CreateTPWorkoutRequestDTO
     )
 
+    @PutMapping("/fitness/v6/athletes/{userId}/workouts/{workoutId}", consumes = ["application/json"])
+    fun updateActivity(
+        @PathVariable userId: String,
+        @PathVariable workoutId: Long,
+        @RequestBody requestDTO: String
+    )
+
     @DeleteMapping("/fitness/v6/athletes/{userId}/workouts/{workoutId}")
     fun deleteWorkout(
         @PathVariable userId: String,
         @PathVariable workoutId: String,
     ): Boolean
+
+    @PostMapping("/fitness/v6/athletes/{userId}/workouts/{workoutId}/comments")
+    fun createComment(
+        @PathVariable("userId") userId: String,
+        @PathVariable("workoutId") workoutId: String,
+        @RequestBody requestDTO: TPWorkoutCommentRequestDTO
+    ): TPWorkoutCommentDTO
 
     @GetMapping("/metrics/v3/athletes/{athleteId}/consolidatedtimedmetrics/{startDate}/{endDate}")
     fun getMetrics(
@@ -80,4 +98,9 @@ interface TrainingPeaksApiClient {
         @PathVariable athleteId: String,
         @RequestBody requestDTO: TPMetricsDTO
     )
+
+    @GetMapping("/fitness/v1/athletes/{userId}/settings")
+    fun getSettings(
+        @PathVariable userId: String,
+    ): TPSettingsResponseDTO
 }

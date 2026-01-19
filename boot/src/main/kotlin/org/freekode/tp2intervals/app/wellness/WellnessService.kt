@@ -1,5 +1,6 @@
 package org.freekode.tp2intervals.app.wellness
 
+import org.freekode.tp2intervals.app.CopyFromCalendarToCalendarRequest
 import org.freekode.tp2intervals.domain.ExternalData
 import org.freekode.tp2intervals.domain.wellness.WellnessRepository
 import org.slf4j.LoggerFactory

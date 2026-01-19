@@ -13,7 +13,7 @@ data class ExternalData(
         fun empty() = ExternalData(null, null, null)
     }
 
-    fun withTrainingPeaks(trainingPeaksId: String) = ExternalData(trainingPeaksId, intervalsId, trainerRoadId)
+    fun withTrainingPeaks(trainingPeaksId: String?) = ExternalData(trainingPeaksId, intervalsId, trainerRoadId)
 
     fun withIntervals(intervalsId: String) = ExternalData(trainingPeaksId, intervalsId, trainerRoadId)
 

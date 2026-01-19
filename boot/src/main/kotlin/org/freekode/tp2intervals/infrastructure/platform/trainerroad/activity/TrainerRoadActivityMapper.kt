@@ -10,10 +10,13 @@ class TrainerRoadActivityMapper {
         val type = if (dto.completedRide!!.IsOutside) TrainingType.BIKE else TrainingType.VIRTUAL_BIKE
 
         return Activity(
+            0,
             dto.completedRide.Date,
             type,
             dto.completedRide.Name,
-            Base64.encodeToString(resource)
+            Base64.encodeToString(resource),
+            null,
+            null,
         )
     }
 }

@@ -1,8 +1,8 @@
 package org.freekode.tp2intervals.domain.librarycontainer
 
+import org.freekode.tp2intervals.domain.ExternalData
 import org.freekode.tp2intervals.domain.Platform
 import java.time.LocalDate
-import org.freekode.tp2intervals.domain.ExternalData
 
 interface LibraryContainerRepository {
     fun platform(): Platform

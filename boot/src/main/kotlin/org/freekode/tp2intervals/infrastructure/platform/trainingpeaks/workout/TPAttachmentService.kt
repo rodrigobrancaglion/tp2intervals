@@ -13,7 +13,7 @@ class TPAttachmentService(
 ) {
     private val log = LoggerFactory.getLogger(this.javaClass)
 
-    fun getAttachments(userId: String, workoutId: String): List<Attachment> {
+    fun getAttachments(userId: String, workoutId: Long): List<Attachment> {
         if (!attachmentsEnabled) {
             log.info("Attachments not enabled")
             return emptyList()

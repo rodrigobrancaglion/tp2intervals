@@ -10,6 +10,7 @@ plugins {
 
 group = "org.freekode"
 version = file("version").readText().trim()
+val mapstructVersion = "1.6.3"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -37,6 +38,9 @@ dependencies {
     implementation("org.hibernate.orm:hibernate-community-dialects:6.4.2.Final")
     implementation("org.xerial:sqlite-jdbc:3.45.0.0")
     implementation("org.liquibase:liquibase-core")
+
+    implementation("org.mapstruct:mapstruct:${mapstructVersion}")
+    annotationProcessor("org.mapstruct:mapstruct-processor:${mapstructVersion}")
 
     implementation(group = "org.ehcache", name = "ehcache", classifier = "jakarta")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

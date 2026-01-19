@@ -1,7 +1,7 @@
 package org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.metrics
 
 import org.freekode.tp2intervals.domain.Platform
-import org.freekode.tp2intervals.domain.TrainingType
+import org.freekode.tp2intervals.domain.WellnessType
 import org.freekode.tp2intervals.domain.wellness.Wellness
 import org.freekode.tp2intervals.domain.wellness.WellnessRepository
 import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.TrainingPeaksApiClient
@@ -55,7 +55,7 @@ class TrainingPeaksMetricsRepository(
         )
 
         existingMetrics.forEach { metric ->
-            metric.getDetailByType(TrainingType.WEIGHT)?.let { weightDetail ->
+            metric.getDetailByType(WellnessType.WEIGHT)?.let { weightDetail ->
                 weightDetail.value = -1.0
                 trainingPeaksApiClient.deleteMetrics(athleteId, metric)
             }

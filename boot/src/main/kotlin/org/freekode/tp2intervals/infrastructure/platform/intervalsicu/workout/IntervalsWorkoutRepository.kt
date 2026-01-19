@@ -9,6 +9,8 @@ import org.freekode.tp2intervals.domain.workout.WorkoutRepository
 import org.freekode.tp2intervals.infrastructure.PlatformException
 import org.freekode.tp2intervals.infrastructure.platform.intervalsicu.IntervalsApiClient
 import org.freekode.tp2intervals.infrastructure.platform.intervalsicu.configuration.IntervalsConfigurationRepository
+import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.TrainingPeaksApiClient
+import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.user.TrainingPeaksUserRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
@@ -17,6 +19,9 @@ import java.time.LocalDate
 class IntervalsWorkoutRepository(
     private val intervalsApiClient: IntervalsApiClient,
     private val intervalsConfigurationRepository: IntervalsConfigurationRepository,
+    private val toIntervalsWorkoutConverter: ToIntervalsWorkoutConverter,
+    private val trainingPeaksApiClient: TrainingPeaksApiClient,
+    private val trainingPeaksUserRepository: TrainingPeaksUserRepository,
 ) : WorkoutRepository {
 
     private val log = LoggerFactory.getLogger(this.javaClass)
@@ -25,22 +30,26 @@ class IntervalsWorkoutRepository(
     override fun platform() = Platform.INTERVALS
 
     override fun saveWorkoutsToCalendar(workouts: List<Workout>) {
+        val userId = trainingPeaksUserRepository.getUser().userId
+        val settings = trainingPeaksApiClient.getSettings(userId)
+
         workouts.forEach {
-            val toIntervalsWorkoutConverter = ToIntervalsWorkoutConverter()
-            val request = toIntervalsWorkoutConverter.createEventRequestDTO(it)
+            val request = toIntervalsWorkoutConverter.createEventRequestDTO(it, settings)
             intervalsApiClient.createEvent(intervalsConfigurationRepository.getConfiguration().athleteId, request)
         }
     }
 
     override fun saveWorkoutsToLibrary(libraryContainer: LibraryContainer, workouts: List<Workout>) {
-        val toIntervalsWorkoutConverter = ToIntervalsWorkoutConverter()
+        val userId = trainingPeaksUserRepository.getUser().userId
+        val settings = trainingPeaksApiClient.getSettings(userId)
+
         for (fromIndex in workouts.indices step maxWorkoutsToSave) {
             val toIndex =
                 if (fromIndex + maxWorkoutsToSave >= workouts.size) workouts.size else fromIndex + maxWorkoutsToSave
 
             val workoutsToSave = workouts.subList(fromIndex, toIndex)
             val requests =
-                workoutsToSave.map { toIntervalsWorkoutConverter.createWorkoutRequestDTO(libraryContainer, it) }
+                workoutsToSave.map { toIntervalsWorkoutConverter.createWorkoutRequestDTO(libraryContainer, it, settings) }
             intervalsApiClient.createWorkouts(intervalsConfigurationRepository.getConfiguration().athleteId, requests)
         }
     }

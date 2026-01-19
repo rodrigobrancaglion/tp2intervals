@@ -13,7 +13,9 @@ class IntervalsEventDTO(
     val type: String?,
     val moving_time: Long?,
     val icu_training_load: Int?,
+    val icu_intensity: Double?,
     val workout_doc: IntervalsWorkoutDocDTO?,
+    val paired_activity_id: String?,
 ) {
 
     fun mapType(): TrainingType {

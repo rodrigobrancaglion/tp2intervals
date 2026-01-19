@@ -42,10 +42,10 @@ export class TpCopyWellnessToCalendarComponent implements OnInit {
     {title: "Intervals.icu -> TrainingPeaks", value: Platform.DIRECTION_INT_TP},
     {title: "TrainingPeaks -> Intervals.icu", value: Platform.DIRECTION_TP_INT},
   ]
-  readonly trainingTypes = [
+  readonly wellnessTypes = [
     {title: "Weight", value: "WEIGHT"},
   ]
-  readonly selectedTrainingTypes = ['WEIGHT'];
+  readonly selectedWellnessTypes = ['WEIGHT'];
 
   constructor() {
   }

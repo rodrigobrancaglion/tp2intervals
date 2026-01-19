@@ -1,8 +1,10 @@
 package org.freekode.tp2intervals.domain.wellness
 
+import org.freekode.tp2intervals.domain.WellnessType
+
 class Wellness(
     val date: String?,
-    val type: String?,
+    val type: WellnessType?,
     val weight: Double?,
 ) {
     companion object {

@@ -1,7 +1,8 @@
 package org.freekode.tp2intervals.rest.wellness
 
-import org.freekode.tp2intervals.app.wellness.schedule.C2CTodayScheduledRequest
-import org.freekode.tp2intervals.app.wellness.schedule.ScheduledJobService
+import org.freekode.tp2intervals.app.schedule.C2CTodayScheduledRequest
+import org.freekode.tp2intervals.app.schedule.ScheduledJobService
+import org.freekode.tp2intervals.domain.WellnessType
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -15,7 +16,7 @@ class WellnessScheduledJobController(
 
     @GetMapping("/api/wellness/copy-calendar-to-calendar/schedule")
     fun getScheduleRequests() =
-        scheduledJob.getRequests()
+        scheduledJob.getRequests<WellnessType>()
 
     @DeleteMapping("/api/wellness/copy-calendar-to-calendar/schedule/{id}")
     fun deleteScheduleRequest(@PathVariable id: Int) =

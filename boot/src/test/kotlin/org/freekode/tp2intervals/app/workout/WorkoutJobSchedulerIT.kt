@@ -2,7 +2,7 @@ package org.freekode.tp2intervals.app.workout
 
 import config.BaseSpringITConfig
 import org.assertj.core.api.Assertions.assertThat
-import org.freekode.tp2intervals.app.workout.schedule.C2CTodayScheduledRequest
+import org.freekode.tp2intervals.app.schedule.C2CTodayScheduledRequest
 import org.freekode.tp2intervals.app.workout.schedule.WorkoutScheduledJob
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.domain.TrainingType

@@ -29,7 +29,7 @@ class TrainerRoadApiClientService(
             .filter { it.activity != null }
             .map { activity ->
                 getWorkout(activity.activity!!.id)
-                    .withDate(activity.date.toLocalDate())
+                    .withDate(activity.date)
             }
     }
 

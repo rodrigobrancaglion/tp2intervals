@@ -13,8 +13,8 @@
   <div class="row">
     <mat-form-field class="form-field">
       <mat-label>Wellness (Metrics)</mat-label>
-      <mat-select formControlName="trainingTypes" multiple>
-        @for (type of trainingTypes; track type) {
+      <mat-select formControlName="wellnessTypes" multiple>
+        @for (type of wellnessTypes; track type) {
           <mat-option [value]="type.value">{{ type.title }}</mat-option>
         }
       </mat-select>
@@ -87,7 +87,7 @@
             (click)="deleteJob(request.id)">
             <i class="bi bi-trash"></i>
           </button>
-          Types: {{ mapTrainingTypesToTitles(request.request.types) }},
+          Types: {{ mapWellnessTypesToTitles(request.request.types) }},
           Skip synced: {{ request.request.skipSynced }},
           {{ Platform.getTitle(request.request.sourcePlatform) }} -> {{ Platform.getTitle(request.request.targetPlatform) }}
         </mat-list-item>

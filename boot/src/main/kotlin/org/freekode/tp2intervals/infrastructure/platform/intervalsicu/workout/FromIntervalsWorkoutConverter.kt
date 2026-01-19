@@ -14,15 +14,17 @@ class FromIntervalsWorkoutConverter(
         val workoutsStructure = toWorkoutStructure()
 
         return Workout(
+            eventDTO.id,
             WorkoutDetails(
                 eventDTO.mapType(),
                 eventDTO.name,
                 eventDTO.description,
                 eventDTO.mapDuration(),
                 eventDTO.icu_training_load,
+                eventDTO.icu_intensity,
                 ExternalData.empty().withIntervals(eventDTO.id.toString()).fromSimpleString(eventDTO.description ?: "")
             ),
-            eventDTO.start_date_local.toLocalDate(),
+            eventDTO.start_date_local,
             workoutsStructure,
         )
     }

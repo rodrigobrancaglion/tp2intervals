@@ -6,7 +6,6 @@ export class TrainingTypes {
     {title: "Run", value: "RUN"},
     {title: "Swim", value: "SWIM"},
     {title: "Walk", value: "WALK"},
-    {title: "Weight Training", value: "WEIGHT"},
     {title: "Any other", value: "UNKNOWN"},
   ]
 

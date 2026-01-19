@@ -1,6 +1,6 @@
 package org.freekode.tp2intervals.infrastructure.platform.intervalsicu.wellness
 
-import org.freekode.tp2intervals.domain.TrainingType
+import org.freekode.tp2intervals.domain.WellnessType
 import org.freekode.tp2intervals.domain.wellness.Wellness
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -48,7 +48,7 @@ class IntervalsWellnessConverter {
     fun toDomain(): Wellness {
         return Wellness(
             date = wellnessDTO?.id,
-            type = TrainingType.WEIGHT.toString(),
+            type = WellnessType.WEIGHT,
             weight = wellnessDTO?.weight ?: -1.0
         )
     }

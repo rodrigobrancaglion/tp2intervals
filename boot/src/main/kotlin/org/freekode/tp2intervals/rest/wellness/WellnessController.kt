@@ -1,6 +1,6 @@
 package org.freekode.tp2intervals.rest.wellness
 
-import org.freekode.tp2intervals.app.wellness.CopyFromCalendarToCalendarRequest
+import org.freekode.tp2intervals.app.CopyFromCalendarToCalendarRequest
 import org.freekode.tp2intervals.app.wellness.CopyWellnessResponse
 import org.freekode.tp2intervals.app.wellness.WellnessService
 import org.springframework.web.bind.annotation.PostMapping

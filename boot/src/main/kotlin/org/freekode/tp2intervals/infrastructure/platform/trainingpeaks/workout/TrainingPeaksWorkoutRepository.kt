@@ -84,10 +84,12 @@ class TrainingPeaksWorkoutRepository(
 
         val noteEndDate = getNoteEndDateForFilter(startDate, endDate)
         val tpNotes = trainingPeaksApiClient.getNotes(userId, startDate.toString(), noteEndDate.toString())
-        val workouts = tpWorkouts.map {
-            val attachments = tpAttachmentService.getAttachments(userId, it.id)
-            tpToWorkoutConverter.toWorkout(it, attachments)
-        }
+        val workouts = tpWorkouts
+            .filter { it.hasValidWorkout() || it.isNotWorkout() }
+            .map {
+                val attachments = tpAttachmentService.getAttachments(userId, it.workoutId)
+                tpToWorkoutConverter.toWorkout(it, attachments)
+            }
 
         val notes = tpNotes.map { tpToWorkoutConverter.toWorkout(it) }
         return workouts + notes

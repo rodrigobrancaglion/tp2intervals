@@ -50,7 +50,7 @@ class ToIntervalsStructureConverter(
 
     private fun getDescription(targetUnit: WorkoutStructure.TargetUnit, workoutStep: SingleStep) : String {
         var description = workoutStep.name.orEmpty().replace("\\", "/")
-//            ?.takeIf { it.isNotEmpty() }
+            .takeIf { it.isNotEmpty() }
 //            ?.let { "<b>$it</b>" } ?: "" //TODO Format Description
 
         if (targetUnit == WorkoutStructure.TargetUnit.RELATIVE_PERCEIVED_EFFORT) {
@@ -61,7 +61,7 @@ class ToIntervalsStructureConverter(
             }
         }
 
-        return description.trim()
+        return description?.trim() ?: ""
     }
 
     private fun getNotes(workoutStep: SingleStep): String {

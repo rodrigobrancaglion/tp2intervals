@@ -32,7 +32,12 @@ class IntervalsWorkoutRepositoryTest {
         getIntervalsConfigurationRepository()
 
     private val intervalsWorkoutRepository =
-        IntervalsWorkoutRepository(intervalsApiClient, intervalsConfigurationRepository)
+        IntervalsWorkoutRepository(
+            intervalsApiClient, intervalsConfigurationRepository,
+            toIntervalsWorkoutConverter = TODO(),
+            trainingPeaksApiClient = TODO(),
+            trainingPeaksUserRepository = TODO()
+        )
 
     @Test
     fun `should parse hr workout`() {
@@ -168,7 +173,7 @@ class IntervalsWorkoutRepositoryTest {
         val workout = findWorkoutWithName("virtual ride test", workouts)
         assertEquals(TrainingType.VIRTUAL_BIKE, workout.details.type)
         assertEquals(WorkoutStructure.TargetUnit.FTP_PERCENTAGE, workout.structure!!.target)
-        assertEquals(5, workout.structure!!.steps.size)
+        assertEquals(5, workout.structure.steps.size)
     }
 
     @Test
@@ -183,7 +188,7 @@ class IntervalsWorkoutRepositoryTest {
         val workout = findWorkoutWithName("other test", workouts)
         assertEquals(TrainingType.UNKNOWN, workout.details.type)
         assertEquals(Duration.ofMinutes(45), workout.details.duration)
-        assertEquals(32, workout.details.load)
+        assertEquals(32, workout.details.tssPlanned)
         assertEquals(null, workout.structure)
     }
 

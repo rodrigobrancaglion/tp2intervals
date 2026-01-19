@@ -11,7 +11,8 @@ data class WorkoutDetails(
     val name: String,
     val description: String?,
     val duration: Duration?,
-    val load: Int?,
+    val tssPlanned: Int?,
+    val ifPlanned: Double?,
     val externalData: ExternalData,
     val attachments: List<Attachment> = listOf(),
 ) : Serializable {

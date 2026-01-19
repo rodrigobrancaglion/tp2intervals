@@ -1,7 +1,7 @@
 package org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.metrics
 
-import org.freekode.tp2intervals.domain.TrainingType
-import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.workout.TPTrainingTypeMapper
+import org.freekode.tp2intervals.domain.WellnessType
+import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.workout.TPMetricsTypeMapper
 
 class TPMetricsDTO(
     val id: String?,
@@ -21,11 +21,11 @@ class TPMetricsDTO(
     )
 
     fun getMetricWeight(): Double? {
-        return details.find { it.type == TPTrainingTypeMapper.getByType(TrainingType.WEIGHT) }?.value
+        return details.find { it.type == TPMetricsTypeMapper.getByType(WellnessType.WEIGHT) }?.value
     }
 
-    fun getDetailByType(trainingType: TrainingType): TPMetricsDetailDTO? {
-        val tpType = TPTrainingTypeMapper.getByType(trainingType)
+    fun getDetailByType(metricType: WellnessType): TPMetricsDetailDTO? {
+        val tpType = TPMetricsTypeMapper.getByType(metricType)
         return details.find { it.type == tpType }
     }
 }

@@ -5,6 +5,6 @@ import org.freekode.tp2intervals.domain.ExternalData
 class WorkoutDetailsDTO(
     val name: String,
     val duration: String?,
-    val load: Int?,
+    val tssPlanned: Int?,
     val externalData: ExternalData,
 )

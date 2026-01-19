@@ -22,9 +22,6 @@ class TPTrainingTypeMapper {
             TrainingType.UNKNOWN to 12, // rowing
             TrainingType.UNKNOWN to 13, // walk
             TrainingType.UNKNOWN to 100, // other
-
-            //WELLNESS (METRICS)
-            TrainingType.WEIGHT to 9
         )
 
         fun getByValue(value: Int): TrainingType =
