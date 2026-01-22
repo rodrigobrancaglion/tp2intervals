@@ -1,6 +1,6 @@
 package org.freekode.tp2intervals.app.schedule
 
-import org.freekode.tp2intervals.app.CopyFromCalendarToCalendarRequest
+import org.freekode.tp2intervals.app.CopyC2CRequest
 import org.freekode.tp2intervals.domain.BaseType
 import org.freekode.tp2intervals.domain.Platform
 import java.time.LocalDate
@@ -11,7 +11,7 @@ data class C2CTodayScheduledRequest(
     val sourcePlatform: Platform,
     val targetPlatform: Platform
 ) : Schedulable {
-    fun forToday() = CopyFromCalendarToCalendarRequest(
+    fun forToday() = CopyC2CRequest(
         LocalDate.now(),
         LocalDate.now(),
         types,

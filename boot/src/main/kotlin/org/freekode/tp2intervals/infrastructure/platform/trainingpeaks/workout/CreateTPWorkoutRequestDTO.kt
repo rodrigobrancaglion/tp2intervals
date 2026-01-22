@@ -1,6 +1,5 @@
 package org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.workout
 
-import org.freekode.tp2intervals.domain.activity.Activity
 import org.freekode.tp2intervals.domain.workout.Workout
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -41,10 +40,6 @@ class CreateTPWorkoutRequestDTO(
                 structureStr,
                 workout.date ?: LocalDateTime.now(),
             )
-        }
-
-        fun createActivity(athleteId: String, activity: Activity): CreateTPWorkoutRequestDTO {
-            TODO("Not yet implemented")
         }
 
         fun convertIcuIntensityToIf(icuIntensity: Double?): Double? {

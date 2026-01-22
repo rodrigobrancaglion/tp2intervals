@@ -1,6 +1,6 @@
 package org.freekode.tp2intervals.app.activity
 
-import org.freekode.tp2intervals.app.CopyFromCalendarToCalendarRequest
+import org.freekode.tp2intervals.app.CopyC2CRequest
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.domain.activity.ActivityRepository
 import org.slf4j.LoggerFactory
@@ -14,7 +14,7 @@ class ActivityService(
 
     private val repositoryMap = repositories.associateBy { it.platform() }
 
-    fun syncActivities(request: CopyFromCalendarToCalendarRequest): CopyActivitiesResponse {
+    fun syncActivities(request: CopyC2CRequest): CopyActivitiesResponse {
         log.info("Sync activities by request $request")
         val sourceActivityRepository = getRepository(request.sourcePlatform)
         val targetActivityRepository = getRepository(request.targetPlatform)

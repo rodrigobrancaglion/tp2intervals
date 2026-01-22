@@ -1,6 +1,6 @@
 package org.freekode.tp2intervals.app.wellness
 
-import org.freekode.tp2intervals.app.CopyFromCalendarToCalendarRequest
+import org.freekode.tp2intervals.app.CopyC2CRequest
 import org.freekode.tp2intervals.domain.ExternalData
 import org.freekode.tp2intervals.domain.wellness.WellnessRepository
 import org.slf4j.LoggerFactory
@@ -13,7 +13,7 @@ class WellnessService(
     private val log = LoggerFactory.getLogger(this.javaClass)
     private val repositoryMap = repositories.associateBy { it.platform() }
 
-    fun copyWellnessC2C(request: CopyFromCalendarToCalendarRequest): CopyWellnessResponse {
+    fun copyWellnessC2C(request: CopyC2CRequest): CopyWellnessResponse {
         log.info("Received request for copy calendar to calendar: $request")
         val sourceRepository = repositoryMap[request.sourcePlatform]!!
         val targetRepository = repositoryMap[request.targetPlatform]!!

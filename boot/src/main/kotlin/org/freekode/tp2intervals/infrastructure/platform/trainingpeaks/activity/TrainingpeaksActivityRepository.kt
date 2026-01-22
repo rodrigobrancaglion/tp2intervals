@@ -1,6 +1,5 @@
 package org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.activity
 
-
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import org.freekode.tp2intervals.domain.BaseType
@@ -21,20 +20,23 @@ class TrainingpeaksActivityRepository(
     private val trainingPeaksUserRepository: TrainingPeaksUserRepository,
     private val tpToWorkoutConverter: TPToWorkoutConverter,
 
-    private val objectMapper: ObjectMapper
+    objectMapper: ObjectMapper
+
 ) : ActivityRepository {
     override fun platform() = Platform.TRAINING_PEAKS
 
-    override fun saveActivities(activities: List<Activity>, types: List<BaseType>) {
-        objectMapper.nodeFactory = JsonNodeFactory.withExactBigDecimals(false)
+    private val tpMapper = objectMapper.copy().apply {
+        nodeFactory = JsonNodeFactory(false)
+    }
 
+    override fun saveActivities(activities: List<Activity>, types: List<BaseType>) {
         val athleteId = trainingPeaksUserRepository.getUser().userId
         activities.forEach { activity ->
             val workoutDTO = trainingPeaksApiClient.getWorkout(athleteId, activity.workoutId)
 
             val newActivityDTO = tpToWorkoutConverter.convertToPutRequest(activity, workoutDTO, types)
 
-            val jsonString = objectMapper.writeValueAsString(newActivityDTO)
+            val jsonString = tpMapper.writeValueAsString(newActivityDTO)
             val finalJson = jsonString.replace(".0,", ",").replace(".0]", "]")
 
             trainingPeaksApiClient.updateActivity(athleteId, newActivityDTO.workoutId, finalJson)

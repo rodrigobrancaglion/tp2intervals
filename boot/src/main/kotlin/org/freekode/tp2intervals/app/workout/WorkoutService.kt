@@ -1,6 +1,6 @@
 package org.freekode.tp2intervals.app.workout
 
-import org.freekode.tp2intervals.app.CopyFromCalendarToCalendarRequest
+import org.freekode.tp2intervals.app.CopyC2CRequest
 import org.freekode.tp2intervals.domain.ExternalData
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.domain.librarycontainer.LibraryContainerRepository
@@ -20,7 +20,7 @@ class WorkoutService(
     private val workoutRepositoryMap = workoutRepositories.associateBy { it.platform() }
     private val planRepositoryMap = planRepositories.associateBy { it.platform() }
 
-    fun copyWorkoutsC2C(request: CopyFromCalendarToCalendarRequest): CopyWorkoutsResponse {
+    fun copyWorkoutsC2C(request: CopyC2CRequest): CopyWorkoutsResponse {
         log.info("Received request for copy calendar to calendar: $request")
         val sourceWorkoutRepository = workoutRepositoryMap[request.sourcePlatform]!!
         val targetWorkoutRepository = workoutRepositoryMap[request.targetPlatform]!!
@@ -44,7 +44,7 @@ class WorkoutService(
         return response
     }
 
-    fun copyWorkoutsC2L(request: CopyFromCalendarToLibraryRequest): CopyWorkoutsResponse {
+    fun copyWorkoutsC2L(request: CopyC2LRequest): CopyWorkoutsResponse {
         log.info("Received request for copy calendar to library: $request")
         val sourceWorkoutRepository = workoutRepositoryMap[request.sourcePlatform]!!
         val targetWorkoutRepository = workoutRepositoryMap[request.targetPlatform]!!
@@ -64,7 +64,7 @@ class WorkoutService(
         )
     }
 
-    fun copyWorkoutL2L(request: CopyFromLibraryToLibraryRequest): CopyWorkoutsResponse {
+    fun copyWorkoutL2L(request: CopyL2LRequest): CopyWorkoutsResponse {
         log.info("Received request for copy library to library: $request")
         val sourceWorkoutRepository = workoutRepositoryMap[request.sourcePlatform]!!
         val targetWorkoutRepository = workoutRepositoryMap[request.targetPlatform]!!

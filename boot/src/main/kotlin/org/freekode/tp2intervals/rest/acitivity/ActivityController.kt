@@ -1,6 +1,6 @@
 package org.freekode.tp2intervals.rest.acitivity
 
-import org.freekode.tp2intervals.app.CopyFromCalendarToCalendarRequest
+import org.freekode.tp2intervals.app.CopyC2CRequest
 import org.freekode.tp2intervals.app.activity.ActivityService
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -12,10 +12,10 @@ class ActivityController(
 ) {
 
     @PostMapping("/api/activities/copy")
-    fun syncActivities(@RequestBody request: CopyFromCalendarToCalendarRequest) =
+    fun syncActivities(@RequestBody request: CopyC2CRequest) =
         activityService.syncActivities(request)
 
     @PostMapping("/api/activities/copy-calendar-to-calendar")
-    fun copyActivities(@RequestBody request: CopyFromCalendarToCalendarRequest) =
+    fun copyActivities(@RequestBody request: CopyC2CRequest) =
         activityService.syncActivities(request)
 }
