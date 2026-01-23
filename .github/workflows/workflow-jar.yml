@@ -3,6 +3,10 @@ name: Workflow JAR
 on:
   workflow_call:
     inputs:
+      version:
+        required: false
+        type: string
+        default: 'dev'
       jar-name:
         required: true
         type: string
@@ -50,18 +54,30 @@ jobs:
           APP_DEFAULT_CONFIG_TRAINER_ROAD_REMOVE_HTML_TAGS: true
         run: |
           cd ./boot
-          ./gradlew build
+          ./gradlew build -Pversion=${{ inputs.version }}
 
       - name: Cypress tests
         run: |
           npm ci --prefix cypress
+          npm install -g wait-on
+          
           java -jar boot/build/libs/tp2intervals.jar \
             --app.default-config.intervals.api-key=${{ secrets.INTERVALS_API_KEY }} \
             --app.default-config.intervals.athlete-id=${{ secrets.INTERVALS_ATHLETE_ID }} \
             --app.default-config.training-peaks.auth-cookie=${{ secrets.TRAINING_PEAKS_AUTH_COOKIE }} \
-          & npm test --prefix cypress
+          & 
+          wait-on http://localhost:8080 --timeout 120000
+          npm test --prefix cypress
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload Cypress Screenshots
+        if: failure() # Executa apenas se o Cypress falhar
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: cypress/cypress/screenshots
+
+      - uses: actions/upload-artifact@v6
+        if: always()
         with:
           name: ${{ inputs.jar-artifact-name }}
           path: boot/build/libs/${{ inputs.jar-name }}.jar

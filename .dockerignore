@@ -1,8 +1,9 @@
 .git
 .gradle
 .idea
-build/
-bin/
+boot/build/
+boot/bin/
+electron/dist/
+electron/node_modules/
 ui/node_modules/
 ui/dist/
-*.sqlite

@@ -1,51 +1,27 @@
-name: Build branches
+name: New Release
 
 on:
-  push:
-    branches: [ main, dev ]
-    paths-ignore:
-      - '**/*.md'
-      - 'LICENSE'
+  pull_request:
   workflow_dispatch:
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  extract_branch_name:
-    runs-on: ubuntu-latest
-    outputs:
-      branch_name: ${{ steps.extract_branch.outputs.branch_name }}
-
-    steps:
-      - name: Extract Branch Name
-        id: extract_branch
-        run: echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
-
   jar:
     uses: ./.github/workflows/workflow-jar.yml
     secrets: inherit
     with:
       jar-name: tp2intervals
       jar-artifact-name: tp2intervals-jar
+      dry-run: true
 
   docker-image:
-    needs: [ jar ]
+    needs:
+      - jar
     uses: ./.github/workflows/workflow-docker-image.yml
     secrets: inherit
     with:
-      version: ${{ github.sha }}
       jar-name: tp2intervals
       jar-artifact-name: tp2intervals-jar
       dry-run: false
-
-  deploy-gcp:
-    needs: [ docker-image ]
-    uses: ./.github/workflows/workflow-deploy-gcp.yml
-    secrets: inherit
-    with:
-      version: ${{ github.sha }}
 
   electron:
     needs:
@@ -58,7 +34,9 @@ jobs:
           - os: windows-latest
 
     uses: ./.github/workflows/workflow-electron.yml
+    secrets: inherit
     with:
       jar-name: tp2intervals
       jar-artifact-name: tp2intervals-jar
       os: ${{ matrix.environment.os }}
+      dry-run: true
