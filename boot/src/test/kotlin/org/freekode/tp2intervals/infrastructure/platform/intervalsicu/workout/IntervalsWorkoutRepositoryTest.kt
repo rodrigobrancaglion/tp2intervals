@@ -11,6 +11,9 @@ import org.freekode.tp2intervals.domain.workout.structure.WorkoutStructure
 import org.freekode.tp2intervals.infrastructure.platform.intervalsicu.IntervalsApiClient
 import org.freekode.tp2intervals.infrastructure.platform.intervalsicu.configuration.IntervalsConfiguration
 import org.freekode.tp2intervals.infrastructure.platform.intervalsicu.configuration.IntervalsConfigurationRepository
+import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.TrainingPeaksApiClient
+import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.user.TrainingPeaksUserRepository
+import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.workout.TPPowerCalculationService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -23,6 +26,11 @@ import java.time.LocalDate
 class IntervalsWorkoutRepositoryTest {
     private val objectMapper = ObjectMapperFactory.objectMapper()
 
+    private val tpPowerCalculationService = mock(TPPowerCalculationService::class.java)
+    private val toIntervalsWorkoutConverter = ToIntervalsWorkoutConverter(tpPowerCalculationService)
+    private val trainingPeaksApiClient = mock(TrainingPeaksApiClient::class.java)
+    private val trainingPeaksUserRepository = mock(TrainingPeaksUserRepository::class.java)
+
     private val intervalsApiClient: IntervalsApiClient = IntervalsApiClientMock(
         objectMapper,
         ResourceUtils.getFile("classpath:intervals-events-response.json").inputStream()
@@ -33,10 +41,11 @@ class IntervalsWorkoutRepositoryTest {
 
     private val intervalsWorkoutRepository =
         IntervalsWorkoutRepository(
-            intervalsApiClient, intervalsConfigurationRepository,
-            toIntervalsWorkoutConverter = TODO(),
-            trainingPeaksApiClient = TODO(),
-            trainingPeaksUserRepository = TODO()
+            intervalsApiClient,
+            intervalsConfigurationRepository,
+            toIntervalsWorkoutConverter,
+            trainingPeaksApiClient,
+            trainingPeaksUserRepository
         )
 
     @Test
@@ -171,9 +180,10 @@ class IntervalsWorkoutRepositoryTest {
 
 
         val workout = findWorkoutWithName("virtual ride test", workouts)
+        val structure = workout.structure!!
         assertEquals(TrainingType.VIRTUAL_BIKE, workout.details.type)
         assertEquals(WorkoutStructure.TargetUnit.FTP_PERCENTAGE, workout.structure!!.target)
-        assertEquals(5, workout.structure.steps.size)
+        assertEquals(5, structure.steps.size)
     }
 
     @Test

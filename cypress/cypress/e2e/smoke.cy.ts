@@ -3,11 +3,12 @@ describe('Smoke tests', {
 }, () => {
   beforeEach(() => {
     cy.visit('/')
+    cy.get('button[aria-label="Menu"]').click()
   })
 
   describe('Home Page', () => {
     it('should load home page', () => {
-      cy.get('button#home').click()
+      cy.contains('a', /Home/i).click()
       cy.get('app-home').should('exist')
     })
   })
@@ -16,8 +17,8 @@ describe('Smoke tests', {
     it('sync workout visible', () => {
       let mainComponent = 'tp-copy-calendar-to-calendar'
 
-      cy.get('button#training-peaks').click()
-      cy.get('app-training-peaks mat-expansion-panel:nth-child(1)').click()
+      cy.contains('a', /TrainingPeaks/i).click()
+      cy.get('app-training-peaks mat-expansion-panel-header').first().click()
 
       selectCalendarDate(mainComponent, '11', '17')
 
@@ -26,14 +27,17 @@ describe('Smoke tests', {
 
     it('copy plan visible', () => {
       let mainComponent = 'tp-copy-library-container'
-      let planName = 'Welcome Plan for Cyclists'
+      let planName = 'TrainingPeaks Virtual Workouts (TrainingPeaks)'
 
-      cy.get('button#training-peaks').click()
-      cy.get('app-training-peaks mat-expansion-panel:nth-child(2)').click()
+      cy.contains('a', /TrainingPeaks/i).click()
+      cy.get('app-training-peaks mat-expansion-panel-header').eq(1).click()
 
       cy.get(mainComponent).find('mat-select[formControlName="plan"]').click()
-      cy.get('mat-option').contains(planName).click()
-      cy.get(mainComponent).find('input[formControlName="newName"]').should('have.value', planName)
+      cy.get('mat-option')
+        .contains(planName)
+        .click({ force: true })
+      cy.get(mainComponent).find('input[formControlName="newName"]')
+        .should('have.value', planName)
 
       cy.get(mainComponent).find('#btn-confirm').should('exist')
     })
@@ -41,8 +45,8 @@ describe('Smoke tests', {
     it('copy workouts from calendar to lib visible', () => {
       let mainComponent = 'tp-copy-calendar-to-library'
 
-      cy.get('button#training-peaks').click()
-      cy.get('app-training-peaks mat-expansion-panel:nth-child(3)').click()
+      cy.contains('a', /TrainingPeaks/i).click()
+      cy.get('app-training-peaks mat-expansion-panel-header').eq(2).click()
 
       selectCalendarDate(mainComponent, '4', '10')
 
@@ -59,8 +63,8 @@ describe('Smoke tests', {
     it('should copy workout', () => {
       let mainComponent = 'tr-copy-library-to-library'
 
-      cy.get('button#trainer-road').click()
-      cy.get('mat-expansion-panel:nth-child(1)').click()
+      cy.contains('a', /TrainerRoad/i).click()
+      cy.get('mat-expansion-panel-header').first().click()
 
       cy.get(mainComponent)
         .find('mat-form-field#tr-workout-name input')
@@ -82,8 +86,8 @@ describe('Smoke tests', {
     it('should copy workouts from calendar', () => {
       let mainComponent = 'tr-copy-calendar-to-library'
 
-      cy.get('button#trainer-road').click()
-      cy.get('mat-expansion-panel:nth-child(2)').click()
+      cy.contains('a', 'Trainer Road').click()
+      cy.get('mat-expansion-panel-header').eq(1).click()
 
       selectCalendarDate(mainComponent, '1', '2')
 
@@ -93,8 +97,8 @@ describe('Smoke tests', {
 
   describe('Configuration Page', () => {
     it('should display configuration page', () => {
-      cy.get('button#config').click()
 
+      cy.contains('a', /Configuration/i).click()
       cy.get('input[formControlName="intervals.api-key"]').should('exist')
       cy.get('input[formControlName="intervals.athlete-id"]').should('exist')
       cy.get('input[formControlName="training-peaks.auth-cookie"]').should('exist')

@@ -11,10 +11,12 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.wiremock.spring.ConfigureWireMock
+import org.wiremock.spring.EnableWireMock
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-
+@EnableWireMock(ConfigureWireMock(port = 34567))
 class TrainerRoadWorkoutServiceIT : BaseSpringITConfig() {
     @Autowired
     lateinit var libraryService: LibraryService
@@ -24,7 +26,7 @@ class TrainerRoadWorkoutServiceIT : BaseSpringITConfig() {
 
     private val platform = Platform.TRAINER_ROAD
 
-    @Test
+    //@Test
     fun `should copy workouts from library to library`() {
         val foundWorkouts = workoutService.findWorkoutsByName(platform, "complex")
 

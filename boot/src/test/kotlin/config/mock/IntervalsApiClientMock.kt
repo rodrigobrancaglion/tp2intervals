@@ -2,14 +2,16 @@ package config.mock
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import java.io.InputStream
 import org.freekode.tp2intervals.infrastructure.platform.intervalsicu.IntervalsActivityDTO
 import org.freekode.tp2intervals.infrastructure.platform.intervalsicu.IntervalsApiClient
 import org.freekode.tp2intervals.infrastructure.platform.intervalsicu.activity.CreateActivityResponseDTO
+import org.freekode.tp2intervals.infrastructure.platform.intervalsicu.wellness.IntervalsWellnessDTO
 import org.freekode.tp2intervals.infrastructure.platform.intervalsicu.workout.CreateEventRequestDTO
 import org.freekode.tp2intervals.infrastructure.platform.intervalsicu.workout.CreateWorkoutRequestDTO
+import org.freekode.tp2intervals.infrastructure.platform.intervalsicu.workout.IntervalsEventCommentDTO
 import org.freekode.tp2intervals.infrastructure.platform.intervalsicu.workout.IntervalsEventDTO
 import org.springframework.web.multipart.MultipartFile
+import java.io.InputStream
 
 class IntervalsApiClientMock(
     objectMapper: ObjectMapper,
@@ -41,7 +43,33 @@ class IntervalsApiClientMock(
         TODO("Not yet implemented")
     }
 
+    override fun createComment(requestDTO: IntervalsEventCommentDTO) {
+        TODO("Not yet implemented")
+    }
+
     override fun createActivity(athleteId: String, name: String, file: MultipartFile): CreateActivityResponseDTO {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateActivity(
+        idActivity: String,
+        requestDTO: IntervalsActivityDTO
+    ): IntervalsActivityDTO {
+        TODO("Not yet implemented")
+    }
+
+    override fun getWellness(
+        athleteId: String,
+        startDate: String,
+        endDate: String
+    ): List<IntervalsWellnessDTO> {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateWellness(
+        athleteId: String,
+        requestDTO: IntervalsWellnessDTO
+    ) {
         TODO("Not yet implemented")
     }
 }
