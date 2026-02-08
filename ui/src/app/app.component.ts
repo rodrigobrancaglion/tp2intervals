@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { TopBarComponent } from "app/top-bar/top-bar.component";
+import {Component, OnInit} from '@angular/core';
+import {RouterOutlet} from '@angular/router';
+import {TopBarComponent} from "app/top-bar/top-bar.component";
 
 
 @Component({

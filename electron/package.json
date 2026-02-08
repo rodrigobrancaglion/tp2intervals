@@ -1,7 +1,7 @@
 {
   "name": "tp2intervals",
   "productName": "tp2intervals",
-  "version": "0.12.3",
+  "version": "0.13.0",
   "description": "Third Party synchronization with Intervals.icu",
   "keywords": [
     "trainingpeaks",
@@ -25,7 +25,8 @@
   "license": "GNU GPLv3",
   "main": "./out/main/index.js",
   "scripts": {
-    "start": "concurrently \"npm run ui:start\" \"wait-on http://localhost:4200 && electron-vite dev --sourcemap\"",
+    "dev": "NODE_ENV=development electron-vite dev --sourcemap",
+    "start": "concurrently \"npm run ui:start\" \"wait-on http://localhost:4200 && npm run dev\"",
     "build": "npm run prepare-external-resoruces && electron-vite build && electron-builder --publish never",
     "build:unpack": "npm run prepare-external-resoruces && electron-vite build && electron-builder --dir",
     "publish": "npm run prepare-external-resoruces && electron-vite build && electron-builder --publish always",

@@ -1,0 +1,13 @@
+package org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.structure
+
+import org.freekode.tp2intervals.domain.workout.structure.WorkoutStructure
+
+class TPWorkoutStructureDTO(
+    val structure: List<TPStructureStepDTO>,
+    val primaryLengthMetric: String?, // distance, duration
+    val primaryIntensityMetric: String?,
+    val visualizationDistanceUnit: String?, // meter, ?
+    val polyline: List<List<Double>>? = null
+) {
+    fun toTargetUnit(): WorkoutStructure.TargetUnit = TPTargetMapper.getByIntensity(primaryIntensityMetric!!)
+}

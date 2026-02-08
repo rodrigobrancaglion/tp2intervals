@@ -1,11 +1,12 @@
-package org.freekode.tp2intervals.app.workout
+package org.freekode.tp2intervals.dto.workout
 
 import config.BaseSpringITConfig
-import org.freekode.tp2intervals.app.plan.CreateLibraryContainerRequest
-import org.freekode.tp2intervals.app.plan.DeleteLibraryRequest
-import org.freekode.tp2intervals.app.plan.LibraryService
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.domain.TrainingType
+import org.freekode.tp2intervals.dto.plan.CreateLibraryContainerRequest
+import org.freekode.tp2intervals.dto.plan.DeleteLibraryRequest
+import org.freekode.tp2intervals.service.LibraryService
+import org.freekode.tp2intervals.service.WorkoutService
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Disabled
@@ -54,7 +55,7 @@ class TrainerRoadWorkoutServiceIT : BaseSpringITConfig() {
                 LocalDate.parse("2024-03-10"),
                 "copy from calend to lib ${LocalDateTime.now()}",
                 true,
-                TrainingType.Companion.DEFAULT_LIST,
+                TrainingType.DEFAULT_LIST,
                 platform,
                 Platform.INTERVALS
             )

@@ -1,11 +1,9 @@
 package config
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.tomakehurst.wiremock.client.WireMock.get
-import com.github.tomakehurst.wiremock.client.WireMock.okJson
-import com.github.tomakehurst.wiremock.client.WireMock.stubFor
-import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.token.TrainingPeaksUserTokenDTO
-import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.user.TrainingPeaksUserDTO
+import com.github.tomakehurst.wiremock.client.WireMock.*
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.token.TrainingPeaksUserTokenDTO
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.user.TrainingPeaksUserDTO
 import org.junit.jupiter.api.BeforeAll
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest

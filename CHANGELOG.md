@@ -1,3 +1,12 @@
+### 0.13
+- Features:
+  - Wellness
+  - Activities
+  - App Desktop
+- Deploy CI/CD
+  - New build github and deploy in GCP
+- Global Refactoring
+  - Package
 ### 0.12.3
 - Updated Java to 21.0.3
 

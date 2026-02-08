@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {formatDate} from "utils/date-formatter";
-import {WorkoutClient} from "infrastructure/client/workout.client";
-import {NotificationService} from "infrastructure/notification.service";
+import {WorkoutClient} from "integration/client/workout.client";
+import {NotificationService} from "integration/notification.service";
 import {finalize} from "rxjs";
 import {MatGridListModule} from "@angular/material/grid-list";
 import {MatButtonModule} from "@angular/material/button";
@@ -11,11 +11,10 @@ import {MatInputModule} from "@angular/material/input";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {NgIf} from "@angular/common";
 import {MatDatepickerModule} from "@angular/material/datepicker";
-import {MatNativeDateModule} from "@angular/material/core";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatSelectModule} from "@angular/material/select";
 import {MatCheckboxModule} from "@angular/material/checkbox";
-import {Platform} from "infrastructure/platform";
+import {Platform} from "integration/platform";
 
 @Component({
   selector: 'tr-copy-calendar-to-library',
@@ -30,7 +29,6 @@ import {Platform} from "infrastructure/platform";
     MatProgressBarModule,
     NgIf,
     MatDatepickerModule,
-    MatNativeDateModule,
     MatSnackBarModule,
     MatSelectModule,
     MatCheckboxModule,
@@ -83,7 +81,7 @@ export class TrCopyCalendarToLibraryComponent implements OnInit {
       finalize(() => this.inProgress = false)
     ).subscribe((response) => {
       this.notificationService.success(
-        `Copied: ${response.copied}\n Filtered out: ${response.filteredOut}\n From ${response.startDate} to ${response.endDate}`)
+        `Planned: ${response.filteredOut}<br> Saved: ${response.copied}<br> From ${response.startDate} to ${response.endDate}`)
     })
   }
 }

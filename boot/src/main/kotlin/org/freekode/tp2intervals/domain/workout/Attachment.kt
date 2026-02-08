@@ -1,6 +1,6 @@
 package org.freekode.tp2intervals.domain.workout
 
-import org.freekode.tp2intervals.infrastructure.utils.Base64
+import org.freekode.tp2intervals.integration.utils.Base64
 import org.springframework.core.io.Resource
 
 data class Attachment(

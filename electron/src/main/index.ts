@@ -1,11 +1,10 @@
-import { app, BrowserWindow, shell } from 'electron';
+import {app, BrowserWindow, Menu, nativeImage, shell, Tray} from 'electron';
 import path from 'path';
 import './boot'
-import { bootController, initBootController } from './boot/boot-controller';
-import { systemEvents } from './events';
+import {bootController, initBootController} from './boot/boot-controller';
+import {systemEvents} from './events';
 import log from 'electron-log';
-import { isDev } from "./environment";
-
+import {isDev} from "./environment";
 
 if (require('electron-squirrel-startup')) {
   app.quit();
@@ -13,14 +12,40 @@ if (require('electron-squirrel-startup')) {
 
 log.info("isDev", isDev)
 
+let isQuitting = false; // Controle de fechamento
+let tray: Tray | null = null;
 let splashWindow: BrowserWindow | null = null;
 let mainWindow: BrowserWindow | null = null;
+
+const createTray = () => {
+  const iconPath = getIconPath();
+  let icon = nativeImage.createFromPath(iconPath);
+
+  // Redimensiona para o padrão do Mac (16x16)
+  icon = icon.resize({ width: 16, height: 16 });
+
+  tray = new Tray(icon);
+
+  const contextMenu = Menu.buildFromTemplate([
+    { label: 'Show App', click: () => mainWindow?.show() },
+    { type: 'separator' },
+    { label: 'Quit', click: () => {
+        isQuitting = true;
+        app.quit();
+      }
+    }
+  ]);
+
+  tray.setToolTip('TP2 Intervals');
+  tray.setContextMenu(contextMenu);
+};
 
 const getIconPath = () => {
   return app.isPackaged
     ? path.join(process.resourcesPath, 'icon.png')
     : path.join(__dirname, '../../build/icon.png');
-}
+};
+
 
 const getSplashWindowPageUrl = () => {
   if (app.isPackaged) {
@@ -85,6 +110,9 @@ const createMainWindow = async () => {
 
   mainWindow.loadURL(getMainWindowPageUrl())
 
+  // Inicializa o ícone da barra de menus
+  createTray();
+
   mainWindow.on('ready-to-show', () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
@@ -97,8 +125,17 @@ const createMainWindow = async () => {
     mainWindow.focus();
   });
 
+  mainWindow.on('close', (event) => {
+    if (!isQuitting && process.platform === 'darwin') {
+      event.preventDefault();
+      mainWindow?.hide(); // Esconde a janela, mas mantém o processo e o @Scheduled ativos
+    }
+  });
+
   mainWindow.on('closed', () => {
-    mainWindow = null;
+    if (isQuitting || process.platform !== 'darwin') {
+      mainWindow = null;
+    }
   });
 
   // Open urls in the user's browser

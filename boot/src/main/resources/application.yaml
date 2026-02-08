@@ -30,8 +30,11 @@ spring:
       config: classpath:ehcache.xml
 
 server:
+  port: 8080
   error:
     include-message: always
+  compression:
+    enabled: true
 
 management:
   info:

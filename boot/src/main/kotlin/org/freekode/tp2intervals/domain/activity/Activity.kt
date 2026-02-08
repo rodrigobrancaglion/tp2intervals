@@ -1,9 +1,9 @@
 package org.freekode.tp2intervals.domain.activity
 
-import org.freekode.tp2intervals.domain.ActivitiesType
+import org.freekode.tp2intervals.domain.ActivityType
 import org.freekode.tp2intervals.domain.BaseType
 import org.freekode.tp2intervals.domain.TrainingType
-import org.freekode.tp2intervals.infrastructure.utils.Base64
+import org.freekode.tp2intervals.integration.utils.Base64
 import org.springframework.core.io.Resource
 import java.time.LocalDateTime
 
@@ -22,10 +22,15 @@ data class Activity(
     /**
      * Resets metrics based on requested sync types.
      */
-    fun filterActivity(requestedTypes: List<BaseType>): Activity {
+    fun filterActivity(requestedTypes: List<BaseType>): Activity? {
+        // Se o ID for inválido, retornamos NULL para que o mapNotNull ignore este item
+        if (this.workoutId.toInt() == 0) {
+            return null
+        }
+
         return this.copy(
-            rpe = if (requestedTypes.contains(ActivitiesType.RPE)) this.rpe else null,
-            feel = if (requestedTypes.contains(ActivitiesType.FEEL)) this.feel else null
+            rpe = if (requestedTypes.contains(ActivityType.RPE)) this.rpe else null,
+            feel = if (requestedTypes.contains(ActivityType.FEEL)) this.feel else null
         )
     }
 }

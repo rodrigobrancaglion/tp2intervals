@@ -8,6 +8,7 @@ import java.time.temporal.ChronoUnit
 
 data class WorkoutDetails(
     val type: TrainingType,
+    val workoutSubTypeId: TrainingType?,
     val name: String,
     val description: String?,
     val duration: Duration?,
@@ -16,6 +17,15 @@ data class WorkoutDetails(
     val externalData: ExternalData,
     val attachments: List<Attachment> = listOf(),
 ) : Serializable {
+
+    constructor(type: TrainingType,
+                name: String,
+                description: String?,
+                duration: Duration?,
+                tssPlanned: Int?,
+                ifPlanned: Double?,
+                externalData: ExternalData,
+                attachments: List<Attachment>) : this(type, null, name, description, duration, tssPlanned, ifPlanned, externalData, attachments)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -1,6 +1,6 @@
 package org.freekode.tp2intervals
 
-import org.freekode.tp2intervals.infrastructure.configuration.DefaultConfiguration
+import org.freekode.tp2intervals.config.DefaultConfiguration
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication

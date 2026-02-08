@@ -1,19 +1,17 @@
-package org.freekode.tp2intervals.infrastructure.platform.intervalsicu.workout
+package org.freekode.tp2intervals.integration.platform.intervalsicu.workout
 
 import config.TestUtils
-import config.mock.IntervalsApiClientMock
+import config.mock.IntervalsWorkoutApiClientMock
 import config.mock.ObjectMapperFactory
 import org.freekode.tp2intervals.domain.TrainingType
 import org.freekode.tp2intervals.domain.workout.Workout
 import org.freekode.tp2intervals.domain.workout.structure.SingleStep
 import org.freekode.tp2intervals.domain.workout.structure.StepLength
 import org.freekode.tp2intervals.domain.workout.structure.WorkoutStructure
-import org.freekode.tp2intervals.infrastructure.platform.intervalsicu.IntervalsApiClient
-import org.freekode.tp2intervals.infrastructure.platform.intervalsicu.configuration.IntervalsConfiguration
-import org.freekode.tp2intervals.infrastructure.platform.intervalsicu.configuration.IntervalsConfigurationRepository
-import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.TrainingPeaksApiClient
-import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.user.TrainingPeaksUserRepository
-import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.workout.TPPowerCalculationService
+import org.freekode.tp2intervals.integration.platform.intervalsicu.athlete.IntervalsUserApiClient
+import org.freekode.tp2intervals.integration.platform.intervalsicu.configuration.IntervalsConfigurationDTO
+import org.freekode.tp2intervals.integration.platform.intervalsicu.configuration.IntervalsConfigurationRepository
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.TPPowerCalculationService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -28,10 +26,9 @@ class IntervalsWorkoutRepositoryTest {
 
     private val tpPowerCalculationService = mock(TPPowerCalculationService::class.java)
     private val toIntervalsWorkoutConverter = ToIntervalsWorkoutConverter(tpPowerCalculationService)
-    private val trainingPeaksApiClient = mock(TrainingPeaksApiClient::class.java)
-    private val trainingPeaksUserRepository = mock(TrainingPeaksUserRepository::class.java)
+    private val intervalsUserApiClient = mock(IntervalsUserApiClient::class.java)
 
-    private val intervalsApiClient: IntervalsApiClient = IntervalsApiClientMock(
+    private val intervalsWorkoutApiClient: IntervalsWorkoutApiClient = IntervalsWorkoutApiClientMock(
         objectMapper,
         ResourceUtils.getFile("classpath:intervals-events-response.json").inputStream()
     )
@@ -41,11 +38,10 @@ class IntervalsWorkoutRepositoryTest {
 
     private val intervalsWorkoutRepository =
         IntervalsWorkoutRepository(
-            intervalsApiClient,
+            intervalsWorkoutApiClient,
+            intervalsUserApiClient,
             intervalsConfigurationRepository,
             toIntervalsWorkoutConverter,
-            trainingPeaksApiClient,
-            trainingPeaksUserRepository
         )
 
     @Test
@@ -182,7 +178,7 @@ class IntervalsWorkoutRepositoryTest {
         val workout = findWorkoutWithName("virtual ride test", workouts)
         val structure = workout.structure!!
         assertEquals(TrainingType.VIRTUAL_BIKE, workout.details.type)
-        assertEquals(WorkoutStructure.TargetUnit.FTP_PERCENTAGE, workout.structure!!.target)
+        assertEquals(WorkoutStructure.TargetUnit.FTP_PERCENTAGE, workout.structure.target)
         assertEquals(5, structure.steps.size)
     }
 
@@ -208,7 +204,7 @@ class IntervalsWorkoutRepositoryTest {
 
     private fun getIntervalsConfigurationRepository(): IntervalsConfigurationRepository {
         val repo = mock(IntervalsConfigurationRepository::class.java)
-        `when`(repo.getConfiguration()).thenReturn(IntervalsConfiguration("apiKey", "athleteId", 0.1f, 0.2f, 0.3f))
+        `when`(repo.getConfiguration()).thenReturn(IntervalsConfigurationDTO("apiKey", "athleteId", 0.1f, 0.2f, 0.3f))
         return repo
     }
 }

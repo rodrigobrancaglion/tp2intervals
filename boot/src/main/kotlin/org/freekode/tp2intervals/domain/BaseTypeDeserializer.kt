@@ -17,7 +17,7 @@ class BaseTypeDeserializer : StdDeserializer<BaseType>(BaseType::class.java) {
         // List all your enum classes here
         val enumClasses = listOf(
             TrainingType::class.java,
-            ActivitiesType::class.java,
+            ActivityType::class.java,
             WellnessType::class.java,
             FeelingType::class.java
         )

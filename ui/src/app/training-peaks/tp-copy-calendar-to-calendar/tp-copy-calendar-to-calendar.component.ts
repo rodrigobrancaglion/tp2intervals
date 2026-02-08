@@ -5,11 +5,10 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatDatepickerModule} from "@angular/material/datepicker";
-import {MatNativeDateModule} from "@angular/material/core";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatSelectModule} from "@angular/material/select";
 import {MatCheckboxModule} from "@angular/material/checkbox";
-import {Platform} from "infrastructure/platform";
+import {Platform} from "integration/platform";
 import {MatListModule} from "@angular/material/list";
 import {
   CopyCalendarToCalendarComponent
@@ -26,7 +25,6 @@ import {
     ReactiveFormsModule,
     MatProgressBarModule,
     MatDatepickerModule,
-    MatNativeDateModule,
     MatSnackBarModule,
     MatSelectModule,
     MatCheckboxModule,
@@ -44,17 +42,19 @@ import {
     ]
     readonly trainingTypes = [
       {title: "Ride", value: "BIKE"},
-      {title: "MTB", value: "MTB"},
       {title: "Virtual Ride", value: "VIRTUAL_BIKE"},
-      {title: "Run", value: "RUN"},
-      {title: "Swim", value: "SWIM"},
-      {title: "Walk", value: "WALK"},
-      {title: "Weight/Strength Training", value: "STRENGTH"},
-      {title: "Any other", value: "UNKNOWN"},
+      {title: "MTB", value: "MTB"},
+      //{title: "Run", value: "RUN"},
+      //{title: "Swim", value: "SWIM"},
+      {title: "Workout", value: "WORKOUT"},
+      //{title: "Weight/Strength Training", value: "STRENGTH"},
+      //{title: "Walk", value: "WALK"},
       {title: "Day-off (Notes)", value: "DAY_OFF"},
       {title: "Brick", value: "BRICK"},
+      {title: "Any other", value: "UNKNOWN"},
     ]
-    readonly selectedTrainingTypes = ['BIKE', 'VIRTUAL_BIKE', 'MTB', 'RUN', 'DAY_OFF', 'BRICK'];
+    //readonly selectedTrainingTypes = ['BIKE', 'VIRTUAL_BIKE', 'MTB', 'RUN', 'DAY_OFF', 'BRICK'];
+    readonly selectedTrainingTypes = ['BIKE', 'VIRTUAL_BIKE', "MTB", 'DAY_OFF', 'BRICK'];
 
   constructor() {
   }

@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {Router, RouterLink} from "@angular/router";
-import {EnvironmentService} from "infrastructure/environment.service";
+import {EnvironmentService} from "integration/environment.service";
 import {MatButtonModule} from "@angular/material/button";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatBadgeModule} from "@angular/material/badge";
 import {forkJoin} from "rxjs";
-import {GitHubClient} from "infrastructure/client/github.client";
+import {GitHubClient} from "integration/client/github.client";
 import * as semver from "semver";
 import {MatTooltipModule} from "@angular/material/tooltip";
 

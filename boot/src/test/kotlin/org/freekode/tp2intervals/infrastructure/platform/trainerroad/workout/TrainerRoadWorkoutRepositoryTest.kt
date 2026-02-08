@@ -1,4 +1,4 @@
-package org.freekode.tp2intervals.infrastructure.platform.trainerroad.workout
+package org.freekode.tp2intervals.integration.platform.trainerroad.workout
 
 import config.mock.ObjectMapperFactory
 import config.mock.TrainerRoadApiClientMock
@@ -6,10 +6,10 @@ import org.freekode.tp2intervals.domain.ExternalData
 import org.freekode.tp2intervals.domain.TrainingType
 import org.freekode.tp2intervals.domain.workout.structure.SingleStep
 import org.freekode.tp2intervals.domain.workout.structure.WorkoutStructure
-import org.freekode.tp2intervals.infrastructure.platform.trainerroad.TrainerRoadApiClientService
-import org.freekode.tp2intervals.infrastructure.platform.trainerroad.configuration.TrainerRoadConfiguration
-import org.freekode.tp2intervals.infrastructure.platform.trainerroad.configuration.TrainerRoadConfigurationRepository
-import org.freekode.tp2intervals.infrastructure.platform.trainerroad.member.TRUsernameRepository
+import org.freekode.tp2intervals.integration.platform.trainerroad.TrainerRoadApiClientService
+import org.freekode.tp2intervals.integration.platform.trainerroad.configuration.TrainerRoadConfiguration
+import org.freekode.tp2intervals.integration.platform.trainerroad.configuration.TrainerRoadConfigurationRepository
+import org.freekode.tp2intervals.integration.platform.trainerroad.member.TRUsernameRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -90,7 +90,7 @@ class TrainerRoadWorkoutRepositoryTest {
         // then
         assertEquals(TrainingType.VIRTUAL_BIKE, workout.details.type)
         assertEquals(WorkoutStructure.TargetUnit.FTP_PERCENTAGE, workout.structure!!.target)
-        assertTrue(workout.structure!!.steps.isNotEmpty())
+        assertTrue(workout.structure.steps.isNotEmpty())
     }
 
     @Test

@@ -5,21 +5,20 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatDatepickerModule} from "@angular/material/datepicker";
-import {MatNativeDateModule} from "@angular/material/core";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatSelectModule} from "@angular/material/select";
 import {MatCheckboxModule} from "@angular/material/checkbox";
-import {Platform} from "infrastructure/platform";
+import {Platform} from "integration/platform";
 import {formatDate} from "utils/date-formatter";
 import {MatDividerModule} from "@angular/material/divider";
 import {MatListModule} from "@angular/material/list";
 import {NgIf} from "@angular/common";
-import {ConfigurationClient} from "infrastructure/client/configuration.client";
+import {ConfigurationClient} from "integration/client/configuration.client";
 import {finalize, switchMap, tap} from "rxjs";
-import {NotificationService} from "infrastructure/notification.service";
+import {NotificationService} from "integration/notification.service";
 import {MatTooltipModule} from "@angular/material/tooltip";
-import {WellnessTypes} from "infrastructure/wellness-types";
-import {WellnessClient} from "infrastructure/client/wellness.client";
+import {WellnessTypes} from "integration/wellness-types";
+import {WellnessClient} from "integration/client/wellness.client";
 
 @Component({
   selector: 'copy-wellness-to-calendar',
@@ -32,7 +31,6 @@ import {WellnessClient} from "infrastructure/client/wellness.client";
     ReactiveFormsModule,
     MatProgressBarModule,
     MatDatepickerModule,
-    MatNativeDateModule,
     MatSnackBarModule,
     MatSelectModule,
     MatCheckboxModule,
@@ -122,7 +120,7 @@ export class CopyWellnessToCalendarComponent implements OnInit {
       finalize(() => this.inProgress = false)
     ).subscribe((response) => {
       this.notificationService.success(
-        `Wellness (Metrics): ${response.copied}\n From ${response.startDate} to ${response.endDate}`)
+        `Wellness (Metrics): ${response.copied}<br> From ${response.startDate} to ${response.endDate}`)
     })
   }
 

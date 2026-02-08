@@ -7,15 +7,14 @@ import {MatInputModule} from "@angular/material/input";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {AsyncPipe, NgIf} from "@angular/common";
 import {MatDatepickerModule} from "@angular/material/datepicker";
-import {MatNativeDateModule} from "@angular/material/core";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatSelectModule} from "@angular/material/select";
 import {MatCheckboxModule} from "@angular/material/checkbox";
-import {ConfigurationClient} from "infrastructure/client/configuration.client";
-import {NotificationService} from "infrastructure/notification.service";
+import {ConfigurationClient} from "../../../integration/client/configuration.client";
+import {NotificationService} from "../../../integration/notification.service";
 import {filter, finalize, map, of} from "rxjs";
-import {LibraryClient} from "infrastructure/client/library-client.service";
-import {Platform} from "infrastructure/platform";
+import {LibraryClient} from "../../../integration/client/library-client.service";
+import {Platform} from "../../../integration/platform";
 import {MatDialog} from "@angular/material/dialog";
 import {
   TpCopyPlanWarningDialogComponent
@@ -37,7 +36,6 @@ import {StepModifier} from "app/training-peaks/tp-copy-library-container/step-mo
     MatProgressBarModule,
     NgIf,
     MatDatepickerModule,
-    MatNativeDateModule,
     MatSnackBarModule,
     MatSelectModule,
     MatCheckboxModule,

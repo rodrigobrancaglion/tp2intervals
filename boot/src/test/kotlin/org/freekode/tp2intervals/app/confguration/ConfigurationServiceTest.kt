@@ -1,14 +1,12 @@
-package org.freekode.tp2intervals.app.confguration
+package org.freekode.tp2intervals.dto.confguration
 
-import org.freekode.tp2intervals.domain.config.DebugModeService
-import org.freekode.tp2intervals.domain.config.UpdateConfigurationRequest
-import org.freekode.tp2intervals.infrastructure.configuration.AppConfigurationRepositoryImpl
-import org.freekode.tp2intervals.infrastructure.configuration.ConfigurationCrudRepository
-import org.freekode.tp2intervals.infrastructure.platform.intervalsicu.configuration.IntervalsAthleteApiClient
-import org.freekode.tp2intervals.infrastructure.platform.intervalsicu.configuration.IntervalsConfigurationRepository
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.freekode.tp2intervals.integration.platform.intervalsicu.athlete.IntervalsAthleteApiClient
+import org.freekode.tp2intervals.integration.platform.intervalsicu.configuration.IntervalsConfigurationRepository
+import org.freekode.tp2intervals.integration.provider.configuration.ConfigurationRepository
+import org.freekode.tp2intervals.integration.provider.configuration.IConfigurationCrudRepository
+import org.freekode.tp2intervals.service.ConfigurationService
+import org.freekode.tp2intervals.service.DebugModeService
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
@@ -17,7 +15,7 @@ import org.springframework.cache.CacheManager
 // TODO fix tests
 @Disabled
 class ConfigurationServiceTest {
-    private val appConfigurationRepository = AppConfigurationRepositoryImpl(mock(ConfigurationCrudRepository::class.java))
+    private val appConfigurationRepository = ConfigurationRepository(mock(IConfigurationCrudRepository::class.java))
 
     private val configurationService = ConfigurationService(
         listOf(

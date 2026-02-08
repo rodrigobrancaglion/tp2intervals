@@ -1,5 +1,5 @@
 import log from 'electron-log';
-import { ActuatorProcess } from "./actuator-process";
+import {ActuatorProcess} from "./actuator-process";
 
 export class RemoteProcess extends ActuatorProcess {
   private readonly address: string;

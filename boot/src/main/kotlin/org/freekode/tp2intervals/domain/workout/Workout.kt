@@ -1,6 +1,5 @@
 package org.freekode.tp2intervals.domain.workout
 
-import org.freekode.tp2intervals.domain.CategoryType
 import org.freekode.tp2intervals.domain.ExternalData
 import org.freekode.tp2intervals.domain.TrainingType
 import org.freekode.tp2intervals.domain.workout.structure.WorkoutStructure
@@ -20,7 +19,16 @@ data class Workout(
 
     companion object {
         fun note(date: LocalDateTime, name: String, description: String?, externalData: ExternalData): Workout {
-            return Workout(WorkoutDetails(TrainingType.NOTE, name, description, null, null, null, externalData), date, null)
+            return Workout(WorkoutDetails(
+                type = TrainingType.NOTE,
+                name = name,
+                description = description,
+                duration = null,
+                tssPlanned = null,
+                ifPlanned = null,
+                externalData = externalData,
+                listOf()
+            ), date, null)
         }
     }
 
@@ -41,11 +49,4 @@ data class Workout(
         return details.hashCode()
     }
 
-    /**
-     * Checks if the workout belongs to the WORKOUT category.
-     * Used to determine if it should have structure/intensity calculations.
-     */
-    fun isWorkoutCategory(): Boolean {
-        return this.details.type.category == CategoryType.WORKOUT
-    }
 }

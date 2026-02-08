@@ -1,9 +1,9 @@
 package org.freekode.tp2intervals.domain.librarycontainer
 
+import org.freekode.tp2intervals.domain.ExternalData
+import org.freekode.tp2intervals.integration.utils.Date
 import java.io.Serializable
 import java.time.LocalDate
-import org.freekode.tp2intervals.domain.ExternalData
-import org.freekode.tp2intervals.infrastructure.utils.Date
 
 data class LibraryContainer(
     val name: String,

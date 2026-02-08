@@ -1,4 +1,4 @@
-import { formatDate as angularFormatDate } from "@angular/common";
+import {formatDate as angularFormatDate} from "@angular/common";
 
 const DATE_FORMAT = 'yyyy-MM-dd'
 const LOCALE = 'en-US'

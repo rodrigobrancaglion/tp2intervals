@@ -1,9 +1,10 @@
-import { app, BrowserWindow } from 'electron';
+import {app, BrowserWindow} from 'electron';
 import log from 'electron-log';
-import { Process } from './process/process';
-import { PackagedBootProcess } from './process/packaged-boot-process';
-import { systemEvents } from "../events";
-import { RemoteProcess } from "./process/remote-boot-process";
+import {Process} from './process/process';
+import {PackagedBootProcess} from './process/packaged-boot-process';
+import {systemEvents} from "../events";
+import {RemoteProcess} from "./process/remote-boot-process";
+import {isDev} from "../environment";
 
 export class BootController {
   private started: boolean = false;
@@ -99,10 +100,10 @@ export async function initBootController(): Promise<BootController> {
     return bootController;
   }
 
-  if (app.isPackaged) {
+  if (app.isPackaged || !isDev) {
     bootController = new BootController(new PackagedBootProcess());
   } else {
-    bootController = new BootController(new RemoteProcess('http://localhost:8080'));
+    bootController = new BootController(new RemoteProcess('http://localhost:44864'));
   }
 
   bootController.start().catch((e) => {

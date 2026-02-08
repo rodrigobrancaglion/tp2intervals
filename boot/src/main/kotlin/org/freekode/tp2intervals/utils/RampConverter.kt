@@ -1,9 +1,9 @@
 package org.freekode.tp2intervals.utils
 
-import org.freekode.tp2intervals.domain.workout.structure.StepTarget
 import org.freekode.tp2intervals.domain.workout.structure.MultiStep
 import org.freekode.tp2intervals.domain.workout.structure.SingleStep
 import org.freekode.tp2intervals.domain.workout.structure.StepLength
+import org.freekode.tp2intervals.domain.workout.structure.StepTarget
 import java.time.Duration
 
 class RampConverter(

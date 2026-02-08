@@ -5,21 +5,20 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatDatepickerModule} from "@angular/material/datepicker";
-import {MatNativeDateModule} from "@angular/material/core";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatSelectModule} from "@angular/material/select";
 import {MatCheckboxModule} from "@angular/material/checkbox";
-import {Platform} from "infrastructure/platform";
+import {Platform} from "integration/platform";
 import {formatDate} from "utils/date-formatter";
 import {MatDividerModule} from "@angular/material/divider";
 import {MatListModule} from "@angular/material/list";
 import {NgIf} from "@angular/common";
-import {ConfigurationClient} from "infrastructure/client/configuration.client";
+import {ConfigurationClient} from "integration/client/configuration.client";
 import {finalize, switchMap, tap} from "rxjs";
-import {WorkoutClient} from "infrastructure/client/workout.client";
-import {NotificationService} from "infrastructure/notification.service";
+import {WorkoutClient} from "integration/client/workout.client";
+import {NotificationService} from "integration/notification.service";
 import {MatTooltipModule} from "@angular/material/tooltip";
-import {TrainingTypes} from "infrastructure/training-types";
+import {TrainingTypes} from "integration/training-types";
 
 @Component({
   selector: 'copy-calendar-to-calendar',
@@ -32,7 +31,6 @@ import {TrainingTypes} from "infrastructure/training-types";
     ReactiveFormsModule,
     MatProgressBarModule,
     MatDatepickerModule,
-    MatNativeDateModule,
     MatSnackBarModule,
     MatSelectModule,
     MatCheckboxModule,
@@ -122,7 +120,7 @@ export class CopyCalendarToCalendarComponent implements OnInit {
       finalize(() => this.inProgress = false)
     ).subscribe((response) => {
       this.notificationService.success(
-        `Planned: ${response.copied}\n Filtered out: ${response.filteredOut}\n From ${response.startDate} to ${response.endDate}`)
+        `Planned: ${response.filteredOut}<br> Saved: ${response.copied}<br> From ${response.startDate} to ${response.endDate}`)
     })
   }
 

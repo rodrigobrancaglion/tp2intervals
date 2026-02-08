@@ -8,9 +8,8 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import {
   TrCopyCalendarToLibraryComponent
 } from "app/trainer-road/tr-copy-calendar-to-library/tr-copy-calendar-to-library.component";
-import {Platform} from "infrastructure/platform";
-import {ConfigurationClient} from "infrastructure/client/configuration.client";
-import {MatTooltipModule} from "@angular/material/tooltip";
+import {Platform} from "integration/platform";
+import {ConfigurationClient} from "integration/client/configuration.client";
 import {
   TrCopyCalendarToCalendarComponent
 } from "app/trainer-road/tr-copy-calendar-to-calendar/tr-copy-calendar-to-calendar.component";

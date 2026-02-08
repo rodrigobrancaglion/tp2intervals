@@ -1,4 +1,4 @@
-import { Process, ProcessHealthResult } from './process';
+import {Process, ProcessHealthResult} from './process';
 
 export abstract class ActuatorProcess implements Process {
   async doHealthCheck(): Promise<ProcessHealthResult> {

@@ -1,12 +1,13 @@
-import { Component, Inject } from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
   MatDialogClose,
   MatDialogContent,
-  MatDialogRef, MatDialogTitle
+  MatDialogRef,
+  MatDialogTitle
 } from "@angular/material/dialog";
-import { MatButtonModule } from "@angular/material/button";
+import {MatButtonModule} from "@angular/material/button";
 
 @Component({
   selector: 'app-tp-copy-plan-warning-dialog',

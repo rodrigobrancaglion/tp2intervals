@@ -1,20 +1,19 @@
-package org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.workout
+package org.freekode.tp2intervals.integration.platform.trainingpeaks.workout
 
 import config.TestUtils
 import config.mock.ObjectMapperFactory
-import config.mock.TrainingPeaksApiClientMock
+import config.mock.TrainingPeaksWorkoutApiClientMock
 import org.freekode.tp2intervals.domain.TrainingType
 import org.freekode.tp2intervals.domain.workout.structure.MultiStep
 import org.freekode.tp2intervals.domain.workout.structure.SingleStep
 import org.freekode.tp2intervals.domain.workout.structure.StepLength
 import org.freekode.tp2intervals.domain.workout.structure.WorkoutStructure
-import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.TrainingPeaksApiClient
-import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.configuration.TrainingPeaksConfigurationRepository
-import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.library.TPWorkoutLibraryRepository
-import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.plan.TrainingPeaksPlanCoachApiClient
-import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.plan.TrainingPeaksPlanRepository
-import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.user.TrainingPeaksUser
-import org.freekode.tp2intervals.infrastructure.platform.trainingpeaks.user.TrainingPeaksUserRepository
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.configuration.TrainingPeaksConfigurationRepository
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.library.TPWorkoutLibraryRepository
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.plan.TrainingPeaksPlanCoachApiClient
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.plan.TrainingPeaksPlanRepository
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.user.TrainingPeaksUser
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.user.TrainingPeaksUserRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -32,7 +31,7 @@ class TrainingPeaksWorkoutRepositoryTest {
     //@Test
     fun `should parse swim workout with distance based steps`() {
         // when
-        val trainingPeaksApiClient = TrainingPeaksApiClientMock(
+        val trainingPeaksApiClient = TrainingPeaksWorkoutApiClientMock(
             objectMapper,
             ResourceUtils.getFile("classpath:tp-calendar-workout-distant-steps.json").inputStream()
         )
@@ -66,7 +65,7 @@ class TrainingPeaksWorkoutRepositoryTest {
     @Test
     fun `should parse workout with null title`() {
         // when
-        val trainingPeaksApiClient = TrainingPeaksApiClientMock(
+        val trainingPeaksApiClient = TrainingPeaksWorkoutApiClientMock(
             objectMapper,
             ResourceUtils.getFile("classpath:tp-calendar-workout-null-title.json").inputStream()
         )
@@ -91,9 +90,9 @@ class TrainingPeaksWorkoutRepositoryTest {
         return mock
     }
 
-    private fun trainingPeaksWorkoutRepository(trainingPeaksApiClient: TrainingPeaksApiClient) =
+    private fun trainingPeaksWorkoutRepository(trainingPeaksWorkoutApiClient: TrainingPeaksWorkoutApiClient) =
         TrainingPeaksWorkoutRepository(
-            trainingPeaksApiClient,
+            trainingPeaksWorkoutApiClient,
             mock(TrainingPeaksPlanCoachApiClient::class.java),
             TPToWorkoutConverter(objectMapper),
             mock(TrainingPeaksPlanRepository::class.java),
