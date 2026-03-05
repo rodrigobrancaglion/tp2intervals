@@ -4,6 +4,7 @@ import {ConfigurationComponent} from "app/configuration/configuration.component"
 import {canActivateHome} from "app/home/can-activate-home";
 import {TrainingPeaksComponent} from "app/training-peaks/training-peaks.component";
 import {TrainerRoadComponent} from "app/trainer-road/trainer-road.component";
+import {MyFitnessPalComponent} from "app/myfitnesspal/myfitnesspal.component";
 
 export const routes: Routes = [
   {
@@ -19,6 +20,11 @@ export const routes: Routes = [
   {
     path: 'trainer-road',
     component: TrainerRoadComponent,
+    canActivate: [canActivateHome]
+  },
+  {
+    path: 'myfitnesspal',
+    component: MyFitnessPalComponent,
     canActivate: [canActivateHome]
   },
   {

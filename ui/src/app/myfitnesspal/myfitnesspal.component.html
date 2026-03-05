@@ -1,0 +1,29 @@
+<div *ngIf="!platformInfo">
+  <mat-progress-bar mode="query"></mat-progress-bar>
+</div>
+
+<div *ngIf="platformInfo?.isValid === false">
+  Platform is not configured. Please set required parameters on Configuration page
+</div>
+
+<div *ngIf="platformInfo?.isValid">
+
+  <section>
+    <h3 class="group-title">Health & Wellness</h3>
+    <mat-accordion multi>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Sync WellNess Data (Metrics)</mat-panel-title>
+          <mat-panel-description>
+            Sync metrics between MyFitnessPal and Intervals.icu
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <mfp-copy-wellness-to-calendar></mfp-copy-wellness-to-calendar>
+      </mat-expansion-panel>
+
+    </mat-accordion>
+  </section>
+
+</div>
+

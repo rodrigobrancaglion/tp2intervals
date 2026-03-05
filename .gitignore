@@ -4,3 +4,6 @@ node_modules
 
 .idea
 .vscode
+
+# MFP sensitive config files
+boot/config/

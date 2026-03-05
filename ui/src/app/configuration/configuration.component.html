@@ -93,6 +93,42 @@
   </div>
 
   <div>
+    <h2>
+      MyFitnessPal
+      <a href="https://github.com/freekode/tp2intervals?tab=readme-ov-file#myfitnesspal" target="_blank">
+        <i class="bi bi-question-circle"
+           matTooltip="How to configure"
+           matTooltipPosition="right"></i>
+      </a>
+    </h2>
+
+    <mat-form-field class="full-width">
+      <mat-label>_mfp_session cookie value</mat-label>
+      <input matInput placeholder="Paste value of _mfp_session cookie from F12" formControlName="mfp.session-cookie">
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>__Secure-next-auth.session-token cookie value</mat-label>
+      <input matInput placeholder="Paste value of __Secure-next-auth.session-token cookie from F12" formControlName="mfp.session-token-cookie">
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>remember_me cookie value</mat-label>
+      <input matInput placeholder="Paste value of remember_me cookie from F12" formControlName="mfp.remember-me-cookie">
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>User Id</mat-label>
+      <input matInput placeholder="204113894575613" formControlName="mfp.user-id">
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Username</mat-label>
+      <input matInput placeholder="your_mfp_username" formControlName="mfp.username">
+    </mat-form-field>
+  </div>
+
+  <div>
     <h2>General</h2>
 
     <div class="row">

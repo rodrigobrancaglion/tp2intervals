@@ -20,6 +20,7 @@ class WellnessService(
         val targetRepository = repositoryMap[request.targetPlatform]!!
 
         val allToSync = sourceRepository.getFromCalendar(request.startDate, request.endDate)
+            .map { it.filterWellness(request.types) }
 
         val response = CopyWellnessResponse(
             1,

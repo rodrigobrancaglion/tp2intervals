@@ -96,6 +96,30 @@ Cookie `SharedTrainerRoadAuth` (key and value, smth like `SharedTrainerRoadAuth=
 
 Be aware, Firefox cuts long strings in Dev Tool window. Copy cookie value with right click -> Copy Value.
 
+### MyFitnessPal
+
+To configure MyFitnessPal, you need to copy specific cookie values from your browser's Developer Tools while logged in to MyFitnessPal.
+
+**Step-by-step guide:**
+
+1. Open your browser and go to `https://www.myfitnesspal.com` (make sure you are already logged in)
+2. Press `F12` (or `Cmd+Option+I` on Mac) to open the Developer Tools
+3. Go to the **Application** tab (Chrome/Edge) or **Storage** tab (Firefox)
+4. In the left panel, click on **Cookies** → `https://www.myfitnesspal.com`
+5. Find each of the following cookies and copy their **Value** (right click → Copy Value):
+
+| Cookie Name | Field in the app |
+|---|---|
+| `_mfp_session` | _mfp_session cookie value |
+| `__Secure-next-auth.session-token` | __Secure-next-auth.session-token cookie value |
+| `remember_me` | remember_me cookie value |
+
+6. Paste each value in the corresponding field on the Configuration page
+
+Also fill in your **Username** (the one visible in your MFP profile URL) and your **User Id** (numeric ID visible in your account settings).
+
+> **Note:** Be aware that Firefox may cut long cookie values in the Dev Tools window. Always use right click → Copy Value to get the full value.
+
 ## Other ways to run the app
 ### Executable JAR
 The project has executable jar with web UI. It requires JDK 21. To run jar:

@@ -48,7 +48,7 @@ export class CopyWellnessToCalendarComponent implements OnInit {
   readonly tomorrowDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
 
   @Input() wellnessTypes: any[] = []
-  @Input() selectedWellnessTypes = ['WEIGHT']
+  @Input() selectedWellnessTypes = ['WEIGHT', 'CALORIES', 'CARBOHYDRATES', 'PROTEIN', 'FAT']
   @Input() directions: any[] = []
   @Input() inProgress = false
 
@@ -91,7 +91,7 @@ export class CopyWellnessToCalendarComponent implements OnInit {
     let endDate = null
     let direction = this.formGroup.value.direction
     let wellnessTypes = this.formGroup.value.wellnessTypes
-    let skipSynced = this.formGroup.value.skipSynced
+    let skipSynced = true
 
     this.inProgress = true
     this.wellnessClient.scheduleCopyCalendarToCalendar(startDate, endDate, wellnessTypes, skipSynced, direction).pipe(
@@ -113,7 +113,7 @@ export class CopyWellnessToCalendarComponent implements OnInit {
   private copyWellness(startDate, endDate) {
     let direction = this.formGroup.value.direction
     let wellnessTypes = this.formGroup.value.wellnessTypes
-    let skipSynced = this.formGroup.value.skipSynced
+    let skipSynced = true
 
     this.inProgress = true
     this.wellnessClient.copyCalendarToCalendar(startDate, endDate, wellnessTypes, skipSynced, direction).pipe(

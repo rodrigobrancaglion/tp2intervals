@@ -40,8 +40,12 @@ class IntervalsWellnessConverter {
 
         // 2. Usamos a 'formattedDate' no campo 'id' do DTO
         return IntervalsWellnessDTO(
-            id = formattedDate ?: "", // Aqui estava o erro: você usava wellness?.date
-            weight = wellness?.weight
+            id = formattedDate ?: "",
+            weight = wellness?.weight,
+            kcalConsumed = wellness?.calories?.toInt(),
+            carbohydrates = wellness?.carbohydrates,
+            protein = wellness?.protein,
+            fatTotal = wellness?.fat
         )
     }
 
@@ -49,7 +53,11 @@ class IntervalsWellnessConverter {
         return Wellness(
             date = wellnessDTO?.id,
             type = WellnessType.WEIGHT,
-            weight = wellnessDTO?.weight ?: -1.0
+            weight = wellnessDTO?.weight ?: -1.0,
+            calories = wellnessDTO?.kcalConsumed?.toDouble(),
+            carbohydrates = wellnessDTO?.carbohydrates,
+            protein = wellnessDTO?.protein,
+            fat = wellnessDTO?.fatTotal
         )
     }
 }

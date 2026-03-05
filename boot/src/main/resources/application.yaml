@@ -5,6 +5,8 @@ app:
     api-url: https://intervals.icu
   trainer-road:
     api-url: https://www.trainerroad.com
+  mfp:
+    base-url: https://www.myfitnesspal.com
   attachments:
     enabled: false
 

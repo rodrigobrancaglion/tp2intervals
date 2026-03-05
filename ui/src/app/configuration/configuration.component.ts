@@ -51,6 +51,11 @@ export class ConfigurationComponent implements OnInit {
     'training-peaks.auth-cookie': [null, [Validators.pattern('^Production_tpAuth=[a-zA-Z0-9-_]*$')]],
     'trainer-road.auth-cookie': [null, [Validators.pattern('^SharedTrainerRoadAuth=.*$')]],
     'trainer-road.remove-html-tags': [null, Validators.required],
+    'mfp.session-cookie': [null],
+    'mfp.session-token-cookie': [null],
+    'mfp.remember-me-cookie': [null],
+    'mfp.user-id': [null, Validators.required],
+    'mfp.username': [null, Validators.required],
     'general.debug-mode': [null, Validators.required],
   });
 
@@ -83,6 +88,21 @@ export class ConfigurationComponent implements OnInit {
         this.formGroup.patchValue({
           'training-peaks.auth-cookie': this.config.trainingpeaks_auth_cookie
         });
+      }
+      if (!this.formGroup.get('mfp.session-cookie')?.value && this.config.mfp_session_cookie) {
+        this.formGroup.patchValue({ 'mfp.session-cookie': this.config.mfp_session_cookie });
+      }
+      if (!this.formGroup.get('mfp.session-token-cookie')?.value && this.config.mfp_session_token_cookie) {
+        this.formGroup.patchValue({ 'mfp.session-token-cookie': this.config.mfp_session_token_cookie });
+      }
+      if (!this.formGroup.get('mfp.remember-me-cookie')?.value && this.config.mfp_remember_me_cookie) {
+        this.formGroup.patchValue({ 'mfp.remember-me-cookie': this.config.mfp_remember_me_cookie });
+      }
+      if (!this.formGroup.get('mfp.user-id')?.value && this.config.mfp_user_id) {
+        this.formGroup.patchValue({ 'mfp.user-id': this.config.mfp_user_id });
+      }
+      if (!this.formGroup.get('mfp.username')?.value && this.config.mfp_username) {
+        this.formGroup.patchValue({ 'mfp.username': this.config.mfp_username });
       }
 
       this.inProgress = false
