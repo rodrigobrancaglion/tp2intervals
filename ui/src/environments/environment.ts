@@ -7,4 +7,7 @@ export const environment = {
   mfp_remember_me_cookie: '',
   mfp_user_id: '',
   mfp_username: '',
+  strava_client_id: '',
+  strava_client_secret: '',
+  strava_refresh_token: '',
 };

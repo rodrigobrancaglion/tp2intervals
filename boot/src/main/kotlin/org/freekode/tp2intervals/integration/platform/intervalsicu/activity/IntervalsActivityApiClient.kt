@@ -27,7 +27,7 @@ interface IntervalsActivityApiClient {
         @PathVariable athleteId: String,
         @PathVariable name: String,
         @RequestPart("file") file: MultipartFile
-    ): CreateActivityResponseDTO
+    ): ActivityResponseDTO
 
     @PutMapping("/api/v1/activity/{idActivity}")
     fun updateActivity(

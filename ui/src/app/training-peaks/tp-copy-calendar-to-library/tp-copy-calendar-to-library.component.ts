@@ -15,6 +15,7 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatSelectModule} from "@angular/material/select";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {Platform} from "integration/platform";
+import {TrainingTypes} from "integration/training-types";
 
 @Component({
   selector: 'tp-copy-calendar-to-library',
@@ -44,18 +45,7 @@ export class TpCopyCalendarToLibraryComponent implements OnInit {
     {name: 'Folder', value: false}
   ]
 
-  trainingTypes = [
-    {title: "Ride", value: "BIKE"},
-    {title: "MTB", value: "MTB"},
-    {title: "Virtual Ride", value: "VIRTUAL_BIKE"},
-    {title: "Run", value: "RUN"},
-    {title: "Swim", value: "SWIM"},
-    {title: "Walk", value: "WALK"},
-    {title: "Weight/Strength Training", value: "STRENGTH"},
-    {title: "Day-off (Notes)", value: "DAY_OFF"},
-    {title: "Brick", value: "BRICK"},
-    {title: "Any other", value: "UNKNOWN"},
-  ]
+  readonly trainingTypes = TrainingTypes.trainingTypes;
 
   formGroup: FormGroup = this.formBuilder.group({
     name: ['My New Library', Validators.required],

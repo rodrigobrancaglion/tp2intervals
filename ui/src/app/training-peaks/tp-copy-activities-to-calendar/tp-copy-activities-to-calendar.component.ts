@@ -9,6 +9,7 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatSelectModule} from "@angular/material/select";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {Platform} from "integration/platform";
+import {ActivitiesTypes} from "integration/activities-types";
 import {MatListModule} from "@angular/material/list";
 import {
   CopyActivitiesToCalendarComponent
@@ -37,14 +38,12 @@ import {
 export class TpCopyActivitiesToCalendarComponent implements OnInit {
   readonly Platform = Platform;
   readonly directions = [
-    {title: "Intervals.icu -> TrainingPeaks", value: Platform.DIRECTION_INT_TP},
     {title: "TrainingPeaks -> Intervals.icu", value: Platform.DIRECTION_TP_INT},
+    {title: "TrainingPeaks -> Strava",        value: Platform.DIRECTION_TP_STRAVA},
+    {title: "Intervals.icu -> TrainingPeaks", value: Platform.DIRECTION_INT_TP},
   ]
-  readonly activitiesTypes = [
-    {title: "RPE", value: "RPE"},
-    {title: "Feel", value: "FEEL"},
-  ]
-  readonly selectedActivitiesTypes = ['RPE', 'FEEL'];
+  readonly activitiesTypes = ActivitiesTypes.activitiesTypes;
+  readonly selectedActivitiesTypes = ['ACTIVITY', 'RPE', 'FEEL'];
 
   constructor() {
   }

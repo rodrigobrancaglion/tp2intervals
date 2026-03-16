@@ -52,8 +52,14 @@ class IntervalsWorkoutRepository(
     }
 
     override fun getWorkoutsFromCalendar(startDate: LocalDate, endDate: LocalDate): List<Workout> {
+        val events = getWorkouts(startDate, endDate)
+        return events
+            .mapNotNull { toEvent(it) }
+    }
+
+    fun getWorkouts(startDate: LocalDate, endDate: LocalDate): List<IntervalsEventDTO> {
         val configuration = intervalsConfigurationRepository.getConfiguration()
-        val events = intervalsWorkoutApiClient.getEvents(
+       return intervalsWorkoutApiClient.getEvents(
             configuration.athleteId,
             startDate.toString(),
             endDate.toString(),
@@ -61,8 +67,6 @@ class IntervalsWorkoutRepository(
             configuration.hrRange,
             configuration.paceRange,
         )
-        return events
-            .mapNotNull { toEvent(it) }
     }
 
     override fun getWorkoutFromLibrary(externalData: ExternalData): Workout {
@@ -79,6 +83,24 @@ class IntervalsWorkoutRepository(
 
     override fun deleteWorkoutsFromCalendar(startDate: LocalDate, endDate: LocalDate) {
         TODO("Not yet implemented")
+    }
+
+    fun updateEventPairedActivity(eventId: Long, activityId: String) {
+        val athleteId = intervalsConfigurationRepository.getConfiguration().athleteId
+        log.info("Updating paired_activity_id for eventId=$eventId with activityId=$activityId")
+        intervalsWorkoutApiClient.updateEvent(
+            athleteId, eventId, EventRequestDTO(
+                start_date_local = null, name = null, category = null, type = null,
+                description = null, moving_time = null, icu_training_load = null,
+                attachments = null, paired_activity_id = activityId
+            )
+        )
+    }
+
+    fun deleteEvent(eventId: Long) {
+        val athleteId = intervalsConfigurationRepository.getConfiguration().athleteId
+        log.info("Deleting event id=$eventId")
+        intervalsWorkoutApiClient.deleteEvent(athleteId, eventId)
     }
 
     private fun toEvent(eventDTO: IntervalsEventDTO): Workout? {

@@ -15,7 +15,7 @@ class ToIntervalsWorkoutConverter(
 ) {
     private val unwantedStepRegex = "^[-*]".toRegex(RegexOption.MULTILINE)
 
-    fun createWorkoutRequestDTO(libraryContainer: LibraryContainer, workout: Workout, athleteProfileDTO: IntervalsAthleteProfileDTO): CreateWorkoutRequestDTO {
+    fun createWorkoutRequestDTO(libraryContainer: LibraryContainer, workout: Workout, athleteProfileDTO: IntervalsAthleteProfileDTO): WorkoutRequestDTO {
         val workoutString = getWorkoutString(workout, athleteProfileDTO)
         var description = getDescription(workout, workoutString)
         val name: String
@@ -28,7 +28,7 @@ class ToIntervalsWorkoutConverter(
 
         val typeTraining = PlatformTrainingMapper.mapTpToIntervals(workout.details)
 
-        val request = CreateWorkoutRequestDTO(
+        val request = WorkoutRequestDTO(
             libraryContainer.externalData.intervalsId.toString(),
             Date.daysDiff(libraryContainer.startDate, workout.date ?: LocalDateTime.now()),
             name,
@@ -42,13 +42,13 @@ class ToIntervalsWorkoutConverter(
         return request
     }
 
-    fun createEventRequestDTO(workout: Workout, athleteProfileDTO: IntervalsAthleteProfileDTO): CreateEventRequestDTO {
+    fun createEventRequestDTO(workout: Workout, athleteProfileDTO: IntervalsAthleteProfileDTO): EventRequestDTO {
         val workoutString = getWorkoutString(workout, athleteProfileDTO)
         val description = getDescription(workout, workoutString)
 
         val typeTraining = PlatformTrainingMapper.mapTpToIntervals(workout.details)
 
-        return CreateEventRequestDTO(
+        return EventRequestDTO(
             (workout.date ?: LocalDateTime.now()).toString(),
             workout.details.name,
             typeTraining.category,
@@ -56,6 +56,8 @@ class ToIntervalsWorkoutConverter(
             description,
             workout.details.duration?.seconds,
             workout.details.tssPlanned,
+            null,
+            null
         )
     }
 

@@ -94,9 +94,10 @@ class TPToWorkoutConverter(
     fun toActivityDomain(tpWorkout: TPBaseWorkoutDTO<TPWorkoutStructureDTO>): Activity {
         return Activity(
             tpWorkout.workoutId,
-            LocalDateTime.now(),
+            tpWorkout.workoutDay,
             tpWorkout.mapType(),
             tpWorkout.title,
+            null,
             null,
             tpWorkout.rpe,
             tpWorkout.feeling,

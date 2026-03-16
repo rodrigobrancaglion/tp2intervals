@@ -14,15 +14,22 @@ class TPAttachmentService(
 
     fun getAttachments(userId: String, workoutId: Long): List<Attachment> {
         if (!attachmentsEnabled) {
-            log.info("Attachments not enabled")
-            return emptyList()
+            log.info("Attachments not enabled, skipping FIT file download for workoutId=$workoutId")
+            return listOf()
         }
 
         val workoutDetails = trainingPeaksWorkoutApiClient.getWorkoutDetails(userId, workoutId)
-        return workoutDetails.attachmentFileInfos
-            .map {
-                val attachment = trainingPeaksWorkoutApiClient.downloadWorkoutAttachment(userId, workoutId, it.fileId)
-                Attachment(it.fileName, attachment)
-            }
+        val fileId = workoutDetails.getFirstFitFileId()
+        val fileName = workoutDetails.getFirstFitFileName()
+
+        if (fileId == null || fileName == null) {
+            log.info("No FIT file found for workoutId=$workoutId")
+            return listOf()
+        }
+
+        log.info("Downloading FIT file for workoutId=$workoutId, fileId=$fileId, fileName=$fileName")
+        val resource = trainingPeaksWorkoutApiClient.downloadWorkoutAttachment(userId, workoutId, fileId)
+        return listOf(Attachment(fileName, resource))
     }
+
 }

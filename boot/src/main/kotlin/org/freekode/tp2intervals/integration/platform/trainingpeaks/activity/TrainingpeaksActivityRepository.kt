@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import org.freekode.tp2intervals.domain.BaseType
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.domain.activity.Activity
+import org.freekode.tp2intervals.integration.fit.FitFileReader
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.user.TrainingPeaksUserRepository
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.TPAttachmentService
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.TPToWorkoutConverter
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.TrainingPeaksWorkoutApiClient
 import org.freekode.tp2intervals.integration.provider.activity.IActivityRepository
@@ -20,6 +22,7 @@ class TrainingpeaksActivityRepository(
     private val trainingPeaksActivityApiClient: TrainingPeaksActivityApiClient,
     private val trainingPeaksUserRepository: TrainingPeaksUserRepository,
     private val tpToWorkoutConverter: TPToWorkoutConverter,
+    private val tpAttachmentService: TPAttachmentService,
 
     objectMapper: ObjectMapper
 
@@ -50,8 +53,23 @@ class TrainingpeaksActivityRepository(
 
         val activities = tpWorkouts
             .filter { it.hasValidActitivy() }
-            .map {
-                tpToWorkoutConverter.toActivityDomain(it)
+            .map { workout ->
+                val activity = tpToWorkoutConverter.toActivityDomain(workout)
+
+                // Try to populate the FIT file resource for upload to ICU
+                val attachments = tpAttachmentService.getAttachments(userId, workout.workoutId)
+                val attachment = attachments.firstOrNull()
+
+                if (attachment != null) {
+                    // Decode the Base64 FIT content and read device product name
+                    val fitBytes = java.util.Base64.getDecoder().decode(attachment.content)
+                    val isGzipped = attachment.name.endsWith(".gz")
+                    val deviceProductName = FitFileReader.readProductName(fitBytes, isGzipped)
+
+                    activity.copy(resource = attachment.content, fileName = attachment.name, deviceProductName = deviceProductName)
+                } else {
+                    activity
+                }
             }
 
         return activities

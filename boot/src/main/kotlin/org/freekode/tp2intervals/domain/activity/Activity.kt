@@ -9,15 +9,19 @@ import java.time.LocalDateTime
 
 data class Activity(
     val workoutId: Long,
-    val startedAt: LocalDateTime,
-    val type: TrainingType,
+    val startedAt: LocalDateTime?,
+    val type: TrainingType?,
     val title: String?,
     val resource: String?,
+    val fileName: String?,
     val rpe: Int?,
     val feel: Int?,
+    val deviceProductName: String? = null,
 ) {
-    fun withResource(resource: Resource) =
-        Activity(workoutId, startedAt, type, title, Base64.encodeToString(resource), null, null)
+    constructor(workoutId: Long, rpe: Int?, feel: Int?) : this(workoutId, null, null, null, null, null, rpe, feel)
+
+    fun withResource(resource: Resource, fileName: String) =
+        Activity(workoutId, startedAt, type, title, Base64.encodeToString(resource), fileName, null, null)
 
     /**
      * Resets metrics based on requested sync types.

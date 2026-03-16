@@ -9,4 +9,6 @@ enum class Platform(
     TRAINING_PEAKS("TrainingPeaks", "training-peaks"),
     TRAINER_ROAD("TrainerRoad", "trainer-road"),
     MYFITNESSPAL("MyFitnessPal", "mfp"),
+    STRAVA("Strava", "strava"),
+
 }

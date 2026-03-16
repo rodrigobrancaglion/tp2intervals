@@ -129,6 +129,32 @@
   </div>
 
   <div>
+    <h2>
+      Strava
+      <a href="https://github.com/freekode/tp2intervals?tab=readme-ov-file#strava" target="_blank">
+        <i class="bi bi-question-circle"
+           matTooltip="How to configure"
+           matTooltipPosition="right"></i>
+      </a>
+    </h2>
+
+    <mat-form-field class="full-width">
+      <mat-label>Strava Client ID</mat-label>
+      <input matInput placeholder="your_client_id" formControlName="strava.client-id">
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Strava Client Secret</mat-label>
+      <input matInput placeholder="your_client_secret" formControlName="strava.client-secret">
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Strava Refresh Token</mat-label>
+      <input matInput placeholder="your_refresh_token" formControlName="strava.refresh-token">
+    </mat-form-field>
+  </div>
+
+  <div>
     <h2>General</h2>
 
     <div class="row">

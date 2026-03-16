@@ -17,6 +17,7 @@ class TrainerRoadActivityMapper {
             Base64.encodeToString(resource),
             null,
             null,
+            null,
         )
     }
 }

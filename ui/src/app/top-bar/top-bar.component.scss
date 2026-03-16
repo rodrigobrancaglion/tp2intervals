@@ -44,10 +44,27 @@
   font-weight: bold;
 }
 
-.content {
-  padding: 0;
-}
-
 .bi-list {
   font-size: 1.5rem;
+}
+
+/* Transforms the content into a vertical flexbox */
+mat-sidenav-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden; /* Prevents scrolling on the Toolbar */
+}
+
+/* The Toolbar stays fixed at the top of the flexbox by default */
+mat-toolbar {
+  flex-shrink: 0; /* Prevents the toolbar from shrinking */
+  z-index: 2;     /* Ensures it stays above the content if necessary */
+}
+
+/* The content div handles the scrolling */
+.content {
+  flex-grow: 1;    /* Occupies all remaining space */
+  overflow-y: auto; /* Enables vertical scroll inside this container */
+  padding: 20px;   /* Adjust according to your needs */
 }

@@ -46,7 +46,7 @@ interface TrainingPeaksWorkoutApiClient {
         @PathVariable workoutId: Long,
     ): TPWorkoutDetailsResponseDTO
 
-    @GetMapping("/fitness/v6/athletes/{userId}/workouts/{workoutId}/attachments/{attachmentId}/raw")
+    @GetMapping("/fitness/v6/athletes/{userId}/workouts/{workoutId}/rawfiledata/{attachmentId}")
     fun downloadWorkoutAttachment(
         @PathVariable userId: String,
         @PathVariable workoutId: Long,

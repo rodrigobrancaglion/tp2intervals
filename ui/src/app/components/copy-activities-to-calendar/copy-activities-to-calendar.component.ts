@@ -48,7 +48,7 @@ export class CopyActivitiesToCalendarComponent implements OnInit {
   readonly tomorrowDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
 
   @Input() activitiesTypes: any[] = []
-  @Input() selectedActivitiesTypes = ['RPE', 'FEEL']
+  @Input() selectedActivitiesTypes = ['ACTIVITY', 'RPE', 'FEEL']
   @Input() directions: any[] = []
   @Input() inProgress = false
 

@@ -13,11 +13,11 @@ class IntervalsWorkoutApiClientMock(
         eventsResponse,
         object : TypeReference<List<IntervalsEventDTO>>() {}) as List<IntervalsEventDTO>
 
-    override fun createWorkouts(athleteId: String, requests: List<CreateWorkoutRequestDTO>) {
+    override fun createWorkouts(athleteId: String, requests: List<WorkoutRequestDTO>) {
         TODO("Not yet implemented")
     }
 
-    override fun createEvent(athleteId: String, createEventRequestDTO: CreateEventRequestDTO) {
+    override fun createEvent(athleteId: String, eventRequestDTO: EventRequestDTO) {
         TODO("Not yet implemented")
     }
 
@@ -30,7 +30,23 @@ class IntervalsWorkoutApiClientMock(
         paceRange: Float
     ): List<IntervalsEventDTO> = events
 
+    override fun getEvents(eventId: String): IntervalsEventDTO {
+        TODO("Not yet implemented")
+    }
+
     override fun createComment(requestDTO: IntervalsEventCommentDTO) {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateEvent(
+        athleteId: String,
+        eventId: Long,
+        requestDTO: EventRequestDTO
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun deleteEvent(athleteId: String, eventId: Long) {
         TODO("Not yet implemented")
     }
 

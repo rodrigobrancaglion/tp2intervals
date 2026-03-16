@@ -5,10 +5,11 @@ export class Platform {
   static TRAINING_PEAKS = {key: 'TRAINING_PEAKS', title: 'TrainingPeaks'}
   static TRAINER_ROAD = {key: 'TRAINER_ROAD', title: 'TrainerRoad'}
   static MYFITNESSPAL = {key: 'MYFITNESSPAL', title: 'MyFitnessPal'}
-  static platforms = [
-    this.INTERVALS, this.TRAINING_PEAKS, this.TRAINER_ROAD, this.MYFITNESSPAL
-  ]
+  static STRAVA = {key: 'STRAVA', title: 'Strava'}
 
+  static platforms = [
+    this.INTERVALS, this.TRAINING_PEAKS, this.TRAINER_ROAD, this.MYFITNESSPAL, this.STRAVA
+  ]
   static DIRECTION_TP_INT = {
     sourcePlatform: this.TRAINING_PEAKS.key, targetPlatform: this.INTERVALS.key
   }
@@ -23,6 +24,9 @@ export class Platform {
   }
   static DIRECTION_MFP_INT = {
     sourcePlatform: this.MYFITNESSPAL.key, targetPlatform: this.INTERVALS.key
+  }
+  static DIRECTION_TP_STRAVA = {
+    sourcePlatform: this.TRAINING_PEAKS.key, targetPlatform: this.STRAVA.key
   }
 
   static getTitle(key) {

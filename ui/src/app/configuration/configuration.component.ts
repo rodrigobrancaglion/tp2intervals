@@ -56,6 +56,9 @@ export class ConfigurationComponent implements OnInit {
     'mfp.remember-me-cookie': [null],
     'mfp.user-id': [null, Validators.required],
     'mfp.username': [null, Validators.required],
+    'strava.client-id': [null],
+    'strava.client-secret': [null],
+    'strava.refresh-token': [null],
     'general.debug-mode': [null, Validators.required],
   });
 
@@ -104,6 +107,15 @@ export class ConfigurationComponent implements OnInit {
       if (!this.formGroup.get('mfp.username')?.value && this.config.mfp_username) {
         this.formGroup.patchValue({ 'mfp.username': this.config.mfp_username });
       }
+      if (!this.formGroup.get('strava.client-id')?.value && this.config.strava_client_id) {
+        this.formGroup.patchValue({ 'strava.client-id': this.config.strava_client_id });
+      }
+      if (!this.formGroup.get('strava.client-secret')?.value && this.config.strava_client_secret) {
+        this.formGroup.patchValue({ 'strava.client-secret': this.config.strava_client_secret });
+      }
+      if (!this.formGroup.get('strava.refresh-token')?.value && this.config.strava_refresh_token) {
+        this.formGroup.patchValue({ 'strava.refresh-token': this.config.strava_refresh_token });
+      }
 
       this.inProgress = false
       this.listenTrainingPeaksCookie()
@@ -119,6 +131,20 @@ export class ConfigurationComponent implements OnInit {
     this.configClient.updateConfig(newConfiguration).pipe(
       finalize(() => this.inProgress = false)
     ).subscribe(() => {
+      // Sync all form fields back to environment so the session reflects the saved values
+      const v = this.formGroup.getRawValue();
+      this.config.intervals_api_key = v['intervals.api-key'] ?? this.config.intervals_api_key;
+      this.config.intervals_athlete_id = v['intervals.athlete-id'] ?? this.config.intervals_athlete_id;
+      this.config.trainingpeaks_auth_cookie = v['training-peaks.auth-cookie'] ?? this.config.trainingpeaks_auth_cookie;
+      this.config.mfp_session_cookie = v['mfp.session-cookie'] ?? this.config.mfp_session_cookie;
+      this.config.mfp_session_token_cookie = v['mfp.session-token-cookie'] ?? this.config.mfp_session_token_cookie;
+      this.config.mfp_remember_me_cookie = v['mfp.remember-me-cookie'] ?? this.config.mfp_remember_me_cookie;
+      this.config.mfp_user_id = v['mfp.user-id'] ?? this.config.mfp_user_id;
+      this.config.mfp_username = v['mfp.username'] ?? this.config.mfp_username;
+      this.config.strava_client_id = v['strava.client-id'] ?? this.config.strava_client_id;
+      this.config.strava_client_secret = v['strava.client-secret'] ?? this.config.strava_client_secret;
+      this.config.strava_refresh_token = v['strava.refresh-token'] ?? this.config.strava_refresh_token;
+
       this.notificationService.success('Configuration successfully saved')
       this.router.navigate(['/home']);
     });

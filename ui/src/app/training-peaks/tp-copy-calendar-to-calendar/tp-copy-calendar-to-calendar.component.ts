@@ -9,6 +9,7 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatSelectModule} from "@angular/material/select";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {Platform} from "integration/platform";
+import {TrainingTypes} from "integration/training-types";
 import {MatListModule} from "@angular/material/list";
 import {
   CopyCalendarToCalendarComponent
@@ -34,27 +35,14 @@ import {
   templateUrl: './tp-copy-calendar-to-calendar.component.html',
   styleUrl: './tp-copy-calendar-to-calendar.component.scss'
 })
-  export class TpCopyCalendarToCalendarComponent implements OnInit {
-    readonly Platform = Platform;
-    readonly directions = [
-      {title: "TrainingPeaks -> Intervals.icu", value: Platform.DIRECTION_TP_INT},
-      {title: "Intervals.icu -> TrainingPeaks", value: Platform.DIRECTION_INT_TP},
-    ]
-    readonly trainingTypes = [
-      {title: "Ride", value: "BIKE"},
-      {title: "Virtual Ride", value: "VIRTUAL_BIKE"},
-      {title: "MTB", value: "MTB"},
-      //{title: "Run", value: "RUN"},
-      //{title: "Swim", value: "SWIM"},
-      {title: "Workout", value: "WORKOUT"},
-      //{title: "Weight/Strength Training", value: "STRENGTH"},
-      //{title: "Walk", value: "WALK"},
-      {title: "Day-off (Notes)", value: "DAY_OFF"},
-      {title: "Brick", value: "BRICK"},
-      {title: "Any other", value: "UNKNOWN"},
-    ]
-    //readonly selectedTrainingTypes = ['BIKE', 'VIRTUAL_BIKE', 'MTB', 'RUN', 'DAY_OFF', 'BRICK'];
-    readonly selectedTrainingTypes = ['BIKE', 'VIRTUAL_BIKE', "MTB", 'DAY_OFF', 'BRICK'];
+export class TpCopyCalendarToCalendarComponent implements OnInit {
+  readonly Platform = Platform;
+  readonly directions = [
+    { title: "TrainingPeaks -> Intervals.icu", value: Platform.DIRECTION_TP_INT },
+    { title: "Intervals.icu -> TrainingPeaks", value: Platform.DIRECTION_INT_TP },
+  ]
+  readonly trainingTypes = TrainingTypes.trainingTypes;
+  readonly selectedTrainingTypes = ['BIKE', 'VIRTUAL_BIKE', "MTB", 'DAY_OFF', 'BRICK'];
 
   constructor() {
   }

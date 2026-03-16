@@ -44,6 +44,7 @@ dependencies {
 
     implementation(group = "org.ehcache", name = "ehcache", classifier = "jakarta")
     implementation("org.jsoup:jsoup:1.18.3")
+    implementation("com.garmin:fit:21.194.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")

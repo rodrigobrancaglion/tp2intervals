@@ -48,3 +48,23 @@ npm run build:unpack
 echo "-------------------------------------------------------"
 echo "Build Finalizado! O app atualizado está em: electron/dist/mac-arm64/tp2intervals.app"
 echo "-------------------------------------------------------"
+
+# 5. Instalar na pasta de Aplicativos do Mac
+APP_NAME="tp2intervals.app"
+APP_PATH="$ELECTRON_DIR/dist/mac-arm64/$APP_NAME"
+DEST_PATH="/Applications/$APP_NAME"
+
+echo "Instalando na pasta de Aplicativos..."
+
+if [ -d "$APP_PATH" ]; then
+    # Remove a versão antiga se existir para garantir uma cópia limpa
+    rm -rf "$DEST_PATH"
+    cp -R "$APP_PATH" "/Applications/"
+    echo "✅ Sucesso! O app foi copiado para /Applications"
+
+    # Opcional: Abre o aplicativo após a cópia
+    # open "$DEST_PATH"
+else
+    echo "❌ ERRO: O arquivo .app não foi encontrado em $APP_PATH"
+    exit 1
+fi

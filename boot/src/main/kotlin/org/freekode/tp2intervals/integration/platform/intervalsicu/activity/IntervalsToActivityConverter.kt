@@ -15,6 +15,7 @@ class IntervalsToActivityConverter
             activityDTO.mapType(),
             activityDTO.name,
             null,
+            null,
             activityDTO.icu_rpe,
             activityDTO.feel,
         )
@@ -23,23 +24,21 @@ class IntervalsToActivityConverter
     /**
      * Converts a domain Activity to an IntervalsActivityDTO based on allowed update types.
      */
-    fun toDTO(activityDTO: Activity, types: List<BaseType>): IntervalsActivityDTO {
+    fun toDTO(activityDTO: Activity, types: List<BaseType>?): IntervalsActivityDTO {
+        val safeTypes = types ?: emptyList()
+
         // Check if RPE should be updated, otherwise default to 1
-        val rpe = if (types.containsType(ActivityType.RPE)) {
-            activityDTO.rpe
-        } else {
-            1
-        }
+        val rpe = if (ActivityType.RPE in safeTypes) activityDTO.rpe else 1
 
         // Check if FEEL should be updated, performing scale conversion if necessary
-        val feel = if (types.containsType(ActivityType.FEEL)) {
+        val feel = if (ActivityType.FEEL in safeTypes) {
             val feelingType = TPTrainingFeelingMapper.getByTPValue(activityDTO.feel)
             TPTrainingFeelingMapper.getICUValue(feelingType)
         } else {
             3
         }
 
-        return IntervalsActivityDTO(rpe, feel)
+        return IntervalsActivityDTO(activityDTO.workoutId, rpe, feel)
     }
 
     /**
