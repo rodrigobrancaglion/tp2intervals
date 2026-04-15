@@ -1,5 +1,6 @@
 package org.freekode.tp2intervals.integration.platform.trainerroad.activity
 
+import org.freekode.tp2intervals.aspect.LogRepository
 import org.freekode.tp2intervals.domain.BaseType
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.domain.activity.Activity
@@ -20,6 +21,7 @@ class TrainerRoadActivityRepository(
         TODO("Not yet implemented")
     }
 
+    @LogRepository
     override fun getActivities(startDate: LocalDate, endDate: LocalDate): List<Activity> {
         val username = trUsernameRepository.getUsername()
         return trainerRoadApiClientService.getActivities(username, startDate, endDate)

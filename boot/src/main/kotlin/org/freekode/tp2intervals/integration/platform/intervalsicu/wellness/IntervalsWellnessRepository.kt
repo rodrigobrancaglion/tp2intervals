@@ -3,6 +3,7 @@ package org.freekode.tp2intervals.integration.platform.intervalsicu.wellness
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.domain.wellness.Wellness
 import org.freekode.tp2intervals.integration.platform.intervalsicu.configuration.IntervalsConfigurationRepository
+import org.freekode.tp2intervals.integration.platform.intervalsicu.wellness.dto.IntervalsWellnessDTO
 import org.freekode.tp2intervals.integration.provider.wellness.IWellnessRepository
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
@@ -35,6 +36,14 @@ class IntervalsWellnessRepository(
     override fun saveToCalendar(wellnesses: List<Wellness?>, startDate: LocalDate, endDate: LocalDate) {
         val athleteId = intervalsConfigurationRepository.getConfiguration().athleteId
 
+        wellnesses.filterNotNull().forEach { wellness ->
+            val wellnessDate = LocalDate.parse(wellness.date)
+            if (!wellnessDate.isBefore(startDate) && !wellnessDate.isAfter(endDate)) {
+                updateWellness(athleteId, wellness)
+            }
+        }
+
+/*
         // Create a map for quick lookup of existing data by date
         val wellnessMap = wellnesses.filterNotNull().associateBy { it.date?.take(10) ?: "" }
 
@@ -52,7 +61,7 @@ class IntervalsWellnessRepository(
             }
 
             currentDate = currentDate.plusDays(1)
-        }
+        */
     }
 
     /**

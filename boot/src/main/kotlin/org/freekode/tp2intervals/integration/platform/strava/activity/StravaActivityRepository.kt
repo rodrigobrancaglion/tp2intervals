@@ -1,5 +1,6 @@
 package org.freekode.tp2intervals.integration.platform.strava.activity
 
+import org.freekode.tp2intervals.aspect.LogRepository
 import org.freekode.tp2intervals.domain.BaseType
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.domain.activity.Activity
@@ -25,6 +26,7 @@ class StravaActivityRepository(
 
     override fun platform() = Platform.STRAVA
 
+    @LogRepository
     override fun saveActivities(activities: List<Activity>, types: List<BaseType>) {
         activities.forEach { activity ->
             try {
@@ -34,9 +36,28 @@ class StravaActivityRepository(
                 }
                 uploadToStrava(activity)
             } catch (e: Exception) {
-                log.error("Error uploading activity workoutId=${activity.workoutId} to Strava", e)
+                log.error("Strava - Error uploading activity ${activity.workoutId} : ${e.message}", e)
             }
         }
+    }
+
+    fun uploadDirectFit(fitBytes: ByteArray, name: String) {
+        val fileName = "${name.replace(" ", "_")}.fit"
+        val multipart = ByteArrayMultipartFile(fitBytes, fileName)
+        val finalName = if (name.startsWith("ROUVY")) name else "ROUVY | $name"
+
+        log.info("Uploading direct FIT to Strava: name=$finalName")
+
+        val uploadResponse = stravaActivityUploadClient.createUpload(
+            file = multipart,
+            dataType = "fit",
+            name = finalName,
+            description = "Synced from Rouvy via Antigravity Automation",
+            externalId = null,
+        )
+
+        log.info("Strava direct upload queued: uploadId=${uploadResponse.id}, status=${uploadResponse.status}")
+        // We don't necessarily need to poll here for automated sync, just fire and forget if it queued
     }
 
     /**
@@ -51,8 +72,7 @@ class StravaActivityRepository(
         val multipart = ByteArrayMultipartFile(fitBytes, fileName)
 
         // Use title as name; Rouvy route enrichment is commented out pending Rouvy public API
-        val finalName = "ROUVY | $originalTitle"
-//        val finalName = getRouteName(fileName) ?: originalTitle
+        val finalName = if (originalTitle.startsWith("ROUVY")) originalTitle else "ROUVY | $originalTitle"
 
         log.info("Uploading to Strava: workoutId=${activity.workoutId}, fileName=$fileName, dataType=$dataType, device=${activity.deviceProductName}, description=$finalName")
 
@@ -60,7 +80,7 @@ class StravaActivityRepository(
             file = multipart,
             dataType = dataType,
             name = finalName,
-            description = originalTitle,
+            description = activity.description,
             externalId = activity.workoutId.toString(),
         )
 
@@ -96,20 +116,10 @@ class StravaActivityRepository(
         log.warn("Strava upload polling timed out for uploadId=$uploadId after $maxPollAttempts attempts")
     }
 
+    @LogRepository
     override fun getActivities(startDate: LocalDate, endDate: LocalDate): List<Activity> {
         // Strava is write-only in this context — activities come from TP
         return emptyList()
     }
 
-    private fun getRouteName(fileName: String): String?{
-        return null
-        // Extrai o ID: remove .gz primeiro, depois remove .fit
-        // Ex: "260319164706-96942331.fit.gz" -> "260319164706-96942331"
-//        if (fileName.contains("-")) {
-//            val routeName = rouvyMetadataService.getRouteName(fileName)
-//            if (!routeName.isNullOrBlank()) {
-//                return routeName // Ex: "Challenge Sanremo | Italy"
-//            }
-//        }
-    }
 }

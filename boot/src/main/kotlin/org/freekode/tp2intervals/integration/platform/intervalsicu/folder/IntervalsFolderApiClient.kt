@@ -1,6 +1,8 @@
 package org.freekode.tp2intervals.integration.platform.intervalsicu.folder
 
 import org.freekode.tp2intervals.integration.platform.intervalsicu.IntervalsApiClientConfig
+import org.freekode.tp2intervals.integration.platform.intervalsicu.folder.dto.CreateFolderRequestDTO
+import org.freekode.tp2intervals.integration.platform.intervalsicu.folder.dto.FolderDTO
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.*
 

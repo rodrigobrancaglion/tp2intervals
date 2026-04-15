@@ -44,11 +44,12 @@ import {WellnessClient} from "integration/client/wellness.client";
 })
 export class CopyWellnessToCalendarComponent implements OnInit {
   readonly Platform = Platform;
-  readonly todayDate = new Date()
-  readonly tomorrowDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
+  readonly todayDate = new Date(new Date().getTime() - 24 * 60 * 60 * 1000)
+  readonly tomorrowDate = new Date()
 
+  @Input() currentPlatform: any = undefined;
   @Input() wellnessTypes: any[] = []
-  @Input() selectedWellnessTypes = ['WEIGHT', 'CALORIES', 'CARBOHYDRATES', 'PROTEIN', 'FAT']
+  @Input() selectedWellnessTypes: string[] = [];
   @Input() directions: any[] = []
   @Input() inProgress = false
 
@@ -82,19 +83,15 @@ export class CopyWellnessToCalendarComponent implements OnInit {
     this.copyWellnessForOneDay(formatDate(this.todayDate));
   }
 
-  tomorrow() {
-    this.copyWellnessForOneDay(formatDate(this.tomorrowDate));
-  }
-
   scheduleToday() {
+    const platformKey = this.currentPlatform?.key || this.currentPlatform;
     let startDate = null
     let endDate = null
     let direction = this.formGroup.value.direction
     let wellnessTypes = this.formGroup.value.wellnessTypes
-    let skipSynced = true
 
     this.inProgress = true
-    this.wellnessClient.scheduleCopyCalendarToCalendar(startDate, endDate, wellnessTypes, skipSynced, direction).pipe(
+    this.wellnessClient.scheduleCopyCalendarToCalendar(startDate, endDate, wellnessTypes, direction, platformKey).pipe(
       switchMap(() => this.loadScheduleRequests()),
       finalize(() => this.inProgress = false)
     ).subscribe(() => {
@@ -113,10 +110,9 @@ export class CopyWellnessToCalendarComponent implements OnInit {
   private copyWellness(startDate, endDate) {
     let direction = this.formGroup.value.direction
     let wellnessTypes = this.formGroup.value.wellnessTypes
-    let skipSynced = true
 
     this.inProgress = true
-    this.wellnessClient.copyCalendarToCalendar(startDate, endDate, wellnessTypes, skipSynced, direction).pipe(
+    this.wellnessClient.copyCalendarToCalendar(startDate, endDate, wellnessTypes, direction).pipe(
       finalize(() => this.inProgress = false)
     ).subscribe((response) => {
       this.notificationService.success(
@@ -130,12 +126,13 @@ export class CopyWellnessToCalendarComponent implements OnInit {
       wellnessTypes: [this.selectedWellnessTypes, Validators.required],
       startDate: [this.todayDate, Validators.required],
       endDate: [this.tomorrowDate, Validators.required],
-      skipSynced: [true, Validators.required],
     })
   }
 
   private loadScheduleRequests() {
-    return this.wellnessClient.getScheduleRequests().pipe(
+    const platformKey = this.currentPlatform?.key || this.currentPlatform;
+
+    return this.wellnessClient.getScheduleRequests(platformKey).pipe(
       tap(values => {
           this.scheduleRequests = values.map(value => {
             return {id: value.id, request: JSON.parse(value.requestJson)}

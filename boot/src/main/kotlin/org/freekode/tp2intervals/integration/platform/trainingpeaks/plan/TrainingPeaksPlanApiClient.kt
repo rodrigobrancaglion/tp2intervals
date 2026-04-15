@@ -1,6 +1,9 @@
 package org.freekode.tp2intervals.integration.platform.trainingpeaks.plan
 
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.TrainingPeaksApiClientConfig
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.plan.dto.ApplyTPPlanRequestDTO
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.plan.dto.ApplyTPPlanResponseDTO
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.plan.dto.TPPlanDTO
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable

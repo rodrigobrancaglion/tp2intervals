@@ -2,7 +2,8 @@ package org.freekode.tp2intervals.integration.platform.trainingpeaks.metrics
 
 import org.freekode.tp2intervals.domain.WellnessType
 import org.freekode.tp2intervals.domain.wellness.Wellness
-import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.TPMetricsTypeMapper
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.mapper.TPMetricsTypeMapper
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.metrics.dto.TPMetricsDTO
 
 class TPMetricsConverter {
 

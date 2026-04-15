@@ -27,6 +27,8 @@ import {MatListModule} from "@angular/material/list";
 export class MyFitnessPalComponent implements OnInit {
   platformInfo: any = undefined;
 
+  readonly menuPlatform = Platform.MYFITNESSPAL;
+
   constructor(
     private configurationClient: ConfigurationClient
   ) {
@@ -36,5 +38,6 @@ export class MyFitnessPalComponent implements OnInit {
     this.configurationClient.platformInfo(Platform.MYFITNESSPAL.key).subscribe(value => {
     this.platformInfo = value
   })
+
   }
 }

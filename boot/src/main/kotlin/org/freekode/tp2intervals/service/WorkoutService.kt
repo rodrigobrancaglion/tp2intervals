@@ -1,5 +1,6 @@
 package org.freekode.tp2intervals.service
 
+import org.freekode.tp2intervals.aspect.LogService
 import org.freekode.tp2intervals.domain.ExternalData
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.domain.workout.WorkoutDetails
@@ -10,7 +11,6 @@ import org.freekode.tp2intervals.dto.workout.CopyWorkoutsResponse
 import org.freekode.tp2intervals.dto.workout.DeleteWorkoutRequest
 import org.freekode.tp2intervals.integration.provider.librarycontainer.ILibraryContainerRepository
 import org.freekode.tp2intervals.integration.provider.workout.IWorkoutRepository
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
@@ -19,12 +19,11 @@ class WorkoutService(
     workoutRepositories: List<IWorkoutRepository>,
     planRepositories: List<ILibraryContainerRepository>,
 ) {
-    private val log = LoggerFactory.getLogger(this.javaClass)
     private val workoutRepositoryMap = workoutRepositories.associateBy { it.platform() }
     private val planRepositoryMap = planRepositories.associateBy { it.platform() }
 
+    @LogService
     fun copyWorkoutsC2C(request: CopyC2CRequest): CopyWorkoutsResponse {
-        log.info("Received request for copy calendar to calendar: $request")
         val sourceWorkoutRepository = workoutRepositoryMap[request.sourcePlatform]!!
         val targetWorkoutRepository = workoutRepositoryMap[request.targetPlatform]!!
 
@@ -42,15 +41,14 @@ class WorkoutService(
             allWorkoutsToSync.size - filteredWorkoutsToSync.size,
             request.startDate,
             request.endDate,
-            ExternalData.empty() // TODO figure smth better
+            ExternalData.empty()
         )
         targetWorkoutRepository.saveWorkoutsToCalendar(filteredWorkoutsToSync)
-        log.info("Saved workouts to calendar successfully: $response")
         return response
     }
 
+    @LogService
     fun copyWorkoutsC2L(request: CopyC2LRequest): CopyWorkoutsResponse {
-        log.info("Received request for copy calendar to library: $request")
         val sourceWorkoutRepository = workoutRepositoryMap[request.sourcePlatform]!!
         val targetWorkoutRepository = workoutRepositoryMap[request.targetPlatform]!!
         val targetPlanRepository = planRepositoryMap[request.targetPlatform]!!
@@ -60,6 +58,7 @@ class WorkoutService(
 
         val newPlan = targetPlanRepository.createLibraryContainer(request.name, request.isPlan, request.startDate)
         targetWorkoutRepository.saveWorkoutsToLibrary(newPlan, filteredWorkouts)
+
         return CopyWorkoutsResponse(
             filteredWorkouts.size,
             allWorkouts.size - filteredWorkouts.size,
@@ -69,8 +68,8 @@ class WorkoutService(
         )
     }
 
+    @LogService
     fun copyWorkoutL2L(request: CopyL2LRequest): CopyWorkoutsResponse {
-        log.info("Received request for copy library to library: $request")
         val sourceWorkoutRepository = workoutRepositoryMap[request.sourcePlatform]!!
         val targetWorkoutRepository = workoutRepositoryMap[request.targetPlatform]!!
 
@@ -79,13 +78,13 @@ class WorkoutService(
         return CopyWorkoutsResponse(1, 0, LocalDate.now(), LocalDate.now(), request.targetLibraryContainer.externalData)
     }
 
+    @LogService
     fun findWorkoutsByName(platform: Platform, name: String): List<WorkoutDetails> {
-        log.info("Received request for find workouts by name, platform: $platform, name: $name")
         return workoutRepositoryMap[platform]!!.findWorkoutsFromLibraryByName(name)
     }
 
+    @LogService
     fun deleteWorkoutsFromCalendar(request: DeleteWorkoutRequest) {
-        log.info("Received request to delete workouts from calendar: $request")
         val workoutRepository = workoutRepositoryMap[request.platform]!!
         workoutRepository.deleteWorkoutsFromCalendar(request.startDate, request.endDate)
     }

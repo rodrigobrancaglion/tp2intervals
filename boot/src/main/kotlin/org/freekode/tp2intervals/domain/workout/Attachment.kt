@@ -8,4 +8,8 @@ data class Attachment(
     val content: String,
 ) {
     constructor(name: String, resource: Resource) : this(name, Base64.encodeToString(resource))
+
+    override fun toString(): String {
+        return "Attachment(name='$name')"
+    }
 }

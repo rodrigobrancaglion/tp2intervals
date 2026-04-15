@@ -11,24 +11,25 @@ export class WellnessClient {
   constructor(private httpClient: HttpClient) {
   }
 
-  copyCalendarToCalendar(startDate, endDate, types, skipSynced, platformDirection): Observable<any> {
+  copyCalendarToCalendar(startDate, endDate, types, platformDirection): Observable<any> {
     return this.httpClient
-      .post(`/api/wellness/copy-calendar-to-calendar`, {startDate, endDate, types, skipSynced, ...platformDirection})
+      .post(`/api/wellness/copy-calendar-to-calendar`,
+        {startDate, endDate, types, ...platformDirection}
+      )
   }
 
-  scheduleCopyCalendarToCalendar(startDate, endDate, types, skipSynced, platformDirection): Observable<any> {
+  scheduleCopyCalendarToCalendar(startDate, endDate, types, platformDirection, currentPlatform): Observable<any> {
     return this.httpClient
-      .post(`/api/wellness/copy-calendar-to-calendar/schedule`, {
-        startDate,
-        endDate,
-        types,
-        skipSynced,
-        ...platformDirection
-      })
+      .post(`/api/wellness/copy-calendar-to-calendar/schedule`,
+        {startDate, endDate, types, ...platformDirection},
+        {params: {platform: currentPlatform}}
+      )
   }
 
-  getScheduleRequests(): Observable<any> {
-    return this.httpClient.get(`/api/wellness/copy-calendar-to-calendar/schedule`)
+  getScheduleRequests(platform: string): Observable<any> {
+    return this.httpClient.get(`/api/wellness/copy-calendar-to-calendar/schedule`,
+      {params: {platform: platform}}
+    )
   }
 
   deleteScheduleRequest(id: any) {

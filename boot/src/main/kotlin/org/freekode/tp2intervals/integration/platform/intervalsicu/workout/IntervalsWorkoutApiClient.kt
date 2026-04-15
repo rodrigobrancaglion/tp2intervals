@@ -1,6 +1,10 @@
 package org.freekode.tp2intervals.integration.platform.intervalsicu.workout
 
 import org.freekode.tp2intervals.integration.platform.intervalsicu.IntervalsApiClientConfig
+import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.dto.EventRequestDTO
+import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.dto.IntervalsEventCommentDTO
+import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.dto.IntervalsEventDTO
+import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.dto.WorkoutRequestDTO
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.*
 

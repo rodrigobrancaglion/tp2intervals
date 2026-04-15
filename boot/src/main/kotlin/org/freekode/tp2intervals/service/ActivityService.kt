@@ -1,22 +1,20 @@
 package org.freekode.tp2intervals.service
 
+import org.freekode.tp2intervals.aspect.LogService
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.dto.CopyC2CRequest
 import org.freekode.tp2intervals.dto.activity.CopyActivitiesResponse
 import org.freekode.tp2intervals.integration.provider.activity.IActivityRepository
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
 class ActivityService(
     repositories: List<IActivityRepository>
 ) {
-    private val log = LoggerFactory.getLogger(this.javaClass)
-
     private val repositoryMap = repositories.associateBy { it.platform() }
 
+    @LogService
     fun syncActivities(request: CopyC2CRequest): CopyActivitiesResponse {
-        log.info("Sync activities by request $request")
         val sourceActivityRepository = getRepository(request.sourcePlatform)
         val targetActivityRepository = getRepository(request.targetPlatform)
 

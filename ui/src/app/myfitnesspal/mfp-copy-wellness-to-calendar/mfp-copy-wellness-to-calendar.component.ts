@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -10,6 +10,7 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {Platform} from "integration/platform";
 import {MatListModule} from "@angular/material/list";
+import {WellnessTypes} from "integration/wellness-types";
 import {
   CopyWellnessToCalendarComponent
 } from "app/components/copy-wellness-to-calendar/copy-wellness-to-calendar.component";
@@ -35,18 +36,15 @@ import {
   styleUrl: './mfp-copy-wellness-to-calendar.component.scss'
 })
 export class MfpCopyWellnessToCalendarComponent implements OnInit {
+  @Input() currentPlatform: any = undefined;
+
   readonly Platform = Platform;
   readonly directions = [
     {title: "MyFitnessPal -> Intervals.icu", value: Platform.DIRECTION_MFP_INT},
   ]
-  readonly wellnessTypes = [
-    {title: "Weight", value: "WEIGHT"},
-    {title: "Calories", value: "CALORIES"},
-    {title: "Carbohydrates", value: "CARBOHYDRATES"},
-    {title: "Protein", value: "PROTEIN"},
-    {title: "Fat", value: "FAT"},
-  ]
-  readonly selectedWellnessTypes = ['WEIGHT', 'CALORIES', 'CARBOHYDRATES', 'PROTEIN', 'FAT']
+
+  readonly wellnessTypes = WellnessTypes.wellnessTypes
+  readonly selectedWellnessTypes = WellnessTypes.wellnessTypes.map(t => t.value);
 
   constructor() {
   }

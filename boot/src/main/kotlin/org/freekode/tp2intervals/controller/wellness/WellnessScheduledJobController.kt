@@ -10,15 +10,19 @@ class WellnessScheduledJobController(
     private val scheduledJob: ScheduledJobService
 ) {
     @PostMapping("/api/wellness/copy-calendar-to-calendar/schedule")
-    fun scheduleC2CTodayRequest(@RequestBody request: C2CTodayScheduledRequest) {
-        scheduledJob.addRequest(request)
+    fun scheduleC2CTodayRequest(
+        @RequestParam platform: String,
+        @RequestBody request: C2CTodayScheduledRequest
+    ) {
+        scheduledJob.addRequest(request, platform)
     }
 
     @GetMapping("/api/wellness/copy-calendar-to-calendar/schedule")
-    fun getScheduleRequests() =
-        scheduledJob.getRequests<WellnessType>()
+    fun getScheduleRequests(@RequestParam platform: String) =
+        scheduledJob.getRequests<WellnessType>(platform)
 
     @DeleteMapping("/api/wellness/copy-calendar-to-calendar/schedule/{id}")
     fun deleteScheduleRequest(@PathVariable id: Int) =
         scheduledJob.deleteRequest(id)
 }
+

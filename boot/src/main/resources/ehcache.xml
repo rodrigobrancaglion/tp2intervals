@@ -62,7 +62,7 @@
             <ttl unit="minutes">10</ttl>
         </expiry>
         <resources>
-            <offheap unit="MB">10</offheap>
+            <offheap unit="MB">1</offheap>
         </resources>
     </cache>
 
@@ -73,7 +73,7 @@
             <ttl unit="minutes">10</ttl>
         </expiry>
         <resources>
-            <offheap unit="MB">10</offheap>
+            <offheap unit="MB">1</offheap>
         </resources>
     </cache>
 

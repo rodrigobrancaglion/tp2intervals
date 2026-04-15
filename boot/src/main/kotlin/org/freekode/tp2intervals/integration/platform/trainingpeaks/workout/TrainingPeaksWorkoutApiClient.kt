@@ -1,6 +1,7 @@
 package org.freekode.tp2intervals.integration.platform.trainingpeaks.workout
 
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.TrainingPeaksApiClientConfig
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.dto.*
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.core.io.Resource
 import org.springframework.web.bind.annotation.*

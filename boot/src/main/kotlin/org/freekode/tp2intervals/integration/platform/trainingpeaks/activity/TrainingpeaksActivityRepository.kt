@@ -2,15 +2,17 @@ package org.freekode.tp2intervals.integration.platform.trainingpeaks.activity
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
+import org.freekode.tp2intervals.aspect.LogRepository
 import org.freekode.tp2intervals.domain.BaseType
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.domain.activity.Activity
-import org.freekode.tp2intervals.integration.fit.FitFileReader
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.user.TrainingPeaksUserRepository
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.TPAttachmentService
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.TPToWorkoutConverter
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.TrainingPeaksWorkoutApiClient
 import org.freekode.tp2intervals.integration.provider.activity.IActivityRepository
+import org.freekode.tp2intervals.integration.utils.FitFileReader
+import org.slf4j.LoggerFactory
 import org.springframework.cache.annotation.CacheConfig
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
@@ -29,24 +31,60 @@ class TrainingpeaksActivityRepository(
 ) : IActivityRepository {
     override fun platform() = Platform.TRAINING_PEAKS
 
+    private val log = LoggerFactory.getLogger(this.javaClass)
+
+
     private val tpMapper = objectMapper.copy().apply {
         nodeFactory = JsonNodeFactory(false)
     }
 
+    @LogRepository
     override fun saveActivities(activities: List<Activity>, types: List<BaseType>) {
         val athleteId = trainingPeaksUserRepository.getUser().userId
         activities.forEach { activity ->
-            val workoutDTO = trainingPeaksWorkoutApiClient.getWorkout(athleteId, activity.workoutId)
-
-            val newActivityDTO = tpToWorkoutConverter.convertToPutRequest(activity, workoutDTO, types)
-
-            val jsonString = tpMapper.writeValueAsString(newActivityDTO)
-            val finalJson = jsonString.replace(".0,", ",").replace(".0]", "]")
-
-            trainingPeaksActivityApiClient.updateActivity(athleteId, newActivityDTO.workoutId, finalJson)
+            try {
+                if (activity.resource != null) {
+                    // Rouvy (or other source) has a .fit file — upload it directly to TP
+                    uploadDirectFit(athleteId, activity)
+                } else {
+                    // No .fit: update RPE/Feel on an existing TP workout
+                    val workoutDTO = trainingPeaksWorkoutApiClient.getWorkout(athleteId, activity.workoutId)
+                    val newActivityDTO = tpToWorkoutConverter.convertToPutRequest(activity, workoutDTO, types)
+                    val jsonString = tpMapper.writeValueAsString(newActivityDTO)
+                    val finalJson = jsonString.replace(".0,", ",").replace(".0]", "]")
+                    trainingPeaksActivityApiClient.updateActivity(athleteId, newActivityDTO.workoutId, finalJson)
+                }
+            } catch (e: Exception) {
+                log.error("TrainingPeaks - Error saving activity ${activity.workoutId} : ${e.message}", e)
+            }
         }
     }
 
+    private fun uploadDirectFit(userId: String, activity: Activity) {
+        val fileName = activity.fileName ?: "activity_${activity.workoutId}.fit"
+
+        // 1. Formatar a data para yyyy-MM-dd
+        val workoutDay = activity.startedAt?.toString() ?: LocalDate.now().toString()
+
+        // 2. Montar o objeto conforme a request que você identificou
+        val uploadRequest = TrainingPeaksUploadRequest(
+            workoutDay = workoutDay,
+            data = activity.resource.toString(),
+            fileName = fileName,
+            uploadClient = "TP Web App"
+        )
+
+        log.info("Uploading JSON Base64 to TrainingPeaks: fileName=$fileName")
+
+        try {
+            trainingPeaksActivityApiClient.uploadActivity(userId, uploadRequest)
+            log.info("TrainingPeaks - Successfully uploaded activity")
+        } catch (e: Exception) {
+            log.error("TrainingPeaks - Error uploading: ${e.message}", e)
+        }
+    }
+
+    @LogRepository
     override fun getActivities(startDate: LocalDate, endDate: LocalDate): List<Activity> {
         val userId = trainingPeaksUserRepository.getUser().userId
         val tpWorkouts = trainingPeaksWorkoutApiClient.getWorkouts(userId, startDate.toString(), endDate.toString())

@@ -3,6 +3,7 @@ package org.freekode.tp2intervals.integration.platform.intervalsicu.workout
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.domain.workout.structure.StepTarget
 import org.freekode.tp2intervals.integration.PlatformException
+import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.dto.IntervalsWorkoutDocDTO
 
 class IntervalsToTargetConverter(
     private val ftp: Double?,

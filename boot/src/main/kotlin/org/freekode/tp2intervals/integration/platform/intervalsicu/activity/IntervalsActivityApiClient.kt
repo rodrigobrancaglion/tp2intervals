@@ -1,6 +1,8 @@
 package org.freekode.tp2intervals.integration.platform.intervalsicu.activity
 
 import org.freekode.tp2intervals.integration.platform.intervalsicu.IntervalsApiClientConfig
+import org.freekode.tp2intervals.integration.platform.intervalsicu.activity.dto.IntervalsActivityDTO
+import org.freekode.tp2intervals.integration.platform.intervalsicu.activity.dto.IntervalsActivityResponseDTO
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
@@ -22,17 +24,18 @@ interface IntervalsActivityApiClient {
         @PathVariable("endDate") endDate: String,
     ): List<IntervalsActivityDTO>
 
-    @PostMapping("/api/v1/athlete/{athleteId}/activities?name={name}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @PostMapping("/api/v1/athlete/{athleteId}/activities?name={name}&description{description}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun createActivity(
         @PathVariable athleteId: String,
         @PathVariable name: String,
+        @PathVariable description: String,
         @RequestPart("file") file: MultipartFile
-    ): ActivityResponseDTO
+    ): IntervalsActivityResponseDTO
 
     @PutMapping("/api/v1/activity/{idActivity}")
     fun updateActivity(
         @PathVariable idActivity: String,
         @RequestBody requestDTO: IntervalsActivityDTO
-    ): IntervalsActivityDTO
+    ): String
 
 }

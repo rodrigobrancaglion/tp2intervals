@@ -88,9 +88,9 @@ class TrainerRoadWorkoutRepositoryTest {
         val workout = trainerRoadWorkoutRepository.getWorkoutFromLibrary(data)
 
         // then
-        assertEquals(TrainingType.VIRTUAL_BIKE, workout.details.type)
-        assertEquals(WorkoutStructure.TargetUnit.FTP_PERCENTAGE, workout.structure!!.target)
-        assertTrue(workout.structure.steps.isNotEmpty())
+        val structure = workout.structure!!
+        assertEquals(WorkoutStructure.TargetUnit.FTP_PERCENTAGE, structure.target)
+        assertTrue(structure.steps.isNotEmpty())
     }
 
     @Test

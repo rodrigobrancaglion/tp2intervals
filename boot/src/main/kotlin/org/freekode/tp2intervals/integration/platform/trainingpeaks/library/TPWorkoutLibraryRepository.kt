@@ -3,6 +3,7 @@ package org.freekode.tp2intervals.integration.platform.trainingpeaks.library
 import org.freekode.tp2intervals.domain.ExternalData
 import org.freekode.tp2intervals.domain.librarycontainer.LibraryContainer
 import org.freekode.tp2intervals.domain.workout.Workout
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.library.dto.TPWorkoutLibraryDTO
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.TPToWorkoutConverter
 import org.freekode.tp2intervals.integration.utils.Date
 import org.slf4j.LoggerFactory

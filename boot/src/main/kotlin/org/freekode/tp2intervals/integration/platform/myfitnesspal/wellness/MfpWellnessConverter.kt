@@ -1,6 +1,7 @@
 package org.freekode.tp2intervals.integration.platform.myfitnesspal.wellness
 
 import org.freekode.tp2intervals.domain.wellness.Wellness
+import org.freekode.tp2intervals.integration.platform.myfitnesspal.wellness.dto.MfpNutritionDTO
 
 class MfpWellnessConverter(private val dto: MfpNutritionDTO) {
 

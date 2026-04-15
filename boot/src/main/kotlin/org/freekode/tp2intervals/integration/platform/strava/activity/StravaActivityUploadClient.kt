@@ -1,5 +1,7 @@
 package org.freekode.tp2intervals.integration.platform.strava.activity
 
+import org.freekode.tp2intervals.integration.platform.strava.activity.dto.StravaActivityUploadResponseDTO
+import org.freekode.tp2intervals.integration.platform.strava.activity.dto.StravaActivityUploadStatusResponseDTO
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -25,8 +27,8 @@ interface StravaActivityUploadClient {
         @RequestPart("name") name: String,
         @RequestPart("description") description: String?,
         @RequestPart("external_id") externalId: String?,
-    ): ActivityUploadResponseDTO
+    ): StravaActivityUploadResponseDTO
 
     @GetMapping("/uploads/{uploadId}")
-    fun getUploadStatus(@PathVariable uploadId: Long): ActivityUploadStatusResponseDTO
+    fun getUploadStatus(@PathVariable uploadId: Long): StravaActivityUploadStatusResponseDTO
 }

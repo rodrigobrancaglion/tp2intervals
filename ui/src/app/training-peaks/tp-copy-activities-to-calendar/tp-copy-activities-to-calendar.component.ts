@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -36,6 +36,8 @@ import {
   styleUrl: './tp-copy-activities-to-calendar.component.scss'
 })
 export class TpCopyActivitiesToCalendarComponent implements OnInit {
+  @Input() currentPlatform: any = undefined;
+
   readonly Platform = Platform;
   readonly directions = [
     {title: "TrainingPeaks -> Intervals.icu", value: Platform.DIRECTION_TP_INT},
@@ -43,7 +45,7 @@ export class TpCopyActivitiesToCalendarComponent implements OnInit {
     {title: "Intervals.icu -> TrainingPeaks", value: Platform.DIRECTION_INT_TP},
   ]
   readonly activitiesTypes = ActivitiesTypes.activitiesTypes;
-  readonly selectedActivitiesTypes = ['ACTIVITY', 'RPE', 'FEEL'];
+  readonly selectedActivitiesTypes = this.activitiesTypes.map(t => t.value);
 
   constructor() {
   }

@@ -1,6 +1,7 @@
 package org.freekode.tp2intervals.integration.platform.myfitnesspal.wellness
 
-import org.freekode.tp2intervals.integration.platform.myfitnesspal.configuration.MfpConfiguration
+import org.freekode.tp2intervals.integration.platform.myfitnesspal.configuration.dto.MfpConfiguration
+import org.freekode.tp2intervals.integration.platform.myfitnesspal.wellness.dto.MfpNutritionDTO
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.slf4j.LoggerFactory
@@ -10,7 +11,7 @@ import java.time.LocalDate
 
 @Component
 class MfpDiaryClient(
-    @Value("\${app.mfp.base-url}") private val baseUrl: String,
+    @Value("\${app.mfp.api-url}") private val baseUrl: String,
 ) {
     private val log = LoggerFactory.getLogger(MfpDiaryClient::class.java)
 

@@ -33,19 +33,16 @@ export class WorkoutClient {
     return this.httpClient.get(`/api/workout/find`, {params: {platform, name}})
   }
 
-  scheduleCopyCalendarToCalendar(startDate, endDate, types, skipSynced, platformDirection): Observable<any> {
+  scheduleCopyCalendarToCalendar(startDate, endDate, types, skipSynced, platformDirection, currentPlatform): Observable<any> {
     return this.httpClient
-      .post(`/api/workout/copy-calendar-to-calendar/schedule`, {
-        startDate,
-        endDate,
-        types,
-        skipSynced,
-        ...platformDirection
-      })
+      .post(`/api/workout/copy-calendar-to-calendar/schedule`,
+        {startDate, endDate, types, skipSynced, ...platformDirection},
+        {params: {platform: currentPlatform}}
+      )
   }
 
-  getScheduleRequests(): Observable<any> {
-    return this.httpClient.get(`/api/workout/copy-calendar-to-calendar/schedule`)
+  getScheduleRequests(platform: string): Observable<any> {
+    return this.httpClient.get(`/api/workout/copy-calendar-to-calendar/schedule`, {params: {platform}})
   }
 
   deleteScheduleRequest(id: any) {

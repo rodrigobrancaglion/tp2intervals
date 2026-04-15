@@ -6,16 +6,13 @@ app:
   trainer-road:
     api-url: https://www.trainerroad.com
   mfp:
-    base-url: https://www.myfitnesspal.com
+    api-url: https://www.myfitnesspal.com
   strava:
     api-url: https://www.strava.com
   rouvy:
-    firebase:
-      api-key: ""
-      project-id: ""
-      uid: ""
-      # NOTE: refreshToken renewal is blocked by Rouvy — pending public API
-      refresh-token: ""
+    account-url: https://account.rouvy.com
+    api-url: https://riders.rouvy.com
+
   attachments:
     enabled: true
 
@@ -36,6 +33,8 @@ spring:
   jpa:
     open-in-view: false
     database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: validate
   cache:
     jcache:
       config: classpath:ehcache.xml

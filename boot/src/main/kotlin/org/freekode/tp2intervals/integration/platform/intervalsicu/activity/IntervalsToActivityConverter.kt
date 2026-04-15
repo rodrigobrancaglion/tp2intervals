@@ -4,7 +4,8 @@ import org.freekode.tp2intervals.domain.ActivityType
 import org.freekode.tp2intervals.domain.BaseType
 import org.freekode.tp2intervals.domain.activity.Activity
 import org.freekode.tp2intervals.domain.workout.Workout
-import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.TPTrainingFeelingMapper
+import org.freekode.tp2intervals.integration.platform.intervalsicu.activity.dto.IntervalsActivityDTO
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.mapper.TPTrainingFeelingMapper
 
 class IntervalsToActivityConverter
 {
@@ -14,6 +15,7 @@ class IntervalsToActivityConverter
             activityDTO.start_date_local,
             activityDTO.mapType(),
             activityDTO.name,
+            activityDTO.description,
             null,
             null,
             activityDTO.icu_rpe,

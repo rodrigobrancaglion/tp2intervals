@@ -3,6 +3,7 @@ package org.freekode.tp2intervals.integration.platform.trainingpeaks.metrics
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.domain.WellnessType
 import org.freekode.tp2intervals.domain.wellness.Wellness
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.metrics.dto.TPMetricsDTO
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.user.TrainingPeaksUserRepository
 import org.freekode.tp2intervals.integration.provider.wellness.IWellnessRepository
 import org.springframework.cache.annotation.CacheConfig

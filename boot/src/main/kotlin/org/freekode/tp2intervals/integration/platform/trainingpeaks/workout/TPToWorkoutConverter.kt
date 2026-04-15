@@ -8,7 +8,12 @@ import org.freekode.tp2intervals.domain.activity.Activity
 import org.freekode.tp2intervals.domain.workout.Attachment
 import org.freekode.tp2intervals.domain.workout.Workout
 import org.freekode.tp2intervals.domain.workout.WorkoutDetails
-import org.freekode.tp2intervals.integration.platform.trainingpeaks.library.TPWorkoutLibraryItemDTO
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.library.dto.TPWorkoutLibraryItemDTO
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.mapper.TPTrainingFeelingMapper
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.dto.TPActivityRequestDTO
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.dto.TPBaseWorkoutDTO
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.dto.TPNoteResponseDTO
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.dto.TPWorkoutCalendarDTO
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.structure.FromTPStructureConverter
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.structure.TPWorkoutStructureDTO
 import org.slf4j.LoggerFactory
@@ -51,7 +56,7 @@ class TPToWorkoutConverter(
     private fun toWorkout(tpWorkout: TPBaseWorkoutDTO<TPWorkoutStructureDTO>, workoutDate: LocalDateTime, attachments: List<Attachment>): Workout {
         val workoutsStructure = toWorkoutStructure(tpWorkout)
 
-        var description = tpWorkout.description.orEmpty()
+        val description = tpWorkout.description.orEmpty()
         //description += tpWorkout.coachComments?.let { "\n- - - -\n$it" }.orEmpty()
 
         val capitalizedTitle = if (tpWorkout.title.isNullOrBlank()) "Workout"
@@ -97,6 +102,7 @@ class TPToWorkoutConverter(
             tpWorkout.workoutDay,
             tpWorkout.mapType(),
             tpWorkout.title,
+            tpWorkout.description,
             null,
             null,
             tpWorkout.rpe,

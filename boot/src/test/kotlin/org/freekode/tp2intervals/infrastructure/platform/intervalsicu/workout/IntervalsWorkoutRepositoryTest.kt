@@ -9,8 +9,8 @@ import org.freekode.tp2intervals.domain.workout.structure.SingleStep
 import org.freekode.tp2intervals.domain.workout.structure.StepLength
 import org.freekode.tp2intervals.domain.workout.structure.WorkoutStructure
 import org.freekode.tp2intervals.integration.platform.intervalsicu.athlete.IntervalsUserApiClient
-import org.freekode.tp2intervals.integration.platform.intervalsicu.configuration.IntervalsConfigurationDTO
 import org.freekode.tp2intervals.integration.platform.intervalsicu.configuration.IntervalsConfigurationRepository
+import org.freekode.tp2intervals.integration.platform.intervalsicu.configuration.dto.IntervalsConfigurationDTO
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.TPPowerCalculationService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -178,7 +178,7 @@ class IntervalsWorkoutRepositoryTest {
         val workout = findWorkoutWithName("virtual ride test", workouts)
         val structure = workout.structure!!
         assertEquals(TrainingType.VIRTUAL_BIKE, workout.details.type)
-        assertEquals(WorkoutStructure.TargetUnit.FTP_PERCENTAGE, workout.structure.target)
+        assertEquals(WorkoutStructure.TargetUnit.FTP_PERCENTAGE, structure.target)
         assertEquals(5, structure.steps.size)
     }
 

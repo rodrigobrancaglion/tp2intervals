@@ -1,5 +1,6 @@
 package org.freekode.tp2intervals.service
 
+import org.freekode.tp2intervals.aspect.LogService
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.domain.librarycontainer.LibraryContainer
 import org.freekode.tp2intervals.domain.workout.Workout
@@ -17,6 +18,7 @@ class LibraryService(
     workoutRepositories: List<IWorkoutRepository>,
     planRepositories: List<ILibraryContainerRepository>,
 ) {
+
     private val workoutRepositoryMap = workoutRepositories.associateBy { it.platform() }
     private val planRepositoryMap = planRepositories.associateBy { it.platform() }
 
@@ -25,6 +27,7 @@ class LibraryService(
         return repository.getLibraryContainers()
     }
 
+    @LogService
     fun copyLibrary(request: CopyLibraryRequest): CopyPlanResponse {
         val targetPlanRepository = planRepositoryMap[request.targetPlatform]!!
         val sourceWorkoutRepository = workoutRepositoryMap[request.sourcePlatform]!!
@@ -41,16 +44,19 @@ class LibraryService(
         return CopyPlanResponse(newPlan.name, workouts.size, newPlan.externalData)
     }
 
+    @LogService
     fun deleteLibrary(request: DeleteLibraryRequest) {
         val planRepository = planRepositoryMap[request.platform]!!
         planRepository.deleteLibraryContainer(request.externalData)
     }
 
+    @LogService
     fun create(request: CreateLibraryContainerRequest): LibraryContainer {
         val planRepository = planRepositoryMap[request.platform]!!
         return planRepository.createLibraryContainer(request.name, false, null)
     }
 
+    @LogService
     private fun Workout.addWorkoutStepModifier(stepModifier: StepModifier): Workout =
         Workout(details, date, structure?.addModifier(stepModifier))
 }

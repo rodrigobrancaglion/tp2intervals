@@ -47,8 +47,9 @@ export class CopyCalendarToCalendarComponent implements OnInit {
   readonly todayDate = new Date()
   readonly tomorrowDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
 
+  @Input() currentPlatform: any = undefined;
   @Input() trainingTypes: any[] = []
-  @Input() selectedTrainingTypes = ['BIKE', 'VIRTUAL_BIKE']
+  @Input() selectedTrainingTypes: string[] = []
   @Input() directions: any[] = []
   @Input() inProgress = false
 
@@ -87,6 +88,7 @@ export class CopyCalendarToCalendarComponent implements OnInit {
   }
 
   scheduleToday() {
+    const platformKey = this.currentPlatform?.key || this.currentPlatform;
     let startDate = null
     let endDate = null
     let direction = this.formGroup.value.direction
@@ -94,7 +96,7 @@ export class CopyCalendarToCalendarComponent implements OnInit {
     let skipSynced = this.formGroup.value.skipSynced
 
     this.inProgress = true
-    this.workoutClient.scheduleCopyCalendarToCalendar(startDate, endDate, trainingTypes, skipSynced, direction).pipe(
+    this.workoutClient.scheduleCopyCalendarToCalendar(startDate, endDate, trainingTypes, skipSynced, direction, platformKey).pipe(
       switchMap(() => this.loadScheduleRequests()),
       finalize(() => this.inProgress = false)
     ).subscribe(() => {
@@ -135,13 +137,15 @@ export class CopyCalendarToCalendarComponent implements OnInit {
   }
 
   private loadScheduleRequests() {
-    return this.workoutClient.getScheduleRequests().pipe(
+    const platformKey = this.currentPlatform?.key || this.currentPlatform;
+
+    return this.workoutClient.getScheduleRequests(platformKey).pipe(
       tap(values => {
-          this.scheduleRequests = values.map(value => {
-            return {id: value.id, request: JSON.parse(value.requestJson)}
-          })
-          console.log(this.scheduleRequests)
-        }
+        this.scheduleRequests = values.map(value => {
+          return { id: value.id, request: JSON.parse(value.requestJson) }
+        })
+        console.log(this.scheduleRequests)
+      }
       )
     )
   }

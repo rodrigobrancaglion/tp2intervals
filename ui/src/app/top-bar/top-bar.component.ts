@@ -37,6 +37,7 @@ export class TopBarComponent implements OnInit {
   menuButtons = [
     {name: 'Home', url: '/home'},
     {name: 'TrainingPeaks', url: '/training-peaks'},
+    {name: 'Rouvy', url: '/rouvy'},
     {name: 'TrainerRoad', url: '/trainer-road'},
     {name: 'MyFitnessPal', url: '/myfitnesspal'},
     {name: 'Configuration', url: '/config'},

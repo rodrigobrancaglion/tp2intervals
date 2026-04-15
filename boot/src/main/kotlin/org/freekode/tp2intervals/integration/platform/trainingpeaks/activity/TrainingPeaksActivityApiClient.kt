@@ -2,9 +2,8 @@ package org.freekode.tp2intervals.integration.platform.trainingpeaks.activity
 
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.TrainingPeaksApiClientConfig
 import org.springframework.cloud.openfeign.FeignClient
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
 
 @FeignClient(
     value = "TrainingPeaksActivityApiClient",
@@ -20,4 +19,10 @@ interface TrainingPeaksActivityApiClient {
         @PathVariable workoutId: Long,
         @RequestBody requestDTO: String
     )
+
+    @PostMapping(value = ["/fitness/v6/athletes/{userId}/workouts/filedata"])
+    fun uploadActivity(
+        @RequestHeader("userId") userId: String,
+        @RequestBody request: TrainingPeaksUploadRequest
+    ): ResponseEntity<String>
 }

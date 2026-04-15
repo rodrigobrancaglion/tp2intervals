@@ -2,6 +2,7 @@ package org.freekode.tp2intervals.integration.platform.intervalsicu.wellness
 
 import org.freekode.tp2intervals.domain.WellnessType
 import org.freekode.tp2intervals.domain.wellness.Wellness
+import org.freekode.tp2intervals.integration.platform.intervalsicu.wellness.dto.IntervalsWellnessDTO
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 

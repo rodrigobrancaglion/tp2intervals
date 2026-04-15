@@ -59,6 +59,8 @@ export class ConfigurationComponent implements OnInit {
     'strava.client-id': [null],
     'strava.client-secret': [null],
     'strava.refresh-token': [null],
+    'rouvy.email': [null],
+    'rouvy.password': [null],
     'general.debug-mode': [null, Validators.required],
   });
 
@@ -116,6 +118,12 @@ export class ConfigurationComponent implements OnInit {
       if (!this.formGroup.get('strava.refresh-token')?.value && this.config.strava_refresh_token) {
         this.formGroup.patchValue({ 'strava.refresh-token': this.config.strava_refresh_token });
       }
+      if (!this.formGroup.get('rouvy.email')?.value && this.config.rouvy_email) {
+        this.formGroup.patchValue({ 'rouvy.email': this.config.rouvy_email });
+      }
+      if (!this.formGroup.get('rouvy.password')?.value && this.config.rouvy_password) {
+        this.formGroup.patchValue({ 'rouvy.password': this.config.rouvy_password });
+      }
 
       this.inProgress = false
       this.listenTrainingPeaksCookie()
@@ -144,6 +152,8 @@ export class ConfigurationComponent implements OnInit {
       this.config.strava_client_id = v['strava.client-id'] ?? this.config.strava_client_id;
       this.config.strava_client_secret = v['strava.client-secret'] ?? this.config.strava_client_secret;
       this.config.strava_refresh_token = v['strava.refresh-token'] ?? this.config.strava_refresh_token;
+      this.config.rouvy_email = v['rouvy.email'] ?? this.config.rouvy_email;
+      this.config.rouvy_password = v['rouvy.password'] ?? this.config.rouvy_password;
 
       this.notificationService.success('Configuration successfully saved')
       this.router.navigate(['/home']);

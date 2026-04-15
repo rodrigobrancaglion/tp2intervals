@@ -2,7 +2,11 @@ package config.mock
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.*
+import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.IntervalsWorkoutApiClient
+import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.dto.EventRequestDTO
+import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.dto.IntervalsEventCommentDTO
+import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.dto.IntervalsEventDTO
+import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.dto.WorkoutRequestDTO
 import java.io.InputStream
 
 class IntervalsWorkoutApiClientMock(

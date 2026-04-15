@@ -88,14 +88,16 @@
         <mat-list-item>
           <button
             mat-raised-button
-            color="primary"
+            color="warn"
             type="button"
             (click)="deleteJob(request.id)">
             <i class="bi bi-trash"></i>
           </button>
-          Types: {{ mapTrainingTypesToTitles(request.request.types) }} /
-          Skip synced: {{ request.request.skipSynced }} /
-          {{ Platform.getTitle(request.request.sourcePlatform) }} -> {{ Platform.getTitle(request.request.targetPlatform) }}
+          <span style="font-size: small">
+            Platform: {{ Platform.getTitle(request.request.sourcePlatform) }} -> {{ Platform.getTitle(request.request.targetPlatform) }} |
+            Types: {{ mapTrainingTypesToTitles(request.request.types) }} |
+            Skip synced: {{ request.request.skipSynced }}
+          </span>
         </mat-list-item>
       }
     </mat-list>

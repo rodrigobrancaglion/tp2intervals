@@ -12,7 +12,8 @@ class WellnessController(
     private val wellnessService: WellnessService,
 ) {
     @PostMapping("/api/wellness/copy-calendar-to-calendar")
-    fun copyWellnessFromCalendarToCalendar(@RequestBody request: CopyC2CRequest): CopyWellnessResponse {
+    fun copyWellnessFromCalendarToCalendar(
+        @RequestBody request: CopyC2CRequest): CopyWellnessResponse {
         return wellnessService.copyWellnessC2C(request)
     }
 }

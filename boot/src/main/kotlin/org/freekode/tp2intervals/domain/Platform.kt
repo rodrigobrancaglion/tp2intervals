@@ -10,5 +10,6 @@ enum class Platform(
     TRAINER_ROAD("TrainerRoad", "trainer-road"),
     MYFITNESSPAL("MyFitnessPal", "mfp"),
     STRAVA("Strava", "strava"),
+    ROUVY("Rouvy", "rouvy"),
 
 }

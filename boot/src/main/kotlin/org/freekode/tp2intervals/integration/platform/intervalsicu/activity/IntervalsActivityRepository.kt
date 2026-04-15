@@ -1,9 +1,11 @@
 package org.freekode.tp2intervals.integration.platform.intervalsicu.activity
 
+import org.freekode.tp2intervals.aspect.LogRepository
 import org.freekode.tp2intervals.domain.BaseType
 import org.freekode.tp2intervals.domain.ExternalData
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.domain.activity.Activity
+import org.freekode.tp2intervals.integration.platform.intervalsicu.activity.dto.IntervalsActivityResponseDTO
 import org.freekode.tp2intervals.integration.platform.intervalsicu.configuration.IntervalsConfigurationRepository
 import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.IntervalsWorkoutRepository
 import org.freekode.tp2intervals.integration.provider.activity.IActivityRepository
@@ -23,63 +25,77 @@ class IntervalsActivityRepository(
 
     override fun platform() = Platform.INTERVALS
 
+    @LogRepository
     override fun saveActivities(activities: List<Activity>, types: List<BaseType>) {
-        val athleteId = intervalsConfigurationRepository.getConfiguration().athleteId
         activities.forEach { activity ->
             CompletableFuture.runAsync {
                 try {
                     if (activity.resource != null) {
                         // Upload .fit file to create a full activity in ICU
-                        val fitBytes = Base64.getDecoder().decode(activity.resource)
-                        val fileName = activity.fileName ?: "${activity.workoutId}.fit"
-                        val multipart = ByteArrayMultipartFile(fitBytes, fileName)
-                        val name = activity.title ?: "Activity ${activity.workoutId}"
-
-                        log.info("Creating activity in ICU via .fit upload: workoutId=${activity.workoutId}, fileName=$fileName")
-                        val response = intervalsActivityApiClient.createActivity(athleteId, name, multipart)
+                        val response = uploadDirectFit(activity)
 
                         removeDuplicateWorkouts(response, activity, types)
+
                     } else {
                         // No .fit available: update RPE/FEEL only if the activity already exists in ICU
                         val newActivityDTO = IntervalsToActivityConverter().toDTO(activity, types)
                         intervalsActivityApiClient.updateActivity(activity.workoutId.toString(), newActivityDTO)
                     }
                 } catch (e: Exception) {
-                    log.error("Error saving activity ${activity.workoutId}: ${e.message}", e)
+                    log.error("Intervals - Error saving activity ${activity.workoutId} : ${e.message}", e)
                 }
             }
         }
     }
 
-    fun removeDuplicateWorkouts(response: ActivityResponseDTO, activity: Activity, types: List<BaseType>){
-        log.info("Activity created in ICU: workoutId=${response.id}, TP workoutId=${activity.workoutId}, title=${activity.title}")
+    private fun uploadDirectFit(activity: Activity): IntervalsActivityResponseDTO? {
+        val athleteId = intervalsConfigurationRepository.getConfiguration().athleteId
 
-        val startedAt = activity.startedAt?.toLocalDate() ?: LocalDate.now()
-        val workouts = intervalsWorkoutRepository.getWorkouts(startedAt, startedAt)
+        val fitBytes = Base64.getDecoder().decode(activity.resource)
+        val fileName = activity.fileName ?: "${activity.workoutId}.fit"
+        val multipart = ByteArrayMultipartFile(fitBytes, fileName)
+        val name = activity.description ?: "" //Mantem o nome original do treino
+        val description = activity.title ?: "Activity ${activity.workoutId}" //insere na desscricao o nome da Rota do Rouvy
 
-        val originalWorkout = workouts.firstOrNull { event ->
-            val externalData = ExternalData.empty().fromSimpleString(event.description ?: "")
-            externalData.trainingPeaksId == activity.workoutId.toString()
-        }
-
-        val fitWorkout = workouts.firstOrNull { event ->
-            val externalData = ExternalData.empty().fromSimpleString(event.description ?: "")
-            externalData.trainingPeaksId == null && event.id != originalWorkout?.id
-        }
-
-        log.info("Original workout: workoutId=${originalWorkout?.id}, name=${originalWorkout?.name}")
-        log.info("Fit workout (to delete): workoutId=${fitWorkout?.id}, name=${fitWorkout?.name}")
-
-        if (originalWorkout != null) {
-            val activityCompleted = Activity(originalWorkout.id, activity.rpe, activity.feel)
-            val activityToUpdate = IntervalsToActivityConverter().toDTO(activityCompleted, types)
-            intervalsActivityApiClient.updateActivity(response.id, activityToUpdate)
-        }
-        if (fitWorkout != null) {
-            intervalsWorkoutRepository.deleteEvent(fitWorkout.id)
+        log.info("Creating activity in ICU via .fit upload: workoutId=${activity.workoutId}, fileName=$fileName, name=$name")
+        return try {
+            val response = intervalsActivityApiClient.createActivity(athleteId, name, description, multipart)
+            response
+        } catch (e: Exception) {
+            log.error("Intervals - Error with direct FIT upload for $name: ${e.message}")
+            null
         }
     }
 
+    private fun removeDuplicateWorkouts(response: IntervalsActivityResponseDTO?, activity: Activity, types: List<BaseType>){
+        if (response != null){
+            val startedAt = activity.startedAt?.toLocalDate() ?: LocalDate.now()
+            val workouts = intervalsWorkoutRepository.getWorkouts(startedAt, startedAt)
+
+            val originalWorkout = workouts.firstOrNull { event ->
+                val externalData = ExternalData.empty().fromSimpleString(event.description ?: "")
+                externalData.trainingPeaksId == activity.workoutId.toString()
+            }
+
+            val fitWorkout = workouts.firstOrNull { event ->
+                val externalData = ExternalData.empty().fromSimpleString(event.description ?: "")
+                externalData.trainingPeaksId == null && event.id != originalWorkout?.id
+            }
+
+            if (originalWorkout != null) {
+                log.info("Original workout: workoutId=${originalWorkout.id}, name=${originalWorkout.name}")
+                val activityCompleted = Activity(originalWorkout.id, activity.rpe, activity.feel)
+                val activityToUpdate = IntervalsToActivityConverter().toDTO(activityCompleted, types)
+                intervalsActivityApiClient.updateActivity(response.id, activityToUpdate)
+            }
+            if (fitWorkout != null) {
+                log.info("Fit workout (to delete): workoutId=${fitWorkout.id}, name=${fitWorkout.name}")
+                intervalsWorkoutRepository.deleteEvent(fitWorkout.id)
+            }
+        }
+    }
+
+    @LogRepository
     override fun getActivities(startDate: LocalDate, endDate: LocalDate): List<Activity> {
         val activities =
             intervalsActivityApiClient.getActivities(

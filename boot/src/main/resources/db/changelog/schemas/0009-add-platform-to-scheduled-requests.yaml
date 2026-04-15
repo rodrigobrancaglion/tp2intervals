@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: _
+      author: _
+      changes:
+        - addColumn:
+            tableName: schedule_requests
+            columns:
+              - column:
+                  name: platform
+                  type: varchar(255)
+                  defaultValue: 'TRAINING_PEAKS'
+                  constraints:
+                    nullable: false

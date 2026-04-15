@@ -11,7 +11,10 @@ data class ScheduleRequestEntity(
 
     @Column
     var requestJson: String?,
+
+    @Column
+    var platform: String?,
 ) {
-    constructor() : this(null, null)
-    constructor(requestJson: String) : this(null, requestJson)
+    constructor() : this(null, null, null)
+    constructor(requestJson: String, platform: String) : this(null, requestJson, platform)
 }

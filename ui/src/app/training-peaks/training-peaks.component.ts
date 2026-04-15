@@ -43,6 +43,8 @@ import {MatListModule} from "@angular/material/list";
 export class TrainingPeaksComponent implements OnInit {
   platformInfo: any = undefined;
 
+  readonly menuPlatform = Platform.TRAINING_PEAKS;
+
   constructor(
     private configurationClient: ConfigurationClient
   ) {

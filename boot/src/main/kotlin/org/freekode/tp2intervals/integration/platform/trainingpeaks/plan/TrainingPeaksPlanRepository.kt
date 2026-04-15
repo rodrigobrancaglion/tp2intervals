@@ -5,6 +5,9 @@ import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.domain.librarycontainer.LibraryContainer
 import org.freekode.tp2intervals.integration.PlatformException
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.library.TPWorkoutLibraryRepository
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.plan.dto.ApplyTPPlanRequestDTO
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.plan.dto.ApplyTPPlanResponseDTO
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.plan.dto.TPPlanDTO
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.user.TrainingPeaksUserRepository
 import org.freekode.tp2intervals.integration.provider.librarycontainer.ILibraryContainerRepository
 import org.springframework.cache.annotation.CacheConfig

@@ -10,4 +10,6 @@ export const environment = {
   strava_client_id: '',
   strava_client_secret: '',
   strava_refresh_token: '',
+  rouvy_email: '',
+  rouvy_password: '',
 };

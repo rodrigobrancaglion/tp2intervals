@@ -1,8 +1,8 @@
 package org.freekode.tp2intervals.integration.platform.trainingpeaks.workout
 
 import org.freekode.tp2intervals.domain.workout.Workout
-import org.freekode.tp2intervals.integration.platform.intervalsicu.athlete.IntervalsAthleteProfileDTO
-import org.freekode.tp2intervals.integration.platform.intervalsicu.athlete.SportSettingsDTO
+import org.freekode.tp2intervals.integration.platform.intervalsicu.athlete.dto.IntervalsAthleteProfileDTO
+import org.freekode.tp2intervals.integration.platform.intervalsicu.athlete.dto.SportSettingsDTO
 import org.springframework.stereotype.Service
 import java.time.Duration
 import kotlin.math.round

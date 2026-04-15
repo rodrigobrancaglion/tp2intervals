@@ -11,32 +11,25 @@ export class ActivityClient {
   constructor(private httpClient: HttpClient) {
   }
 
-  copyActivities(startDate, endDate, types, platformDirection): Observable<any> {
-    return this.httpClient
-      .post(`/api/activities/copy`, {startDate, endDate, types, ...platformDirection})
-  }
-
   copyCalendarToCalendar(startDate, endDate, types, platformDirection): Observable<any> {
     return this.httpClient
-      .post(`/api/activities/copy-calendar-to-calendar`, {startDate, endDate, types, ...platformDirection})
+      .post(`/api/activity/copy-calendar-to-calendar`, {startDate, endDate, types, ...platformDirection})
   }
 
-  scheduleCopyCalendarToCalendar(startDate, endDate, types, platformDirection): Observable<any> {
+  scheduleCopyCalendarToCalendar(startDate, endDate, types, platformDirection, currentPlatform): Observable<any> {
     return this.httpClient
-      .post(`/api/activities/copy-calendar-to-calendar/schedule`, {
-        startDate,
-        endDate,
-        types,
-        ...platformDirection
-      })
+      .post(`/api/activity/copy-calendar-to-calendar/schedule`,
+        {startDate, endDate, types, ...platformDirection},
+        {params: {platform: currentPlatform}}
+      )
   }
 
-  getScheduleRequests(): Observable<any> {
-    return this.httpClient.get(`/api/activities/copy-calendar-to-calendar/schedule`)
+  getScheduleRequests(platform: string): Observable<any> {
+    return this.httpClient.get(`/api/activity/copy-calendar-to-calendar/schedule`, {params: {platform}})
   }
 
   deleteScheduleRequest(id: any) {
-    return this.httpClient.delete(`/api/activities/copy-calendar-to-calendar/schedule/${id}`)
+    return this.httpClient.delete(`/api/activity/copy-calendar-to-calendar/schedule/${id}`)
   }
 
 }

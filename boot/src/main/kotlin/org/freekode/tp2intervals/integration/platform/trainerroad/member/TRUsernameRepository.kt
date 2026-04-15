@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository
 class TRUsernameRepository(
     private val trainerRoadMemberApiClient: TrainerRoadMemberApiClient,
 ) {
-    @Cacheable(key = "'singleton'")
+    @Cacheable
     fun getUsername(): String {
         return trainerRoadMemberApiClient.getMember().Username!!
     }

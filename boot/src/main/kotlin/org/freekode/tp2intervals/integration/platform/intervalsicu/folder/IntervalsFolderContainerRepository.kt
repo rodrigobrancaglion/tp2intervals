@@ -4,6 +4,8 @@ import org.freekode.tp2intervals.domain.ExternalData
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.domain.librarycontainer.LibraryContainer
 import org.freekode.tp2intervals.integration.platform.intervalsicu.configuration.IntervalsConfigurationRepository
+import org.freekode.tp2intervals.integration.platform.intervalsicu.folder.dto.CreateFolderRequestDTO
+import org.freekode.tp2intervals.integration.platform.intervalsicu.folder.dto.FolderDTO
 import org.freekode.tp2intervals.integration.provider.librarycontainer.ILibraryContainerRepository
 import org.springframework.cache.annotation.CacheConfig
 import org.springframework.cache.annotation.Cacheable
@@ -26,7 +28,7 @@ class IntervalsFolderContainerRepository(
         return toPlan(newFolder)
     }
 
-    @Cacheable(key = "'INTERVALS'")
+    @Cacheable
     override fun getLibraryContainers(): List<LibraryContainer> {
         return intervalsFolderApiClient.getFolders(intervalsConfigurationRepository.getConfiguration().athleteId)
             .map { toPlan(it) }

@@ -21,7 +21,7 @@
             </div>
           </mat-panel-description>
         </mat-expansion-panel-header>
-        <tp-copy-calendar-to-calendar></tp-copy-calendar-to-calendar>
+        <tp-copy-calendar-to-calendar [currentPlatform]="menuPlatform"></tp-copy-calendar-to-calendar>
       </mat-expansion-panel>
 
       <mat-expansion-panel>
@@ -63,7 +63,7 @@
             </div>
           </mat-panel-description>
         </mat-expansion-panel-header>
-        <tp-copy-activities-to-calendar></tp-copy-activities-to-calendar>
+        <tp-copy-activities-to-calendar [currentPlatform]="menuPlatform"></tp-copy-activities-to-calendar>
       </mat-expansion-panel>
     </mat-accordion>
   </section>
@@ -82,7 +82,7 @@
             </div>
           </mat-panel-description>
         </mat-expansion-panel-header>
-        <tp-copy-wellness-to-calendar></tp-copy-wellness-to-calendar>
+        <tp-copy-wellness-to-calendar [currentPlatform]="menuPlatform"></tp-copy-wellness-to-calendar>
       </mat-expansion-panel>
     </mat-accordion>
   </section>

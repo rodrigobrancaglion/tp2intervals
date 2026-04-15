@@ -19,8 +19,8 @@ class TPAttachmentService(
         }
 
         val workoutDetails = trainingPeaksWorkoutApiClient.getWorkoutDetails(userId, workoutId)
-        val fileId = workoutDetails.getFirstFitFileId()
-        val fileName = workoutDetails.getFirstFitFileName()
+        val fileId = workoutDetails.firstFitFileId
+        val fileName = workoutDetails.firstFitFileName
 
         if (fileId == null || fileName == null) {
             log.info("No FIT file found for workoutId=$workoutId")

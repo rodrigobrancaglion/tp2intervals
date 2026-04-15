@@ -3,7 +3,9 @@ package org.freekode.tp2intervals.integration.platform.intervalsicu.workout
 import org.freekode.tp2intervals.domain.PlatformTrainingMapper
 import org.freekode.tp2intervals.domain.librarycontainer.LibraryContainer
 import org.freekode.tp2intervals.domain.workout.Workout
-import org.freekode.tp2intervals.integration.platform.intervalsicu.athlete.IntervalsAthleteProfileDTO
+import org.freekode.tp2intervals.integration.platform.intervalsicu.athlete.dto.IntervalsAthleteProfileDTO
+import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.dto.EventRequestDTO
+import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.dto.WorkoutRequestDTO
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.TPPowerCalculationService
 import org.freekode.tp2intervals.integration.utils.Date
 import org.springframework.stereotype.Component

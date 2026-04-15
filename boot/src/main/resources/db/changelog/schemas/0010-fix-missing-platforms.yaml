@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0010
+      author: dev
+      changes:
+        - sql:
+            sql: UPDATE schedule_requests SET platform = 'TRAINING_PEAKS' WHERE platform = '' OR platform IS NULL;

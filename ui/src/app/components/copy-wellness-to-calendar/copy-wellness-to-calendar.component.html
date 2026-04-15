@@ -60,16 +60,6 @@
     >
       Only today
     </button>
-    <button
-      mat-raised-button
-      color="primary"
-      type="button"
-      style="margin-left: 10px"
-      [disabled]="formGroup.invalid || inProgress"
-      (click)="tomorrow()"
-    >
-      Only tomorrow
-    </button>
   </div>
 
   <div *ngIf="scheduleRequests.length > 0" style="margin-bottom: 10px">
@@ -82,13 +72,15 @@
         <mat-list-item>
           <button
             mat-raised-button
-            color="primary"
+            color="warn"
             type="button"
             (click)="deleteJob(request.id)">
             <i class="bi bi-trash"></i>
           </button>
-          Types: {{ mapWellnessTypesToTitles(request.request.types) }} /
-          Platform: {{ Platform.getTitle(request.request.sourcePlatform) }} -> {{ Platform.getTitle(request.request.targetPlatform) }}
+          <span style="font-size: small">
+            Platform: {{ Platform.getTitle(request.request.sourcePlatform) }} -> {{ Platform.getTitle(request.request.targetPlatform) }} |
+            Types: {{ mapWellnessTypesToTitles(request.request.types) }}
+          </span>
         </mat-list-item>
       }
     </mat-list>

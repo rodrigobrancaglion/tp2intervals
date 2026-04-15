@@ -7,6 +7,7 @@ import org.freekode.tp2intervals.dto.confguration.UpdateConfigurationRequest
 import org.freekode.tp2intervals.integration.CatchFeignException
 import org.freekode.tp2intervals.integration.PlatformException
 import org.freekode.tp2intervals.integration.platform.intervalsicu.athlete.IntervalsAthleteApiClient
+import org.freekode.tp2intervals.integration.platform.intervalsicu.configuration.dto.IntervalsConfigurationDTO
 import org.freekode.tp2intervals.integration.provider.configuration.IConfigurationRepository
 import org.freekode.tp2intervals.integration.provider.configuration.IPlatformConfigurationRepository
 import org.freekode.tp2intervals.integration.utils.Auth

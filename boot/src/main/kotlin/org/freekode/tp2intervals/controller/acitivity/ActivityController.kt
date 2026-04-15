@@ -11,11 +11,7 @@ class ActivityController(
     private val activityService: ActivityService,
 ) {
 
-    @PostMapping("/api/activities/copy")
-    fun syncActivities(@RequestBody request: CopyC2CRequest) =
-        activityService.syncActivities(request)
-
-    @PostMapping("/api/activities/copy-calendar-to-calendar")
+    @PostMapping("/api/activity/copy-calendar-to-calendar")
     fun copyActivities(@RequestBody request: CopyC2CRequest) =
         activityService.syncActivities(request)
 }

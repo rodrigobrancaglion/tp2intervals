@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface IScheduleRequestRepository : CrudRepository<ScheduleRequestEntity, Int> {
     fun findByRequestJson(requestJson: String): ScheduleRequestEntity?
+    fun findByPlatform(platform: String): List<ScheduleRequestEntity>
 }

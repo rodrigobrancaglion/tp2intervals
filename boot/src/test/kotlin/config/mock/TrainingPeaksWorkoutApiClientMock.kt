@@ -2,7 +2,8 @@ package config.mock
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.*
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.TrainingPeaksWorkoutApiClient
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.dto.*
 import org.springframework.core.io.Resource
 import java.io.InputStream
 

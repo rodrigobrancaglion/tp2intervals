@@ -4,6 +4,8 @@ import org.freekode.tp2intervals.domain.ExternalData
 import org.freekode.tp2intervals.domain.workout.Workout
 import org.freekode.tp2intervals.domain.workout.WorkoutDetails
 import org.freekode.tp2intervals.domain.workout.structure.*
+import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.dto.IntervalsEventDTO
+import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.dto.IntervalsWorkoutDocDTO
 
 class IntervalsWorkoutConverter(
     private val eventDTO: IntervalsEventDTO

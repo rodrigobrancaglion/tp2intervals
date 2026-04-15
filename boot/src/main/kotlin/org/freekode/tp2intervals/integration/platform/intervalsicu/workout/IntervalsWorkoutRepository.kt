@@ -8,6 +8,8 @@ import org.freekode.tp2intervals.domain.workout.WorkoutDetails
 import org.freekode.tp2intervals.integration.PlatformException
 import org.freekode.tp2intervals.integration.platform.intervalsicu.athlete.IntervalsUserApiClient
 import org.freekode.tp2intervals.integration.platform.intervalsicu.configuration.IntervalsConfigurationRepository
+import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.dto.EventRequestDTO
+import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.dto.IntervalsEventDTO
 import org.freekode.tp2intervals.integration.provider.workout.IWorkoutRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository

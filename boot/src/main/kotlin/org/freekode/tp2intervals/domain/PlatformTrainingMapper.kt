@@ -1,9 +1,9 @@
 package org.freekode.tp2intervals.domain
 
 import org.freekode.tp2intervals.domain.workout.WorkoutDetails
-import org.freekode.tp2intervals.integration.platform.intervalsicu.IntervalsTrainingTypeMapper
-import org.freekode.tp2intervals.integration.platform.trainingpeaks.TPWorkoutSubTypeMapper
-import org.freekode.tp2intervals.integration.platform.trainingpeaks.TPWorkoutTypeMapper
+import org.freekode.tp2intervals.integration.platform.intervalsicu.mapper.IntervalsTrainingTypeMapper
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.mapper.TPWorkoutSubTypeMapper
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.mapper.TPWorkoutTypeMapper
 
 class PlatformTrainingMapper {
     companion object {

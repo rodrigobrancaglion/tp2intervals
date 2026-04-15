@@ -47,8 +47,9 @@ export class CopyActivitiesToCalendarComponent implements OnInit {
   readonly todayDate = new Date()
   readonly tomorrowDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
 
+  @Input() currentPlatform: any = undefined;
   @Input() activitiesTypes: any[] = []
-  @Input() selectedActivitiesTypes = ['ACTIVITY', 'RPE', 'FEEL']
+  @Input() selectedActivitiesTypes: string[] = [];
   @Input() directions: any[] = []
   @Input() inProgress = false
 
@@ -82,18 +83,15 @@ export class CopyActivitiesToCalendarComponent implements OnInit {
     this.copyActiviesForOneDay(formatDate(this.todayDate));
   }
 
-  tomorrow() {
-    this.copyActiviesForOneDay(formatDate(this.tomorrowDate));
-  }
-
   scheduleToday() {
+    const platformKey = this.currentPlatform?.key || this.currentPlatform;
     let startDate = null
     let endDate = null
     let direction = this.formGroup.value.direction
     let activitiesTypes = this.formGroup.value.activitiesTypes
 
     this.inProgress = true
-    this.activityClient.scheduleCopyCalendarToCalendar(startDate, endDate, activitiesTypes, direction).pipe(
+    this.activityClient.scheduleCopyCalendarToCalendar(startDate, endDate, activitiesTypes, direction, platformKey).pipe(
       switchMap(() => this.loadScheduleRequests()),
       finalize(() => this.inProgress = false)
     ).subscribe(() => {
@@ -132,13 +130,15 @@ export class CopyActivitiesToCalendarComponent implements OnInit {
   }
 
   private loadScheduleRequests() {
-    return this.activityClient.getScheduleRequests().pipe(
+    const platformKey = this.currentPlatform?.key || this.currentPlatform;
+
+    return this.activityClient.getScheduleRequests(platformKey).pipe(
       tap(values => {
-          this.scheduleRequests = values.map(value => {
-            return {id: value.id, request: JSON.parse(value.requestJson)}
-          })
-          console.log(this.scheduleRequests)
-        }
+        this.scheduleRequests = values.map(value => {
+          return { id: value.id, request: JSON.parse(value.requestJson) }
+        })
+        console.log(this.scheduleRequests)
+      }
       )
     )
   }
