@@ -1,6 +1,7 @@
 package org.freekode.tp2intervals.integration.platform.intervalsicu.workout
 
 import org.freekode.tp2intervals.integration.platform.intervalsicu.IntervalsApiClientConfig
+import org.freekode.tp2intervals.integration.platform.intervalsicu.event.dto.IcuEventRequestDTO
 import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.dto.EventRequestDTO
 import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.dto.IntervalsEventCommentDTO
 import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.dto.IntervalsEventDTO
@@ -21,6 +22,12 @@ interface IntervalsWorkoutApiClient {
     fun createWorkouts(
         @PathVariable athleteId: String,
         @RequestBody requests: List<WorkoutRequestDTO>
+    )
+
+    @PostMapping("/api/v1/athlete/{athleteId}/events/bulk")
+    fun createEventsBulk(
+        @PathVariable athleteId: String,
+        @RequestBody requests: List<IcuEventRequestDTO>
     )
 
     @PostMapping("/api/v1/athlete/{athleteId}/events")

@@ -46,20 +46,20 @@ class RouvySyncManager(
 
             try {
                 // 1. Autenticação
-                log.info("Navigating to Rouvy login page...")
+                log.info("[ROUVY] - Navigating to login page")
                 page.navigate("${accountUrl}/login", com.microsoft.playwright.Page.NavigateOptions().setTimeout(60000.0))
                 page.waitForLoadState(LoadState.LOAD)
 
-                log.info("Performing authentication...")
+                log.info("[ROUVY] - Performing authentication")
                 performLoginInternal(page, email, password)
 
                 // Wait for session to be established on account portal
-                log.info("Waiting for login confirmation...")
+                log.info("[ROUVY] - Waiting for login confirmation")
                 page.waitForURL({ url -> url.contains("account.rouvy.com") && !url.contains("/login") },
                     com.microsoft.playwright.Page.WaitForURLOptions().setTimeout(60000.0))
 
                 // 2. Acessar lista de atividades
-                log.info("Transitioning to Riders Portal...")
+                log.info("[ROUVY] - Transitioning to Riders Portal")
                 page.navigate("${baseUrl}/profile/overview")
                 page.waitForLoadState(LoadState.DOMCONTENTLOADED)
                 page.waitForTimeout(3000.0)
@@ -92,28 +92,42 @@ class RouvySyncManager(
                                 }
                             }
                         } catch (e: Exception) {
-                            log.error("Rouvy - Erro ao processar data no loop inicial: ${e.message}")
+                            log.error("[ROUVY] - Erro ao processar data no loop inicial: ${e.message}")
                         }
                     }
                 }
 
                 // 4. Processar cada atividade encontrada
+                // CAMPO - 1 / 6 | ID e ActivityDate
                 for ((id, activityDate) in targetActivitiesMap) {
                     try {
-                        log.info("Processing activity: {} from date: {}", id, activityDate)
+                        log.info("[ROUVY] - Processing activity: {} from date: {}", id, activityDate)
                         page.navigate("${baseUrl}/activity/$id")
                         page.waitForLoadState(LoadState.LOAD)
 
-                        // Título da Atividade (ex: "Morning Ride")
+                        // CAMPO - 2 | Título da Atividade (ex: "Morning Ride")
                         val activityTitle = page.locator("h1, h2").first().textContent().trim()
 
+                        // CAMPO - 3 | TOKEN
+                        val sessionCookie = context.cookies().find { it.name == "rouvy_session" }
+                        val token = sessionCookie?.let { URLDecoder.decode(it.value, StandardCharsets.UTF_8) } ?: ""
+
+                        // CAMPO - 4 | Download do FIT
+                        val download = page.waitForDownload {
+                            page.locator("button:has-text('Export'), a:has-text('FIT'), [class*='download']").first().click()
+                        }
+                        val fitBytes = download.createReadStream().use { it.readAllBytes() }
+                        //val fitBytes = download(id, activityTitle, token)
+
+                        // CAMPO - 5 | Nome da Rota
                         var finalRouteName = activityTitle // fallback
 
+                        // Pega os dados do link da Rota para navegar na pagina de Rotas
                         val routeDetailLink = page.locator("a[data-cy='route-detail']").first()
                         if (routeDetailLink.count() > 0) {
                             val routeHref = routeDetailLink.getAttribute("href")
                             if (!routeHref.isNullOrBlank()) {
-                                log.info("Navigating to route detail: {}", routeHref)
+                                log.info("[ROUVY] - Navigating to route detail: {}", routeHref)
                                 // Navega para a página da rota (ex: /route/291336)
                                 page.navigate("${baseUrl}$routeHref")
                                 page.waitForLoadState(LoadState.LOAD)
@@ -134,20 +148,10 @@ class RouvySyncManager(
                                 }
 
                                 // Volta para a página da atividade para baixar o FIT
-                                page.navigate("${baseUrl}/activity/$id")
-                                page.waitForLoadState(LoadState.LOAD)
+//                                page.navigate("${baseUrl}/activity/$id")
+//                                page.waitForLoadState(LoadState.LOAD)
                             }
                         }
-
-                        val sessionCookie = context.cookies().find { it.name == "rouvy_session" }
-                        val token = sessionCookie?.let { URLDecoder.decode(it.value, StandardCharsets.UTF_8) } ?: ""
-
-                        // Download do FIT
-                        val download = page.waitForDownload {
-                            page.locator("button:has-text('Export'), a:has-text('FIT'), [class*='download']").first().click()
-                        }
-                        val fitBytes = download.createReadStream().use { it.readAllBytes() }
-                        //val fitBytes = download(id, activityTitle, token)
 
                         // Adiciona à lista com a data correta e o nome da rota limpo
                         activitiesFound.add(
@@ -162,12 +166,12 @@ class RouvySyncManager(
                         )
 
                     } catch (e: Exception) {
-                        log.error("Failed to process activity $id: ${e.message}")
+                        log.error("[ROUVY] - Failed to process activity $id: ${e.message}")
                     }
                 }
 
             } catch (e: Exception) {
-                log.error("Batch extraction failed: {}", e.message)
+                log.error("[ROUVY] - Batch extraction failed: {}", e.message)
             } finally {
                 browser.close()
             }
@@ -186,20 +190,20 @@ class RouvySyncManager(
 
     private fun download(id: String, name: String, cookie: String): ByteArray? {
         return try {
-            log.info("Baixando FIT para atividade $id ($name)...")
+            log.info("[ROUVY] - Baixando FIT para atividade $id ($name)...")
             val rawCookie = "rouvy_session=$cookie"
             
             val actualFitBytes = activitiesClient.exportFit(id, rawCookie)
 
             if (actualFitBytes.isNotEmpty()) {
-                log.info("Sucesso! FIT extraído para $id (${actualFitBytes.size} bytes).")
+                log.info("[ROUVY] - Sucesso! FIT extraído para $id (${actualFitBytes.size} bytes).")
                 actualFitBytes
             } else {
-                log.warn("Arquivo FIT retornado vazio para $id")
+                log.warn("[ROUVY] - Arquivo FIT retornado vazio para $id")
                 null
             }
         } catch (e: Exception) {
-            log.warn("Não foi possível baixar o FIT $id: ${e.message}")
+            log.warn("[ROUVY] - Não foi possível baixar o FIT $id: ${e.message}")
             null
         }
     }

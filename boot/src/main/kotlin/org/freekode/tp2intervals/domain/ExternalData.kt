@@ -15,7 +15,7 @@ data class ExternalData(
 
     fun withTrainingPeaks(trainingPeaksId: String?) = ExternalData(trainingPeaksId, intervalsId, trainerRoadId)
 
-    fun withIntervals(intervalsId: String) = ExternalData(trainingPeaksId, intervalsId, trainerRoadId)
+    fun withIntervals(intervalsId: String?) = ExternalData(trainingPeaksId, intervalsId, trainerRoadId)
 
     fun withTrainerRoad(trainerRoadId: String) = ExternalData(trainingPeaksId, intervalsId, trainerRoadId)
 
@@ -40,12 +40,26 @@ data class ExternalData(
         return externalData
     }
 
+    fun buildDescription(originalDescription: String?): String {
+        return buildString {
+            if (!originalDescription.isNullOrBlank()) {
+                append(originalDescription.substringBefore(externalDataDescriptionSeparator).trim())
+                append("\n\n")
+            }
+
+            val externalDataStr = toSimpleString()
+            if (externalDataStr.isNotBlank()) {
+                append(externalDataStr)
+            }
+        }
+    }
+
     fun toSimpleString(): String {
         val outList = mutableListOf<String>()
         if (trainingPeaksId != null) outList.add("trainingPeaksId=$trainingPeaksId")
         if (intervalsId != null) outList.add("intervalsId=$intervalsId")
         if (trainerRoadId != null) outList.add("trainerRoadId=$trainerRoadId")
-        val simpleString = outList.joinToString(separator = "\n")
+        val simpleString = outList.joinToString(separator = " ")
         return """
                 $externalDataDescriptionSeparator
                 $simpleString

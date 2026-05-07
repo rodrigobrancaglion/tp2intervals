@@ -38,4 +38,17 @@ data class Activity(
             feel = if (requestedTypes.contains(ActivityType.FEEL)) this.feel else null
         )
     }
+
+    override fun toString(): String {
+        return "workoutId=$workoutId " +
+                "startedAt:$startedAt " +
+                "type:$type " +
+                "title:$title " +
+                "description:$description " +
+                "resource:- " +
+                "fileName:$fileName " +
+                "rpe:$rpe " +
+                "feel:$feel " +
+                "deviceProductName:$deviceProductName "
+    }
 }

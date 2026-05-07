@@ -8,5 +8,8 @@ data class RouvyActivityDTO(
     val cookie: String,
     val fitBytes: ByteArray? = null,
     val routeName: String? = null,
-    val date: LocalDate? = null
-)
+    val date: LocalDate? = null,
+    val imgWorkout: ByteArray? = null
+) {
+    //constructor(id: String, name: String, cookie: String, fitBytes: ByteArray?, routeName: String?, date: LocalDate) : this(id, name, cookie, fitBytes, routeName, date, null)
+}

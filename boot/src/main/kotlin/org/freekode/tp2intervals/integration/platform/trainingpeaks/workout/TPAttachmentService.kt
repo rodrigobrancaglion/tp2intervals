@@ -23,7 +23,7 @@ class TPAttachmentService(
         val fileName = workoutDetails.firstFitFileName
 
         if (fileId == null || fileName == null) {
-            log.info("No FIT file found for workoutId=$workoutId")
+            log.warn("No FIT file found for workoutId=$workoutId")
             return listOf()
         }
 

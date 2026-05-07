@@ -11,15 +11,17 @@
   <section>
     <h3 class="group-title">Activities</h3>
     <mat-accordion multi>
+
       <mat-expansion-panel [expanded]="true">
         <mat-expansion-panel-header>
-          <mat-panel-title>Sync Rouvy Activities</mat-panel-title>
+          <mat-panel-title>Rouvy Activities</mat-panel-title>
           <mat-panel-description>
             Synchronize your Rouvy activities to other platforms
           </mat-panel-description>
         </mat-expansion-panel-header>
         <rouvy-copy-activities-to-calendar [currentPlatform]="menuPlatform"></rouvy-copy-activities-to-calendar>
       </mat-expansion-panel>
+
     </mat-accordion>
   </section>
 

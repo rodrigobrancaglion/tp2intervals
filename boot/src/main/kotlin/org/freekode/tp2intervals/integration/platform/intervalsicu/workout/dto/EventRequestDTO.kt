@@ -7,6 +7,7 @@ data class EventRequestDTO(
     val type: String?,
     val description: String?,
     val moving_time: Long?,
+    val distance: Double?,
     val icu_training_load: Int?,
     val attachments: AttachmentDTO?,
     val paired_activity_id: String?,

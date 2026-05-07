@@ -80,7 +80,11 @@ class TrainingpeaksActivityRepository(
             trainingPeaksActivityApiClient.uploadActivity(userId, uploadRequest)
             log.info("TrainingPeaks - Successfully uploaded activity")
         } catch (e: Exception) {
-            log.error("TrainingPeaks - Error uploading: ${e.message}", e)
+            if (e.message?.contains("File has already been uploaded") == true) {
+                log.info("TrainingPeaks - Activity already uploaded: $fileName")
+            } else {
+                log.error("TrainingPeaks - Error uploading: ${e.message}", e)
+            }
         }
     }
 

@@ -92,9 +92,16 @@ class IntervalsWorkoutRepository(
         log.info("Updating paired_activity_id for eventId=$eventId with activityId=$activityId")
         intervalsWorkoutApiClient.updateEvent(
             athleteId, eventId, EventRequestDTO(
-                start_date_local = null, name = null, category = null, type = null,
-                description = null, moving_time = null, icu_training_load = null,
-                attachments = null, paired_activity_id = activityId
+                start_date_local = null,
+                name = null,
+                category = null,
+                type = null,
+                description = null,
+                moving_time = null,
+                distance = null,
+                icu_training_load = null,
+                attachments = null,
+                paired_activity_id = activityId
             )
         )
     }

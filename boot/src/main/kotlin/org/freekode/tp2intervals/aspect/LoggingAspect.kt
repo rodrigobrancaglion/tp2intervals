@@ -4,6 +4,7 @@ import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.reflect.MethodSignature
+import org.freekode.tp2intervals.domain.Platform
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -26,15 +27,19 @@ class LoggingAspect {
         val methodName = signature.name
         val args = joinPoint.args
 
+        // Extract sourcePlatform and targetPlatform if available
+        val platformInfo = extractPlatformInfo(args)
+
         // Get the logger associated with the original target class
         val targetLogger: Logger = LoggerFactory.getLogger(signature.declaringType)
 
-        logger.info(
-            ">>> Service | START - Method: {}.{}() called with arguments: {}",
-            className,
-            methodName,
-            args.contentToString()
-        )
+        val logMessage = if (platformInfo.isNotEmpty()) {
+            ">>> Service | START - Method: {}.{}() called $platformInfo with arguments: {}"
+        } else {
+            ">>> Service | START - Method: {}.{}() called with arguments: {}"
+        }
+
+        logger.info(logMessage, className, methodName, args.contentToString())
 
         try {
             val result = joinPoint.proceed()
@@ -141,5 +146,44 @@ class LoggingAspect {
             )
             throw throwable
         }
+    }
+
+    private fun extractPlatformInfo(args: Array<Any?>): String {
+        // 1. Direct Platform arguments
+        val directPlatforms = args.filterIsInstance<Platform>()
+        if (directPlatforms.size == 2) {
+            return "from ${directPlatforms[0]} to ${directPlatforms[1]}"
+        }
+        if (directPlatforms.size == 1) {
+            return "for ${directPlatforms[0]}"
+        }
+
+        // 2. Look inside request objects (e.g. CopyC2CRequest)
+        for (arg in args) {
+            if (arg == null || arg is Platform || arg is String || arg is Number || arg is Boolean) continue
+
+            try {
+                val source = try {
+                    arg.javaClass.getMethod("getSourcePlatform").invoke(arg) as? Platform
+                } catch (e: Exception) {
+                    null
+                }
+                val target = try {
+                    arg.javaClass.getMethod("getTargetPlatform").invoke(arg) as? Platform
+                } catch (e: Exception) {
+                    null
+                }
+
+                if (source != null && target != null) {
+                    return "from $source to $target"
+                }
+                if (source != null) return "from $source"
+                if (target != null) return "to $target"
+            } catch (e: Exception) {
+                // Ignore reflection errors for this argument
+            }
+        }
+
+        return ""
     }
 }

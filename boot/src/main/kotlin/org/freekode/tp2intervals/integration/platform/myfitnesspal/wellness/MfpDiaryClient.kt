@@ -21,8 +21,6 @@ class MfpDiaryClient(
 
     fun getDailyTotals(config: MfpConfiguration, startDate: LocalDate, endDate: LocalDate): List<MfpNutritionDTO> {
         val cookies = config.toCookieMap()
-        log.info("MFP username from DB: [${config.username}]")
-        log.info("MFP cookies loaded: ${cookies.size} cookies from DB")
         val username = config.username!!
 
         val results = mutableListOf<MfpNutritionDTO>()
@@ -37,7 +35,7 @@ class MfpDiaryClient(
 
     private fun fetchDay(username: String, date: LocalDate, cookies: Map<String, String>): MfpNutritionDTO? {
         val url = "$baseUrl$DIARY_PATH/$username?date=$date"
-        log.info("MFP fetching diary: $url")
+        log.debug("MFP fetching diary: $url")
         val doc: Document = Jsoup.connect(url)
             .cookies(cookies)
             .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36")

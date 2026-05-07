@@ -57,6 +57,7 @@ class ToIntervalsWorkoutConverter(
             typeTraining.typeName,
             description,
             workout.details.duration?.seconds,
+            null, // distance
             workout.details.tssPlanned,
             null,
             null

@@ -3,6 +3,7 @@ package org.freekode.tp2intervals.service
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.freekode.tp2intervals.aspect.LogJob
 import org.freekode.tp2intervals.domain.ActivityType
+import org.freekode.tp2intervals.domain.OtherType
 import org.freekode.tp2intervals.domain.TrainingType
 import org.freekode.tp2intervals.domain.WellnessType
 import org.freekode.tp2intervals.dto.schedule.C2CTodayScheduledRequest
@@ -20,6 +21,7 @@ class ScheduledJobService(
     private val workoutService: WorkoutService,
     private val wellnessService: WellnessService,
     private val activityService: ActivityService,
+    private val eventService: EventService,
     val IScheduleRequestRepository: IScheduleRequestRepository,
     val objectMapper: ObjectMapper,
     val jdbcTemplate: JdbcTemplate
@@ -89,7 +91,7 @@ class ScheduledJobService(
                 } catch (e: Exception) { false }
             }
             .map { it.toSchedulable() }
-        log.info("Starting processing scheduled requests. There are ${requests.size} requests")
+        log.info("Starting processing scheduled [WORKOUT] requests. There are ${requests.size} requests")
 
         for (request in requests) {
             workoutService.copyWorkoutsC2C(request.forToday())
@@ -107,7 +109,7 @@ class ScheduledJobService(
                 } catch (e: Exception) { null }
             }
 
-        log.info("Starting processing scheduled Wellness requests. There are ${requests.size} requests")
+        log.info("Starting processing scheduled [WELLNESS] requests. There are ${requests.size} requests")
         for (request in requests) {
             wellnessService.copyWellnessC2C(request.forToday())
         }
@@ -124,9 +126,26 @@ class ScheduledJobService(
                 } catch (e: Exception) { null }
             }
 
-        log.info("Starting processing scheduled Activity requests. There are ${requests.size} requests")
+        log.info("Starting processing scheduled [ACTIVITY] requests. There are ${requests.size} requests")
         for (request in requests) {
             activityService.syncActivities(request.forToday())
+        }
+    }
+
+    @LogJob
+    @Scheduled(fixedRate = 20, timeUnit = TimeUnit.MINUTES)
+    fun jobEvents() {
+        val requests = IScheduleRequestRepository.findAll()
+            .mapNotNull { record ->
+                try {
+                    val request = objectMapper.readValue(record.requestJson, C2CTodayScheduledRequest::class.java)
+                    if (request.hasType<OtherType>()) request else null
+                } catch (e: Exception) { null }
+            }
+
+        log.info("Starting processing scheduled [EVENT] requests. There are ${requests.size} requests")
+        for (request in requests) {
+            eventService.syncEvents(request.forToday())
         }
     }
 
