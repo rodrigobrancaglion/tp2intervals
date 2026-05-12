@@ -10,6 +10,7 @@ import org.freekode.tp2intervals.dto.schedule.C2CTodayScheduledRequest
 import org.freekode.tp2intervals.dto.schedule.Schedulable
 import org.freekode.tp2intervals.integration.provider.schedule.IScheduleRequestRepository
 import org.freekode.tp2intervals.model.schedule.ScheduleRequestEntity
+import org.freekode.tp2intervals.utils.Constants
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.scheduling.annotation.Scheduled
@@ -91,7 +92,7 @@ class ScheduledJobService(
                 } catch (e: Exception) { false }
             }
             .map { it.toSchedulable() }
-        log.info("Starting processing scheduled [WORKOUT] requests. There are ${requests.size} requests")
+        log.info("${Constants.logStringIndentation}Starting processing scheduled [WORKOUT] requests. There are ${requests.size} requests")
 
         for (request in requests) {
             workoutService.copyWorkoutsC2C(request.forToday())
@@ -109,7 +110,7 @@ class ScheduledJobService(
                 } catch (e: Exception) { null }
             }
 
-        log.info("Starting processing scheduled [WELLNESS] requests. There are ${requests.size} requests")
+        log.info("${Constants.logStringIndentation}Starting processing scheduled [WELLNESS] requests. There are ${requests.size} requests")
         for (request in requests) {
             wellnessService.copyWellnessC2C(request.forToday())
         }
@@ -126,7 +127,7 @@ class ScheduledJobService(
                 } catch (e: Exception) { null }
             }
 
-        log.info("Starting processing scheduled [ACTIVITY] requests. There are ${requests.size} requests")
+        log.info("${Constants.logStringIndentation}Starting processing scheduled [ACTIVITY] requests. There are ${requests.size} requests")
         for (request in requests) {
             activityService.syncActivities(request.forToday())
         }
@@ -143,7 +144,7 @@ class ScheduledJobService(
                 } catch (e: Exception) { null }
             }
 
-        log.info("Starting processing scheduled [EVENT] requests. There are ${requests.size} requests")
+        log.info("${Constants.logStringIndentation}Starting processing scheduled [EVENT] requests. There are ${requests.size} requests")
         for (request in requests) {
             eventService.syncEvents(request.forToday())
         }

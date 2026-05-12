@@ -71,15 +71,12 @@ class StravaActivityRepository(
         val dataType = if (fileName.endsWith(".gz")) "fit.gz" else "fit"
         val multipart = ByteArrayMultipartFile(fitBytes, fileName)
 
-        // Use title as name; Rouvy route enrichment is commented out pending Rouvy public API
-        val finalName = if (originalTitle.startsWith("ROUVY")) originalTitle else "ROUVY | $originalTitle"
-
-        log.info("Uploading to Strava: workoutId=${activity.workoutId}, fileName=$fileName, dataType=$dataType, device=${activity.deviceProductName}, description=$finalName")
+        log.info("Uploading to Strava: workoutId=${activity.workoutId}, fileName=$fileName, dataType=$dataType, device=${activity.deviceProductName}, description=$originalTitle")
 
         val uploadResponse = stravaActivityUploadClient.createUpload(
             file = multipart,
             dataType = dataType,
-            name = finalName,
+            name = originalTitle,
             description = activity.description,
             externalId = activity.workoutId.toString(),
         )

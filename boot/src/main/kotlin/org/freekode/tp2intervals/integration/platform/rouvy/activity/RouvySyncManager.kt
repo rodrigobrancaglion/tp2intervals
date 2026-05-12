@@ -7,6 +7,7 @@ import com.microsoft.playwright.options.LoadState
 import org.freekode.tp2intervals.integration.platform.rouvy.RouvyActivitiesClient
 import org.freekode.tp2intervals.integration.platform.rouvy.activity.dto.RouvyActivityDTO
 import org.freekode.tp2intervals.integration.platform.rouvy.configuration.RouvyConfigurationRepository
+import org.freekode.tp2intervals.utils.Constants
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -37,7 +38,7 @@ class RouvySyncManager(
         }
 
         val activitiesFound = mutableListOf<RouvyActivityDTO>()
-        log.info("Starting batch extraction from {} to {}", startDate, endDate)
+        log.info("${Constants.logStringIndentation}Starting batch extraction from {} to {}", startDate, endDate)
 
         Playwright.create().use { playwright ->
             val browser = playwright.chromium().launch(BrowserType.LaunchOptions().setHeadless(true))
@@ -46,20 +47,20 @@ class RouvySyncManager(
 
             try {
                 // 1. Autenticação
-                log.info("[ROUVY] - Navigating to login page")
+                log.info("${Constants.logStringIndentation}Navigating to login page")
                 page.navigate("${accountUrl}/login", com.microsoft.playwright.Page.NavigateOptions().setTimeout(60000.0))
                 page.waitForLoadState(LoadState.LOAD)
 
-                log.info("[ROUVY] - Performing authentication")
+                log.info("${Constants.logStringIndentation}Performing authentication")
                 performLoginInternal(page, email, password)
 
                 // Wait for session to be established on account portal
-                log.info("[ROUVY] - Waiting for login confirmation")
+                log.info("${Constants.logStringIndentation}Waiting for login confirmation")
                 page.waitForURL({ url -> url.contains("account.rouvy.com") && !url.contains("/login") },
                     com.microsoft.playwright.Page.WaitForURLOptions().setTimeout(60000.0))
 
                 // 2. Acessar lista de atividades
-                log.info("[ROUVY] - Transitioning to Riders Portal")
+                log.info("${Constants.logStringIndentation}Transitioning to Riders Portal")
                 page.navigate("${baseUrl}/profile/overview")
                 page.waitForLoadState(LoadState.DOMCONTENTLOADED)
                 page.waitForTimeout(3000.0)
@@ -92,7 +93,7 @@ class RouvySyncManager(
                                 }
                             }
                         } catch (e: Exception) {
-                            log.error("[ROUVY] - Erro ao processar data no loop inicial: ${e.message}")
+                            log.error("${Constants.logStringIndentation}Erro ao processar data no loop inicial: ${e.message}")
                         }
                     }
                 }
@@ -101,7 +102,7 @@ class RouvySyncManager(
                 // CAMPO - 1 / 6 | ID e ActivityDate
                 for ((id, activityDate) in targetActivitiesMap) {
                     try {
-                        log.info("[ROUVY] - Processing activity: {} from date: {}", id, activityDate)
+                        log.info("${Constants.logStringIndentation}Processing activity: {} from date: {}", id, activityDate)
                         page.navigate("${baseUrl}/activity/$id")
                         page.waitForLoadState(LoadState.LOAD)
 
@@ -127,7 +128,7 @@ class RouvySyncManager(
                         if (routeDetailLink.count() > 0) {
                             val routeHref = routeDetailLink.getAttribute("href")
                             if (!routeHref.isNullOrBlank()) {
-                                log.info("[ROUVY] - Navigating to route detail: {}", routeHref)
+                                log.info("${Constants.logStringIndentation}Navigating to route detail: {}", routeHref)
                                 // Navega para a página da rota (ex: /route/291336)
                                 page.navigate("${baseUrl}$routeHref")
                                 page.waitForLoadState(LoadState.LOAD)
@@ -166,12 +167,12 @@ class RouvySyncManager(
                         )
 
                     } catch (e: Exception) {
-                        log.error("[ROUVY] - Failed to process activity $id: ${e.message}")
+                        log.error("${Constants.logStringIndentation}Failed to process activity $id: ${e.message}")
                     }
                 }
 
             } catch (e: Exception) {
-                log.error("[ROUVY] - Batch extraction failed: {}", e.message)
+                log.error("${Constants.logStringIndentation}Batch extraction failed: {}", e.message)
             } finally {
                 browser.close()
             }
@@ -190,20 +191,20 @@ class RouvySyncManager(
 
     private fun download(id: String, name: String, cookie: String): ByteArray? {
         return try {
-            log.info("[ROUVY] - Baixando FIT para atividade $id ($name)...")
+            log.info("${Constants.logStringIndentation}Baixando FIT para atividade $id ($name)...")
             val rawCookie = "rouvy_session=$cookie"
             
             val actualFitBytes = activitiesClient.exportFit(id, rawCookie)
 
             if (actualFitBytes.isNotEmpty()) {
-                log.info("[ROUVY] - Sucesso! FIT extraído para $id (${actualFitBytes.size} bytes).")
+                log.info("${Constants.logStringIndentation}Sucesso! FIT extraído para $id (${actualFitBytes.size} bytes).")
                 actualFitBytes
             } else {
-                log.warn("[ROUVY] - Arquivo FIT retornado vazio para $id")
+                log.warn("${Constants.logStringIndentation}Arquivo FIT retornado vazio para $id")
                 null
             }
         } catch (e: Exception) {
-            log.warn("[ROUVY] - Não foi possível baixar o FIT $id: ${e.message}")
+            log.warn("${Constants.logStringIndentation}Não foi possível baixar o FIT $id: ${e.message}")
             null
         }
     }
