@@ -11,5 +11,6 @@ enum class Platform(
     MYFITNESSPAL("MyFitnessPal", "mfp"),
     STRAVA("Strava", "strava"),
     ROUVY("Rouvy", "rouvy"),
+    WAHOO("Wahoo", "wahoo"),
 
 }

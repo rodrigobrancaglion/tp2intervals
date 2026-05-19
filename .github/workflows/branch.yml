@@ -1,5 +1,9 @@
 name: Build branches
 
+permissions:
+  packages: write
+  id-token: write
+
 on:
   push:
     branches: [ main, dev ]

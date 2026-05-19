@@ -16,8 +16,36 @@ class ConfigurationService(
     platformInfoRepositories: List<PlatformInfoRepository>,
     private val iConfigurationRepository: IConfigurationRepository,
     private val debugModeService: DebugModeService,
+    private val wahooTokenApiClient: org.freekode.tp2intervals.integration.platform.wahoo.token.WahooTokenApiClient,
 ) {
     private val platformInfoRepositoryMap = platformInfoRepositories.associateBy { it.platform() }
+
+    fun exchangeWahooCode(code: String, redirectUri: String) {
+        val clientId = iConfigurationRepository.getConfiguration("wahoo.client-id")
+        val clientSecret = iConfigurationRepository.getConfiguration("wahoo.client-secret")
+
+        if (clientId == null || clientSecret == null) {
+            throw PlatformException(Platform.WAHOO, "Wahoo Client ID or Secret is missing")
+        }
+
+        val tokenDTO = wahooTokenApiClient.exchangeCode(
+            mapOf(
+                "client_id" to clientId,
+                "client_secret" to clientSecret,
+                "code" to code,
+                "grant_type" to "authorization_code",
+                "redirect_uri" to redirectUri
+            )
+        )
+
+        iConfigurationRepository.updateConfig(
+            UpdateConfigurationRequest(
+                mapOf(
+                    "wahoo.refresh-token" to tokenDTO.refresh_token
+                )
+            )
+        )
+    }
 
     fun getConfiguration(key: String): String? = iConfigurationRepository.getConfiguration(key)
 

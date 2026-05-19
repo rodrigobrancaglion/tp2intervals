@@ -46,7 +46,7 @@ class IntervalsEventRepository(
                     date = dto.start_date_local.toLocalDate(),
                     category = cat,
                     eventType = dto.type?.let { resolveEventType(it) },
-                    subEventType = if (dto.type?.lowercase() == "mtb") "MTB" else null,
+                    subEventType = if (dto.type?.lowercase() == "mtb") TrainingType.MTB.title else null,
                     description = dto.description,
                     durationSeconds = dto.moving_time,
                     distance = dto.distance,
@@ -132,19 +132,19 @@ class IntervalsEventRepository(
     }
 
     private fun resolveIcuType(event: Event): String = when (event.eventType) {
-        EventType.CYCLING -> TrainingType.BIKE.title
-        EventType.RUNNING -> TrainingType.RUN.title
-        EventType.SWIMMING -> "Swim"
+        EventType.CYCLING    -> TrainingType.BIKE.title
+        EventType.RUNNING    -> TrainingType.RUN.title
+        EventType.SWIMMING   -> TrainingType.SWIM.title
         EventType.MULTISPORT -> "Triathlon"
-        EventType.ROWING -> "Row"
-        else -> "Other"  // Default to "Other" if type unknown
+        EventType.ROWING     -> "Row"
+        else -> EventType.OTHER.title  // Default to "Other" if type unknown
     }
 
-    private fun resolveEventType(type: String) = when (type.lowercase()) {
-        "ride" -> EventType.CYCLING
-        "mtb" -> EventType.CYCLING
-        "run" -> EventType.RUNNING
-        "swim" -> EventType.SWIMMING
+    private fun resolveEventType(type: String) = when (type.uppercase()) {
+        TrainingType.BIKE.title.uppercase() -> EventType.CYCLING
+        TrainingType.MTB.title.uppercase()  -> EventType.CYCLING
+        TrainingType.RUN.title.uppercase()  -> EventType.RUNNING
+        TrainingType.SWIM.title.uppercase() -> EventType.SWIMMING
         "triathlon" -> EventType.MULTISPORT
         "row" -> EventType.ROWING
         else -> null

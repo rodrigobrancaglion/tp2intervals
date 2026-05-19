@@ -2,10 +2,7 @@ package org.freekode.tp2intervals.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.freekode.tp2intervals.aspect.LogJob
-import org.freekode.tp2intervals.domain.ActivityType
-import org.freekode.tp2intervals.domain.OtherType
-import org.freekode.tp2intervals.domain.TrainingType
-import org.freekode.tp2intervals.domain.WellnessType
+import org.freekode.tp2intervals.domain.*
 import org.freekode.tp2intervals.dto.schedule.C2CTodayScheduledRequest
 import org.freekode.tp2intervals.dto.schedule.Schedulable
 import org.freekode.tp2intervals.integration.provider.schedule.IScheduleRequestRepository
@@ -23,6 +20,7 @@ class ScheduledJobService(
     private val wellnessService: WellnessService,
     private val activityService: ActivityService,
     private val eventService: EventService,
+    private val settingService: SettingService,
     val IScheduleRequestRepository: IScheduleRequestRepository,
     val objectMapper: ObjectMapper,
     val jdbcTemplate: JdbcTemplate
@@ -147,6 +145,17 @@ class ScheduledJobService(
         log.info("${Constants.logStringIndentation}Starting processing scheduled [EVENT] requests. There are ${requests.size} requests")
         for (request in requests) {
             eventService.syncEvents(request.forToday())
+        }
+    }
+
+    @LogJob
+    @Scheduled(cron = "0 0 22 ? * MON")
+    fun scheduledPowerZoneSync() {
+        if (settingService.isSchedulerEnabled()) {
+            log.info("Running scheduled Power-zone sync (Monday)")
+            settingService.syncPowerZones(Platform.TRAINING_PEAKS, Platform.INTERVALS)
+        } else {
+            log.debug("Scheduled Power-zone sync is disabled")
         }
     }
 

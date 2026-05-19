@@ -45,9 +45,9 @@ object EventToTPConverter {
         val durationHours = (event.durationSeconds ?: 0) / 3600.0
         val distanceKm = (event.distance ?: 0.0) / 1000.0
 
-        val isMountain = tpEventType == "CyclingMountain" || event.subEventType == "MTB"
+        val isMountain = tpEventType == SubEventType.CYCLING_MOUNTAIN.value || event.subEventType == "MTB"
 
-        if (tpEventType.startsWith("Cycling")) {
+        if (tpEventType.startsWith(EventType.CYCLING.title)) {
             // Priority 1: Duration
             if (event.durationSeconds != null && event.durationSeconds > 0) {
                 return if (isMountain) {

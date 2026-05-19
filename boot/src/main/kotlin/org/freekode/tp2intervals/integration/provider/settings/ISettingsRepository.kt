@@ -1,14 +1,12 @@
 package org.freekode.tp2intervals.integration.provider.settings
 
-import org.freekode.tp2intervals.domain.BaseType
 import org.freekode.tp2intervals.domain.Platform
-import org.freekode.tp2intervals.domain.activity.Activity
-import java.time.LocalDate
+import org.freekode.tp2intervals.domain.settings.PowerZone
 
 interface ISettingsRepository {
     fun platform(): Platform
 
-    fun get(startDate: LocalDate, endDate: LocalDate): List<Activity>
+    fun getPowerZones(): Pair<Int, List<PowerZone>>
 
-    fun save(activities: List<Activity>, types: List<BaseType>)
+    fun savePowerZones(threshold: Int, zones: List<PowerZone>)
 }

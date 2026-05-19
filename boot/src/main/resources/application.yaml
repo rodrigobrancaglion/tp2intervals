@@ -12,6 +12,8 @@ app:
   rouvy:
     account-url: https://account.rouvy.com
     api-url: https://riders.rouvy.com
+  wahoo:
+    api-url: https://api.wahooligan.com
 
   attachments:
     enabled: true

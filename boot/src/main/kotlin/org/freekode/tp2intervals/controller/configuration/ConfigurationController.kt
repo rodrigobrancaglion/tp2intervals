@@ -45,4 +45,15 @@ class ConfigurationController(
     @GetMapping("/api/configuration/{platform}")
     fun getConfigurations(@PathVariable platform: Platform) =
         configurationService.platformInfo(platform)
+
+    @PostMapping("/api/configuration/wahoo/auth")
+    fun exchangeWahooCode(@RequestParam code: String, @RequestParam redirectUri: String): ResponseEntity<Any> {
+        return try {
+            configurationService.exchangeWahooCode(code, redirectUri)
+            val configurations = configurationService.getConfigurations()
+            ResponseEntity.ok().body(ConfigurationResponse(configurations.configMap))
+        } catch (e: Exception) {
+            ResponseEntity.badRequest().body(ErrorResponse(e.message))
+        }
+    }
 }

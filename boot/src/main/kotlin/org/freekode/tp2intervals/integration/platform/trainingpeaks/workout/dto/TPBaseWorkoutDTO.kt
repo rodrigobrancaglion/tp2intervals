@@ -135,7 +135,9 @@ abstract class TPBaseWorkoutDTO<T>(
         // Using the mapper logic we built: return true if it's NOT a Workout category
         return trainingType == TrainingType.NOTE ||
                 trainingType == TrainingType.DAY_OFF ||
-                trainingType == TrainingType.BRICK
+                trainingType == TrainingType.BRICK ||
+                trainingType == TrainingType.STRENGTH
+
     }
 
     fun mapType(): TrainingType = workoutTypeValueId.let { TPWorkoutTypeMapper.getByValue(it) }

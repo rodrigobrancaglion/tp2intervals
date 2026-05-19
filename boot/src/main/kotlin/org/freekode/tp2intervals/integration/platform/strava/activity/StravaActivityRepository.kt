@@ -41,25 +41,6 @@ class StravaActivityRepository(
         }
     }
 
-    fun uploadDirectFit(fitBytes: ByteArray, name: String) {
-        val fileName = "${name.replace(" ", "_")}.fit"
-        val multipart = ByteArrayMultipartFile(fitBytes, fileName)
-        val finalName = if (name.startsWith("ROUVY")) name else "ROUVY | $name"
-
-        log.info("Uploading direct FIT to Strava: name=$finalName")
-
-        val uploadResponse = stravaActivityUploadClient.createUpload(
-            file = multipart,
-            dataType = "fit",
-            name = finalName,
-            description = "Synced from Rouvy via Antigravity Automation",
-            externalId = null,
-        )
-
-        log.info("Strava direct upload queued: uploadId=${uploadResponse.id}, status=${uploadResponse.status}")
-        // We don't necessarily need to poll here for automated sync, just fire and forget if it queued
-    }
-
     /**
      * Uploads the FIT file to Strava and polls for completion.
      * If the activity title starts with "ROUVY", uses the title as description.
@@ -119,4 +100,22 @@ class StravaActivityRepository(
         return emptyList()
     }
 
+    fun uploadDirectFit(fitBytes: ByteArray, name: String) {
+        val fileName = "${name.replace(" ", "_")}.fit"
+        val multipart = ByteArrayMultipartFile(fitBytes, fileName)
+        val finalName = if (name.startsWith("ROUVY")) name else "ROUVY | $name"
+
+        log.info("Uploading direct FIT to Strava: name=$finalName")
+
+        val uploadResponse = stravaActivityUploadClient.createUpload(
+            file = multipart,
+            dataType = "fit",
+            name = finalName,
+            description = "Synced from Rouvy via Antigravity Automation",
+            externalId = null,
+        )
+
+        log.info("Strava direct upload queued: uploadId=${uploadResponse.id}, status=${uploadResponse.status}")
+        // We don't necessarily need to poll here for automated sync, just fire and forget if it queued
+    }
 }

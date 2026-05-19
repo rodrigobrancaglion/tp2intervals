@@ -38,4 +38,10 @@ export class ConfigurationClient {
       map(response => (<any>response).infoMap)
     )
   }
+
+  exchangeWahooCode(code: string, redirectUri: string): Observable<any> {
+    return this.httpClient.post(`/api/configuration/wahoo/auth`, null, {
+      params: {code, redirectUri}
+    })
+  }
 }

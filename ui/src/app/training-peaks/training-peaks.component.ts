@@ -17,6 +17,7 @@ import {
 import {
   TpCopyEventsToCalendarComponent
 } from "app/training-peaks/tp-copy-events-to-calendar/tp-copy-events-to-calendar.component";
+import {TpSettingPowerComponent} from "app/training-peaks/tp-setting-power/tp-setting-power.component";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {NgIf} from "@angular/common";
 import {ConfigurationClient} from "integration/client/configuration.client";
@@ -35,6 +36,7 @@ import {MatListModule} from "@angular/material/list";
     TpCopyWellnessToCalendarComponent,
     TpCopyActivitiesToCalendarComponent,
     TpCopyEventsToCalendarComponent,
+    TpSettingPowerComponent,
     MatExpansionModule,
     NgIf,
     MatProgressBarModule,

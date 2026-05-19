@@ -1,205 +1,259 @@
 <mat-progress-bar *ngIf="inProgress" mode="query"></mat-progress-bar>
 
 <form [formGroup]="formGroup" novalidate (ngSubmit)="onSubmit()">
-  <div>
-    <h2>
-      Intervals.icu
-      <a href="https://github.com/freekode/tp2intervals?tab=readme-ov-file#intervalsicu" target="_blank">
-        <i class="bi bi-question-circle"
-           matTooltip="How to configure"
-           matTooltipPosition="right"></i>
-      </a>
-    </h2>
 
-    <mat-form-field class="full-width">
-      <mat-label>Intervals API Key</mat-label>
-      <input matInput placeholder="123456qwerty123456qwerty1" formControlName="intervals.api-key">
-    </mat-form-field>
+  <section>
+    <h3 class="group-title">Configuration
+    <a href="https://github.com/freekode/tp2intervals?tab=readme-ov-file#intervalsicu" target="_blank" (click)="$event.stopPropagation()">
+      <i class="bi bi-question-circle" matTooltip="How to configure" matTooltipPosition="right"></i>
+    </a></h3>
 
-    <mat-form-field class="full-width">
-      <mat-label>Intervals Athlete Id</mat-label>
-      <input matInput placeholder="i00000" formControlName="intervals.athlete-id">
-    </mat-form-field>
-
-    <mat-accordion>
+    <mat-accordion multi>
       <mat-expansion-panel>
         <mat-expansion-panel-header>
-          <mat-panel-title>
-            Advanced properties
-          </mat-panel-title>
+          <mat-panel-title>Intervals.icu</mat-panel-title>
         </mat-expansion-panel-header>
 
         <mat-form-field class="full-width">
-          <mat-label>Intervals Power range percentage</mat-label>
-          <input matInput type="number" placeholder="5.0" formControlName="intervals.power-range">
+          <mat-label>Intervals API Key</mat-label>
+          <input matInput placeholder="123456qwerty123456qwerty1" formControlName="intervals.api-key">
         </mat-form-field>
 
         <mat-form-field class="full-width">
-          <mat-label>Intervals HR range percentage</mat-label>
-          <input matInput type="number" placeholder="5.0" formControlName="intervals.hr-range">
+          <mat-label>Intervals Athlete Id</mat-label>
+          <input matInput placeholder="i00000" formControlName="intervals.athlete-id">
         </mat-form-field>
 
+        <mat-accordion>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Advanced properties</mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <mat-form-field class="full-width">
+              <mat-label>Intervals Power range percentage</mat-label>
+              <input matInput type="number" placeholder="5.0" formControlName="intervals.power-range">
+            </mat-form-field>
+
+            <mat-form-field class="full-width">
+              <mat-label>Intervals HR range percentage</mat-label>
+              <input matInput type="number" placeholder="5.0" formControlName="intervals.hr-range">
+            </mat-form-field>
+
+            <mat-form-field class="full-width">
+              <mat-label>Intervals Pace range percentage</mat-label>
+              <input matInput type="number" placeholder="5.0" formControlName="intervals.pace-range">
+            </mat-form-field>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <mat-accordion multi>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>TrainingPeaks</mat-panel-title>
+        </mat-expansion-panel-header>
+
         <mat-form-field class="full-width">
-          <mat-label>Intervals Pace range percentage</mat-label>
-          <input matInput type="number" placeholder="5.0" formControlName="intervals.pace-range">
+          <mat-label>TrainingPeaks Auth Cookie</mat-label>
+          <input matInput placeholder="Production_tpAuth=very_long_string" formControlName="training-peaks.auth-cookie">
+          @if (formGroup.controls['training-peaks.auth-cookie'].errors?.['pattern']) {
+            <mat-error>Must be in format Production_tpAuth=[a-zA-Z0-9-_]*</mat-error>
+          }
         </mat-form-field>
       </mat-expansion-panel>
     </mat-accordion>
-  </div>
 
-  <div>
-    <h2>
-      TrainingPeaks
-      <a href="https://github.com/freekode/tp2intervals?tab=readme-ov-file#trainingpeaks" target="_blank">
-        <i class="bi bi-question-circle"
-           matTooltip="How to configure"
+    <mat-accordion multi>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>TrainerRoad</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <mat-form-field class="full-width">
+          <mat-label>TrainerRoad Auth Cookie</mat-label>
+          <input matInput placeholder="TrainerRoadAuth=very_long_string" formControlName="trainer-road.auth-cookie">
+          @if (formGroup.controls['trainer-road.auth-cookie'].errors?.['pattern']) {
+            <mat-error>Must be in format SharedTrainerRoadAuth=...</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-checkbox class="form-checkbox" formControlName="trainer-road.remove-html-tags">
+          Remove HTML tags from description
+        </mat-checkbox>
+        <i class="bi bi-stars beta-icon"
+           matTooltip="Beta feature"
            matTooltipPosition="right"></i>
-      </a>
-    </h2>
+      </mat-expansion-panel>
+    </mat-accordion>
 
-    <mat-form-field class="full-width">
-      <mat-label>TrainingPeaks Auth Cookie</mat-label>
-      <input matInput placeholder="Production_tpAuth=very_long_string" formControlName="training-peaks.auth-cookie">
-      @if (formGroup.controls['training-peaks.auth-cookie'].errors?.['pattern']) {
-        <mat-error>Must be in format Production_tpAuth=[a-zA-Z0-9-_]*</mat-error>
-      }
-    </mat-form-field>
-  </div>
+    <mat-accordion multi>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Strava</mat-panel-title>
+        </mat-expansion-panel-header>
 
-  <div>
-    <h2>
-      TrainerRoad
-      <a href="https://github.com/freekode/tp2intervals?tab=readme-ov-file#trainerroad" target="_blank">
-        <i class="bi bi-question-circle"
-           matTooltip="How to configure"
-           matTooltipPosition="right"></i>
-      </a>
-    </h2>
+        <mat-form-field class="full-width">
+          <mat-label>Strava Client ID</mat-label>
+          <input matInput placeholder="your_client_id" formControlName="strava.client-id">
+        </mat-form-field>
 
-    <mat-form-field class="full-width">
-      <mat-label>TrainerRoad Auth Cookie</mat-label>
-      <input matInput placeholder="TrainerRoadAuth=very_long_string" formControlName="trainer-road.auth-cookie">
-      @if (formGroup.controls['trainer-road.auth-cookie'].errors?.['pattern']) {
-        <mat-error>Must be in format SharedTrainerRoadAuth=...</mat-error>
-      }
-    </mat-form-field>
+        <mat-form-field class="full-width">
+          <mat-label>Strava Client Secret</mat-label>
+          <input matInput placeholder="your_client_secret" formControlName="strava.client-secret">
+        </mat-form-field>
 
-    <mat-checkbox class="form-checkbox" formControlName="trainer-road.remove-html-tags">
-      Remove HTML tags from description
-    </mat-checkbox>
-    <i class="bi bi-stars beta-icon"
-       matTooltip="Beta feature"
-       matTooltipPosition="right"></i>
-  </div>
+        <mat-form-field class="full-width">
+          <mat-label>Strava Refresh Token</mat-label>
+          <input matInput placeholder="your_refresh_token" formControlName="strava.refresh-token">
+        </mat-form-field>
+      </mat-expansion-panel>
+    </mat-accordion>
 
-  <div>
-    <h2>
-      MyFitnessPal
-      <a href="https://github.com/freekode/tp2intervals?tab=readme-ov-file#myfitnesspal" target="_blank">
-        <i class="bi bi-question-circle"
-           matTooltip="How to configure"
-           matTooltipPosition="right"></i>
-      </a>
-    </h2>
+    <mat-accordion multi>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Rouvy</mat-panel-title>
+        </mat-expansion-panel-header>
 
-    <mat-form-field class="full-width">
-      <mat-label>_mfp_session cookie value</mat-label>
-      <input matInput placeholder="Paste value of _mfp_session cookie from F12" formControlName="mfp.session-cookie">
-    </mat-form-field>
+        <mat-form-field class="full-width">
+          <mat-label>Rouvy Email</mat-label>
+          <input matInput placeholder="your@email.com" formControlName="rouvy.email">
+        </mat-form-field>
 
-    <mat-form-field class="full-width">
-      <mat-label>__Secure-next-auth.session-token cookie value</mat-label>
-      <input matInput placeholder="Paste value of __Secure-next-auth.session-token cookie from F12" formControlName="mfp.session-token-cookie">
-    </mat-form-field>
+        <mat-form-field class="full-width">
+          <mat-label>Rouvy Password</mat-label>
+          <input matInput type="password" placeholder="your_password" formControlName="rouvy.password">
+        </mat-form-field>
+      </mat-expansion-panel>
+    </mat-accordion>
 
-    <mat-form-field class="full-width">
-      <mat-label>remember_me cookie value</mat-label>
-      <input matInput placeholder="Paste value of remember_me cookie from F12" formControlName="mfp.remember-me-cookie">
-    </mat-form-field>
+    <mat-accordion multi>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Wahoo</mat-panel-title>
+        </mat-expansion-panel-header>
 
-    <mat-form-field class="full-width">
-      <mat-label>User Id</mat-label>
-      <input matInput placeholder="204113894575613" formControlName="mfp.user-id">
-    </mat-form-field>
+        <mat-form-field class="full-width">
+          <mat-label>Wahoo Client ID</mat-label>
+          <input matInput placeholder="your_client_id" formControlName="wahoo.client-id">
+        </mat-form-field>
 
-    <mat-form-field class="full-width">
-      <mat-label>Username</mat-label>
-      <input matInput placeholder="your_mfp_username" formControlName="mfp.username">
-    </mat-form-field>
-  </div>
+        <mat-form-field class="full-width">
+          <mat-label>Wahoo Client Secret</mat-label>
+          <input matInput placeholder="your_client_secret" formControlName="wahoo.client-secret">
+        </mat-form-field>
 
-  <div>
-    <h2>
-      Strava
-      <a href="https://github.com/freekode/tp2intervals?tab=readme-ov-file#strava" target="_blank">
-        <i class="bi bi-question-circle"
-           matTooltip="How to configure"
-           matTooltipPosition="right"></i>
-      </a>
-    </h2>
+        <mat-form-field class="full-width">
+          <mat-label>Wahoo Refresh Token</mat-label>
+          <input matInput placeholder="your_refresh_token" formControlName="wahoo.refresh-token">
+        </mat-form-field>
 
-    <mat-form-field class="full-width">
-      <mat-label>Strava Client ID</mat-label>
-      <input matInput placeholder="your_client_id" formControlName="strava.client-id">
-    </mat-form-field>
+          <div class="row" *ngIf="!formGroup.get(['wahoo.refresh-token'])?.value; else wahooConnected">
+            <div class="col">
+              <button mat-raised-button color="primary" type="button" (click)="connectToWahoo()" [disabled]="inProgress">
+                {{ inProgress ? 'Connecting...' : 'Connect Wahoo' }}
+              </button>
+              
+              <div class="row mt-3">
+                <div class="col">
+                  <mat-divider class="mb-3"></mat-divider>
+                  <p class="text-muted small">If the automatic redirect fails, copy the 'code' from the address bar and paste it here:</p>
+                  <div class="d-flex gap-2">
+                    <mat-form-field appearance="outline" class="flex-grow-1">
+                      <mat-label>Wahoo Auth Code</mat-label>
+                      <input matInput [(ngModel)]="manualWahooCode" [ngModelOptions]="{standalone: true}" placeholder="Paste code from URL here">
+                    </mat-form-field>
+                    <button mat-stroked-button type="button" (click)="connectManualWahoo()" [disabled]="inProgress || !manualWahooCode">
+                      Finish Connection
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-    <mat-form-field class="full-width">
-      <mat-label>Strava Client Secret</mat-label>
-      <input matInput placeholder="your_client_secret" formControlName="strava.client-secret">
-    </mat-form-field>
+          <ng-template #wahooConnected>
+            <div class="row">
+              <div class="col d-flex align-items-center gap-2 text-success">
+                <mat-checkbox [checked]="true" [disabled]="true"></mat-checkbox>
+                <span>Wahoo Account Connected</span>
+                <button mat-button color="warn" type="button" (click)="reconnectWahoo()">
+                  Reconnect
+                </button>
+              </div>
+            </div>
+          </ng-template>
+      </mat-expansion-panel>
+    </mat-accordion>
 
-    <mat-form-field class="full-width">
-      <mat-label>Strava Refresh Token</mat-label>
-      <input matInput placeholder="your_refresh_token" formControlName="strava.refresh-token">
-    </mat-form-field>
-  </div>
+    <mat-accordion multi>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>MyFitnessPal</mat-panel-title>
+        </mat-expansion-panel-header>
 
-  <div>
-    <h2>
-      Rouvy
-      <a href="https://github.com/freekode/tp2intervals" target="_blank">
-        <i class="bi bi-question-circle"
-           matTooltip="How to configure"
-           matTooltipPosition="right"></i>
-      </a>
-    </h2>
+        <mat-form-field class="full-width">
+          <mat-label>_mfp_session cookie value</mat-label>
+          <input matInput placeholder="Paste value of _mfp_session cookie from F12" formControlName="mfp.session-cookie">
+        </mat-form-field>
 
-    <mat-form-field class="full-width">
-      <mat-label>Rouvy Email</mat-label>
-      <input matInput placeholder="your@email.com" formControlName="rouvy.email">
-    </mat-form-field>
+        <mat-form-field class="full-width">
+          <mat-label>__Secure-next-auth.session-token cookie value</mat-label>
+          <input matInput placeholder="Paste value of __Secure-next-auth.session-token cookie from F12" formControlName="mfp.session-token-cookie">
+        </mat-form-field>
 
-    <mat-form-field class="full-width">
-      <mat-label>Rouvy Password</mat-label>
-      <input matInput type="password" placeholder="your_password" formControlName="rouvy.password">
-    </mat-form-field>
-  </div>
+        <mat-form-field class="full-width">
+          <mat-label>remember_me cookie value</mat-label>
+          <input matInput placeholder="Paste value of remember_me cookie from F12" formControlName="mfp.remember-me-cookie">
+        </mat-form-field>
 
-  <div>
-    <h2>General</h2>
+        <mat-form-field class="full-width">
+          <mat-label>User Id</mat-label>
+          <input matInput placeholder="204113894575613" formControlName="mfp.user-id">
+        </mat-form-field>
 
-    <div class="row">
-      <mat-checkbox class="form-checkbox" formControlName="general.debug-mode">
-        Debug Mode
-      </mat-checkbox>
-    </div>
+        <mat-form-field class="full-width">
+          <mat-label>Username</mat-label>
+          <input matInput placeholder="your_mfp_username" formControlName="mfp.username">
+        </mat-form-field>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </section>
 
-    <div *ngIf="formGroup.controls['general.debug-mode'].value" class="row" style="margin-bottom: 20px">
-      Log location:<br>
-      Linux: ~/.config/tp2intervals/logs/main.log<br>
-      MacOS: ~/Library/Logs/tp2intervals/main.log<br>
-      Windows: %USERPROFILE%\AppData\Roaming\tp2intervals\logs\main.log<br>
-      JAR: ./tp2intervals.log<br>
-    </div>
-  </div>
+  <mat-divider style="margin: 10px 0;"></mat-divider>
+
+  <section>
+    <mat-accordion multi>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>General</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="row">
+          <mat-checkbox class="form-checkbox" formControlName="general.debug-mode">
+            Debug Mode
+          </mat-checkbox>
+        </div>
+
+        <div *ngIf="formGroup.controls['general.debug-mode'].value" class="row" style="margin-bottom: 20px">
+          Log location:<br>
+          Linux: ~/.config/tp2intervals/logs/main.log<br>
+          MacOS: ~/Library/Logs/tp2intervals/main.log<br>
+          Windows: %USERPROFILE%\AppData\Roaming\tp2intervals\logs\main.log<br>
+          JAR: ./tp2intervals.log<br>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </section>
 
   <div class="row action-button-section">
     <button
       mat-raised-button
       color="primary"
       type="submit"
-      [disabled]="formGroup.invalid || inProgress"
-    >
+      [disabled]="formGroup.invalid || inProgress">
       Confirm
     </button>
   </div>

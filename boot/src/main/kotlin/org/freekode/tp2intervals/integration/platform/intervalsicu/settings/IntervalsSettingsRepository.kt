@@ -1,55 +1,51 @@
 package org.freekode.tp2intervals.integration.platform.intervalsicu.settings
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import org.freekode.tp2intervals.domain.BaseType
 import org.freekode.tp2intervals.domain.Platform
-import org.freekode.tp2intervals.domain.activity.Activity
+import org.freekode.tp2intervals.domain.settings.PowerZone
 import org.freekode.tp2intervals.integration.platform.intervalsicu.configuration.IntervalsConfigurationRepository
-import org.freekode.tp2intervals.integration.platform.intervalsicu.workout.IntervalsWorkoutApiClient
 import org.freekode.tp2intervals.integration.provider.settings.ISettingsRepository
-import org.springframework.cache.annotation.CacheConfig
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
-import java.time.LocalDate
 
-@CacheConfig(cacheNames = ["tpSettingsCache"])
 @Repository
 class IntervalsSettingsRepository(
-    private val intervalsWorkoutApiClient: IntervalsWorkoutApiClient,
-    private val intervalsConfigurationRepository: IntervalsConfigurationRepository,
-
-    objectMapper: ObjectMapper
-
+    private val intervalsSettingsApiClient: IntervalsSettingsApiClient,
+    private val intervalsConfigurationRepository: IntervalsConfigurationRepository
 ) : ISettingsRepository {
+
+    private val log = LoggerFactory.getLogger(this.javaClass)
+
     override fun platform() = Platform.INTERVALS
 
-    override fun save(activities: List<Activity>, types: List<BaseType>) {
-//        activities.forEach { activity ->
-//
-//            val newActivityDTO = IntervalsToActivityConverter().toDTO(activity, types)
-//
-//            intervalsApiClient.updateActivity(
-//                activity.workoutId.toString(),
-//                newActivityDTO
-//            )
-//        }
+    override fun getPowerZones(): Pair<Int, List<PowerZone>> {
+        throw UnsupportedOperationException("Getting power zones from Intervals.icu is not supported")
     }
 
-    override fun get(startDate: LocalDate, endDate: LocalDate): List<Activity> {
-//        val activities =
-//            intervalsApiClient.getActivities(
-//                intervalsConfigurationRepository.getConfiguration().athleteId,
-//                startDate.atStartOfDay().toString(),
-//                endDate.atStartOfDay().plusDays(1).minusSeconds(1).toString()
-//            )
-//
-//        val workoutsMap = intervalsWorkoutRepository.getWorkoutsFromCalendar(startDate, endDate)
-//            .associateBy { it.id }
-//
-//        return activities
-//            .map {
-//                val pairedWorkout = workoutsMap[it.paired_event_id]
-//                IntervalsToActivityConverter().toDomain(it, pairedWorkout) }
-        return emptyList()
-    }
+    override fun savePowerZones(threshold: Int, zones: List<PowerZone>) {
+        val icuConfig = intervalsConfigurationRepository.getConfiguration()
+        val icuAthleteId = icuConfig.athleteId ?: throw IllegalStateException("ICU athleteId not configured")
+        val icuSportSettingsId = 1311702 // Default or required ID as per instructions
 
+        // Map domain objects back to TPZoneRangeDTO-like structure for the utility, or rewrite SettingUtils.
+        // Let's rewrite the call since SettingUtils expects a threshold and generic lists.
+//        val percentages = SettingUtils.calculateIcuPowerZonePercentagesFromDomain(threshold, zones)
+//        val names = SettingUtils.getIcuPowerZoneNames(percentages.size)
+
+        // Payload 1: FTP update
+        val payload1 = mapOf<String, Any>("ftp" to threshold)
+
+        // Payload 2: Power zones update
+//        val payload2 = mapOf<String, Any>(
+//            "power_zones" to percentages,
+//            "power_zone_names" to names,
+//            "sweet_spot_min" to 84,
+//            "sweet_spot_max" to 97
+//        )
+
+        log.info("Sending Payload 1 (FTP) to Intervals.icu...")
+        intervalsSettingsApiClient.updateSportSettings(icuAthleteId, icuSportSettingsId, payload1)
+
+//        log.info("Sending Payload 2 (Power Zones) to Intervals.icu: $payload2")
+//        intervalsSettingsApiClient.updateSportSettings(icuAthleteId, icuSportSettingsId, payload2)
+    }
 }

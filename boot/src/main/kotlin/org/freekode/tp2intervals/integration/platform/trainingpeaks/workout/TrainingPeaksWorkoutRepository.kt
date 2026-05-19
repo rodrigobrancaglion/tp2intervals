@@ -39,6 +39,7 @@ class TrainingPeaksWorkoutRepository(
 
     override fun platform() = Platform.TRAINING_PEAKS
 
+    @LogRepository
     override fun saveWorkoutsToCalendar(workouts: List<Workout>) {
         workouts.forEach { saveWorkoutToCalendar(it) }
     }
