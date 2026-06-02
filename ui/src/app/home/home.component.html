@@ -1,10 +1,56 @@
-<p>
-  Your Unified Training & Library Hub
-</p>
-<p>
-  Synchronize your entire training world. Seamlessly bridge workout libraries, training plans, activities, and wellness data from TrainingPeaks, Wahoo, Rouvy, and MyFitnessPal directly to Intervals.icu.
-</p>
-<br>
-<p>
-  Choose a platform from the top bar
-</p>
+<div class="home-container">
+  <!-- Hero / Introduction Area -->
+  <section class="hero-section">
+    <h1 class="hero-title">Your Unified Training Hub</h1>
+    <p class="hero-subtitle">
+      Seamlessly bridge workout libraries, planned training workouts, event calendars, wellness metrics, and settings between all major platforms directly to Intervals.icu.
+    </p>
+  </section>
+
+  <!-- Connection Status Header -->
+  <div class="dashboard-header">
+    <h2 class="section-title">Integrations Status</h2>
+    <span class="sub-status" *ngIf="inProgress">Loading connection status...</span>
+  </div>
+
+  <!-- Platform Grid -->
+  <div class="platforms-grid">
+    @for (platform of platforms; track platform.id) {
+      <div class="platform-card precision-card" 
+           [ngClass]="connectedPlatforms[platform.id] ? 'success' : 'danger'"
+           [routerLink]="[platform.url]">
+        
+        <div class="card-header">
+          <div class="card-title-group">
+            <!-- Pure CSS Platform Badge -->
+            <div class="platform-logo-mini" 
+                 [ngClass]="platform.id"
+                 [style.background-image]="platform.id === 'training-peaks' ? 'url(assets/platforms/tp.jpg)' : 'none'"
+                 [style.background-size]="'cover'"
+                 [style.background-position]="'center'">
+              <span *ngIf="platform.id !== 'training-peaks'">
+                {{ platform.id === 'trainer-road' ? 'TR' : platform.id === 'rouvy' ? 'R' : platform.id === 'myfitnesspal' ? 'MF' : platform.id === 'wahoo' ? 'W' : 'ICU' }}
+              </span>
+            </div>
+            <h3 class="platform-name">{{ platform.name }}</h3>
+          </div>
+          
+          <!-- Status Badge Indicator -->
+          <span class="status-badge" [ngClass]="connectedPlatforms[platform.id] ? 'connected' : 'disconnected'">
+            <span class="dot"></span>
+            {{ connectedPlatforms[platform.id] ? 'Active' : 'Unconfigured' }}
+          </span>
+        </div>
+
+        <p class="platform-desc">{{ platform.desc }}</p>
+
+        <div class="card-footer">
+          <span class="action-link">
+            {{ connectedPlatforms[platform.id] ? 'Manage Integration' : 'Configure Connection' }}
+            <i class="bi bi-arrow-right-short"></i>
+          </span>
+        </div>
+      </div>
+    }
+  </div>
+</div>

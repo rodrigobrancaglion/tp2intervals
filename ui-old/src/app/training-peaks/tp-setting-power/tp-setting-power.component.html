@@ -1,0 +1,13 @@
+<div class="setting-container">
+  <p>Synchronize your Power Zones from TrainingPeaks to Intervals.icu.</p>
+
+  <div class="actions">
+    <button mat-raised-button color="primary" (click)="confirmSync()" [disabled]="isSyncing">
+      {{ isSyncing ? 'Syncing...' : 'Confirm' }}
+    </button>
+
+    <mat-checkbox [(ngModel)]="schedulerEnabled" (change)="onSchedulerToggle()" class="scheduler-checkbox">
+      Scheduler (Every Monday)
+    </mat-checkbox>
+  </div>
+</div>

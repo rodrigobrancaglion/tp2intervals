@@ -1,0 +1,332 @@
+// UI-v2 Precision Athletic Dark Design System
+
+// 1. Color Palette Variable Declarations
+:root {
+  --color-bg: #0D0F14;
+  --color-surface: #141923;
+  --color-surface-elevated: #1D2432;
+
+  --color-accent: #44B4CA;
+  --color-accent-hover: #33DDFF;
+  --color-accent-glow: rgba(0, 212, 255, 0.12);
+
+  --color-success: #00C896;
+  --color-success-bg: rgba(0, 200, 150, 0.08);
+
+  --color-warning: #F5A623;
+  --color-warning-bg: rgba(245, 166, 35, 0.08);
+
+  --color-danger: #FF4D6D;
+  --color-danger-bg: rgba(255, 77, 109, 0.08);
+
+  --color-text-primary: #E6EBF5;
+  --color-text-secondary: #7E8A9F;
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-border-glow: rgba(0, 212, 255, 0.2);
+}
+
+// 2. Base resets
+html, body {
+  background-color: var(--color-bg) !important;
+  color: var(--color-text-primary) !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  margin: 0;
+  height: 100%;
+}
+
+// 3. Scrollbar Customization
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: #252D3D;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+// 4. Custom typography utilities
+.font-mono {
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+// 5. Angular Material Theme Overrides & Global Resets
+// Mat Toolbar Override
+.mat-toolbar.mat-primary {
+  background: var(--color-bg) !important;
+  color: var(--color-text-primary) !important;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.mat-mdc-select-arrow{
+  color: var(--color-text-secondary) !important;
+}
+
+.mat-mdc-icon-button svg{
+  color: var(--color-text-secondary) !important;
+}
+
+// Mat Sidenav Override
+.mat-drawer-container {
+  background-color: var(--color-bg) !important;
+  color: var(--color-text-primary) !important;
+}
+.mat-drawer {
+  background-color: var(--color-bg) !important;
+  color: var(--color-text-primary) !important;
+  border-right: 1px solid var(--color-border) !important;
+}
+
+// Expansion Panels Custom styling to look like precision dashboard cards
+.mat-accordion {
+  display: block;
+}
+.mat-expansion-panel {
+  background-color: var(--color-surface) !important;
+  color: var(--color-text-primary) !important;
+  border: 1px solid var(--color-border) !important;
+  border-left: 3px solid var(--color-accent) !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  margin-bottom: 14px !important;
+  transition: all 0.2s ease-in-out !important;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2) !important;
+  }
+
+  &.mat-expanded {
+    background-color: var(--color-surface-elevated) !important;
+    border-left: 3px solid var(--color-accent) !important;
+  }
+
+  &.mat-panel-disabled {
+    opacity: 0.5;
+    border-left-color: var(--color-text-secondary) !important;
+  }
+}
+
+.mat-expansion-panel-header {
+  font-family: 'Space Grotesk', sans-serif !important;
+  padding: 0 20px !important;
+  height: 64px !important;
+}
+
+.mat-expansion-panel-header-title {
+  color: var(--color-text-primary) !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  letter-spacing: 0.5px;
+}
+
+.mat-expansion-panel-header-description {
+  color: var(--color-text-secondary) !important;
+  font-size: 14px !important;
+}
+
+.mat-expansion-panel-content {
+  font-family: 'Space Grotesk', sans-serif !important;
+  color: var(--color-text-secondary) !important;
+  border-top: 1px solid var(--color-border);
+  background-color: rgba(0,0,0,0.1);
+}
+
+// Angular Material Inputs Overrides to fit Precision theme
+.mat-mdc-form-field {
+  width: 100%;
+  margin-bottom: 12px;
+  font-family: 'Space Grotesk', sans-serif !important;
+
+  .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+    background-color: rgba(0,0,0,0.25) !important;
+    border: 1px solid var(--color-border) !important;
+    border-radius: 4px !important;
+
+    .mdc-floating-label {
+      color: var(--color-text-secondary) !important;
+    }
+  }
+
+  .mdc-text-field--focused:not(.mdc-text-field--disabled) {
+    border-color: var(--color-accent) !important;
+    box-shadow: 0 0 10px var(--color-accent-glow) !important;
+  }
+
+  input {
+    color: var(--color-text-primary) !important;
+    font-family: 'JetBrains Mono', monospace !important;
+  }
+}
+
+.mat-date-range-input-inner {
+  letter-spacing: -0.5px !important;
+}
+
+.mat-expansion-panel-body {
+  padding: 20px 24px 16px !important;
+}
+
+// Material Button Overrides
+.mat-mdc-raised-button.mat-primary {
+  background-color: var(--color-accent) !important;
+  color: var(--color-bg) !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-weight: 600 !important;
+  border-radius: 4px !important;
+  letter-spacing: 0.5px !important;
+  box-shadow: 0 4px 12px var(--color-accent-glow) !important;
+  transition: all 0.2s ease-in-out !important;
+
+  &:hover:not([disabled]) {
+    background-color: var(--color-accent-hover) !important;
+    box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3) !important;
+    transform: translateY(-1px);
+  }
+
+  &[disabled] {
+    opacity: 0.4;
+    background-color: var(--color-text-secondary) !important;
+    color: var(--color-bg) !important;
+  }
+}
+
+// Card layout utility
+.precision-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-accent);
+  border-radius: 6px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+
+  &.success {
+    border-left-color: var(--color-success);
+  }
+
+  &.warning {
+    border-left-color: var(--color-warning);
+  }
+
+  &.danger {
+    border-left-color: var(--color-danger);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 12px;
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+    }
+  }
+}
+
+// Action Button Styling (General UI buttons)
+.btn-precision {
+  background-color: transparent;
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-accent-glow);
+    box-shadow: 0 0 10px var(--color-accent-glow);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &.filled {
+    background-color: var(--color-accent);
+    color: var(--color-bg);
+    border: none;
+    font-weight: 600;
+
+    &:hover:not(:disabled) {
+      background-color: var(--color-accent-hover);
+      box-shadow: 0 4px 15px rgba(0, 212, 255, 0.25);
+    }
+  }
+}
+
+// Toastr Design Fit
+.toast-container .ngx-toastr {
+  background-color: var(--color-surface-elevated) !important;
+  color: var(--color-text-primary) !important;
+  border: 1px solid var(--color-border) !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+  border-radius: 6px !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+
+  &.toast-success {
+    border-left: 4px solid var(--color-success) !important;
+  }
+  &.toast-error {
+    border-left: 4px solid var(--color-danger) !important;
+  }
+  &.toast-warning {
+    border-left: 4px solid var(--color-warning) !important;
+  }
+}
+
+// 6. Contrast & Readability overrides for Dark Theme Checkboxes & Lists
+.mdc-form-field,
+.mat-mdc-checkbox-label,
+.mdc-checkbox ~ label {
+  color: var(--color-text-primary) !important;
+}
+
+.mat-mdc-list-item,
+.mat-mdc-list-item-title,
+.mat-mdc-list-item span,
+.mat-list-item,
+.mat-list-item-content {
+  color: var(--color-text-primary) !important;
+}
+
+// Generic secondary text or detail spans in our expansion forms
+.mat-expansion-panel-content {
+  span, label, p, .mat-line {
+    color: var(--color-text-primary);
+  }
+
+  // Keep form labels or placeholders slightly muted for readability
+  .mdc-floating-label {
+    color: var(--color-text-secondary) !important;
+  }
+}
+
+.mat-mdc-form-field-bottom-align::before {
+  display: inline !important;
+}
+
+.mat-expansion-indicator::after {
+  color: var(--color-text-secondary) !important
+}

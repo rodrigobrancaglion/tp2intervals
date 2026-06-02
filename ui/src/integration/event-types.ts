@@ -5,6 +5,7 @@
 export class EventTypes {
   static eventTypes = [
     {title: "Race", value: "RACE"},
+    {title: "Notes", value: "NOTES"},
   ]
 
   static getTitle(value: string) {

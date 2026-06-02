@@ -1,0 +1,32 @@
+.full-width {
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.col {
+  flex: 1;
+}
+
+.error-message {
+  margin-left: 10px;
+  color: red;
+}
+
+form {
+  padding: 10px;
+}
+
+.form-checkbox {
+  padding-bottom: 22px
+}
+section {
+  margin-bottom: 24px;
+}
+
+mat-divider {
+  margin-bottom: 24px;
+}

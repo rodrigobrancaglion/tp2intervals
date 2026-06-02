@@ -1,0 +1,214 @@
+.home-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 10px 0 40px;
+}
+
+// Hero banner styles
+.hero-section {
+  background: radial-gradient(circle at 10% 20%, rgba(0, 212, 255, 0.05) 0%, rgba(0, 0, 0, 0) 80%);
+  padding: 20px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background-color: var(--color-accent);
+  }
+}
+
+.hero-title {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--color-text-primary);
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.hero-subtitle {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  max-width: 800px;
+  margin: 0;
+}
+
+// Section Header
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 12px;
+  margin-bottom: -8px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.sub-status {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+// Beautiful Platforms Grid
+.platforms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 20px;
+}
+
+.platform-card {
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 0 !important;
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0, 212, 255, 0.25) !important;
+    box-shadow: 0 8px 30px rgba(0, 212, 255, 0.08) !important;
+
+    .action-link {
+      color: var(--color-accent);
+
+      i {
+        transform: translateX(4px);
+      }
+    }
+  }
+}
+
+.card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.platform-logo-mini {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 9px;
+  border: 1px solid rgba(255,255,255,0.05);
+
+  &.intervals {
+    background-color: #234E52;
+    color: #319795;
+  }
+  &.training-peaks {
+    background-color: #1A365D;
+    color: #3182CE;
+  }
+  &.wahoo {
+    background-color: #2D3748;
+    color: #E2E8F0;
+  }
+  &.rouvy {
+    background-color: #742A2A;
+    color: #FEB2B2;
+  }
+  &.trainer-road {
+    background-color: #7B341E;
+    color: #FEEBC8;
+  }
+  &.myfitnesspal {
+    background-color: #2C5282;
+    color: #90CDF4;
+  }
+}
+
+.platform-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  &.connected {
+    background-color: var(--color-success-bg);
+    color: var(--color-success);
+
+    .dot {
+      background-color: var(--color-success);
+      box-shadow: 0 0 6px var(--color-success);
+    }
+  }
+
+  &.disconnected {
+    background-color: var(--color-danger-bg);
+    color: var(--color-danger);
+
+    .dot {
+      background-color: var(--color-danger);
+    }
+  }
+}
+
+.platform-desc {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  margin: 12px 0;
+  flex-grow: 1;
+}
+
+.card-footer {
+  border-top: 1px solid var(--color-border);
+  padding-top: 10px;
+  margin-top: 10px;
+}
+
+.action-link {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+
+  i {
+    font-size: 16px;
+    transition: transform 0.2s ease;
+  }
+}

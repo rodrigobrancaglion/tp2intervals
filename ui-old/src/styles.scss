@@ -1,0 +1,45 @@
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+@import 'ngx-toastr/toastr';
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.mat-mdc-snack-bar-container {
+  --mat-mdc-snack-bar-button-color: #ffffff;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-button-color: #ffffff;
+
+  &.app-notification-error {
+    --mdc-snackbar-container-color: #f23a2f;
+  }
+
+  &.app-notification-success {
+    --mdc-snackbar-container-color: #43a446;
+    white-space: pre-wrap;
+  }
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.col {
+  flex: 1;
+}
+
+.form-field {
+  width: 450px
+}
+
+.action-button-section {
+  margin-top: 10px;
+}
+
+.beta-icon {
+  font-size: 25px;
+  height: 25px;
+  margin-left: 10px;
+  margin-top: 14px;
+}

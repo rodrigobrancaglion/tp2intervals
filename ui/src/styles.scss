@@ -1,28 +1,12 @@
 @import "bootstrap-icons/font/bootstrap-icons.css";
-
 @import 'ngx-toastr/toastr';
+@import './styles/design-system';
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-
-.mat-mdc-snack-bar-container {
-  --mat-mdc-snack-bar-button-color: #ffffff;
-  --mdc-snackbar-supporting-text-color: #ffffff;
-  --mat-snack-bar-button-color: #ffffff;
-
-  &.app-notification-error {
-    --mdc-snackbar-container-color: #f23a2f;
-  }
-
-  &.app-notification-success {
-    --mdc-snackbar-container-color: #43a446;
-    white-space: pre-wrap;
-  }
-}
-
+// Global Layout Resets & Helpers
 .row {
   display: flex;
   flex-direction: row;
+  gap: 15px;
 }
 
 .col {
@@ -30,16 +14,36 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 .form-field {
-  width: 450px
+  width: 100%;
+  max-width: 480px;
 }
 
 .action-button-section {
-  margin-top: 10px;
+  margin-top: 16px;
+  display: flex;
+  gap: 12px;
 }
 
 .beta-icon {
-  font-size: 25px;
-  height: 25px;
-  margin-left: 10px;
-  margin-top: 14px;
+  font-size: 18px;
+  height: 18px;
+  margin-left: 6px;
+  color: var(--color-warning);
+}
+
+// Custom animations
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 5px rgba(0, 212, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(0, 212, 255, 0.2);
+  }
+}
+
+.glow-active {
+  animation: pulseGlow 2s infinite ease-in-out;
 }

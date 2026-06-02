@@ -1,0 +1,70 @@
+.spacer {
+  flex: 1 1 auto;
+}
+
+.external-link {
+  padding-top: 8px;
+}
+
+.github-link {
+  font-size: 18px;
+
+  span {
+    letter-spacing: 0;
+    margin-right: 15px;
+  }
+}
+
+.kofi-icon {
+  height: 40px;
+  padding-top: 4px;
+}
+
+.sidenav-container {
+  height: 100vh;
+}
+
+.sidenav {
+  width: 250px;
+}
+
+.menu-header {
+  padding: 20px;
+  font-size: 1.2rem;
+  color: #3f51b5; // Cor primária
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.active {
+  background-color: rgba(0, 0, 0, 0.04);
+  color: #3f51b5 !important;
+  font-weight: bold;
+}
+
+.bi-list {
+  font-size: 1.5rem;
+}
+
+/* Transforms the content into a vertical flexbox */
+mat-sidenav-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden; /* Prevents scrolling on the Toolbar */
+}
+
+/* The Toolbar stays fixed at the top of the flexbox by default */
+mat-toolbar {
+  flex-shrink: 0; /* Prevents the toolbar from shrinking */
+  z-index: 2;     /* Ensures it stays above the content if necessary */
+}
+
+/* The content div handles the scrolling */
+.content {
+  flex-grow: 1;    /* Occupies all remaining space */
+  overflow-y: auto; /* Enables vertical scroll inside this container */
+  padding: 20px;   /* Adjust according to your needs */
+}

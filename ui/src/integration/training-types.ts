@@ -1,6 +1,7 @@
 export class TrainingTypes {
   static trainingTypes = [
-    {title: "Day-off (Notes)", value: "DAY_OFF"},
+    {title: "Day-off", value: "DAY_OFF"},
+    {title: "Notes", value: "NOTES"},
     {title: "Brick", value: "BRICK"},
     {title: "Ride", value: "BIKE"},
     {title: "Virtual Ride", value: "VIRTUAL_BIKE"},

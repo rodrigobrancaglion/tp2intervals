@@ -1,51 +1,88 @@
-<mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #drawer mode="over" class="sidenav">
-    <mat-nav-list>
-      <div class="menu-header">
-        <b>TP2Intervals</b>
-      </div>
-      <mat-divider></mat-divider>
-
-      @for (button of menuButtons; track button.url) {
-      <a mat-list-item [routerLink]="[button.url]" (click)="drawer.close()" [class.active]="router.url === button.url">
-        {{ button.name }}
-        @if (button.url === '/rouvy') {
-        <i class="bi bi-stars beta-icon" matTooltip="Beta feature"></i>
-        }
-      </a>
-      }
-    </mat-nav-list>
-  </mat-sidenav>
-
-  <mat-sidenav-content>
-    <mat-toolbar color="primary">
-      <button mat-icon-button (click)="drawer.toggle()" aria-label="Menu">
-        <i class="bi bi-list"></i>
-      </button>
-
-      <span class="title">TP2Intervals</span>
-
-      <span class="spacer"></span>
-
-      <a mat-button [matBadgeHidden]="updateAvailableBadgeHidden" [matTooltipDisabled]="updateAvailableBadgeHidden"
-        matTooltip="Update available" matBadge="1" matBadgeSize="small" matBadgePosition="before" matBadgeColor="accent"
-        [href]="githubLink" target="_blank" class="github-link">
-        <span>v{{ appVersion }}</span>
-        <i class="bi bi-github"></i>
-      </a>
-      <a mat-button href="https://ko-fi.com/freekode" target="_blank" class="external-link">
-        <img src="assets/kofi.webp" alt="kofi" class="kofi-icon" />
-      </a>
-      <a mat-icon-button
-        href="https://forum.intervals.icu/t/tp2intervals-copy-trainingpeaks-and-trainerroad-workouts-plans-to-intervals/63375"
-        target="_blank" class="external-link">
-        <i class="bi bi-activity"></i>
-      </a>
-
-    </mat-toolbar>
-
-    <div class="content">
-      <ng-content></ng-content>
+<div class="app-layout">
+  <!-- Slim vertical sidebar that expands on hover -->
+  <aside class="app-sidebar">
+    <!--
+    <div class="sidebar-header">
+      <span class="logo-icon font-mono">TP</span>
+      <span class="logo-text font-mono">2Intervals</span>
     </div>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+    -->
+    <div class="sidebar-header platform-badge">
+      <div class="icon-wrapper"
+           [style.background-image]="'url(assets/platforms/tp2intervals.png)'"
+           [style.background-size]="'cover'"
+           [style.background-position]="'center'">
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      @for (button of menuButtons; track button.url) {
+        <a [routerLink]="[button.url]"
+           class="nav-item"
+           [routerLinkActive]="'active'"
+           [routerLinkActiveOptions]="{ exact: true }"
+           [matTooltip]="button.name"
+           matTooltipPosition="right">
+
+          <!-- Render pure CSS styled platform badge or icon -->
+          <div class="icon-wrapper">
+            @if (button.id !== 'home' && button.id !== 'config') {
+              <div class="platform-badge"
+                   [ngClass]="button.id"
+                   [style.background-image]="button.icon && button.icon.startsWith('assets/') ? 'url(' + button.icon + ')' : 'none'"
+                   [style.background-size]="'cover'"
+                   [style.background-position]="'center'">
+                <span *ngIf="!(button.icon && button.icon.startsWith('assets/'))">
+                  {{ button.id === 'training-peaks' ? 'TP' : button.id === 'trainer-road' ? 'TR' : button.id === 'rouvy' ? 'R' : button.id === 'myfitnesspal' ? 'MF' : 'C' }}
+                </span>
+                <!-- Connection Dot Indicator -->
+                <span class="status-dot" [ngClass]="{'connected': connectedPlatforms[button.id], 'disconnected': !connectedPlatforms[button.id]}"></span>
+              </div>
+            } @else {
+              <i [class]="button.icon"></i>
+            }
+          </div>
+
+          <span class="nav-label">{{ button.name }}</span>
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar-footer">
+      <a [href]="githubLink" target="_blank" class="footer-icon-link" matTooltip="GitHub Releases" matTooltipPosition="right">
+        <i class="bi bi-github"></i>
+        <span class="badge-dot" *ngIf="!updateAvailableBadgeHidden"></span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Content panel -->
+  <div class="app-main">
+    <!-- Sleek Top Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <span class="platform-title">{{ router.url === '/home' ? 'Unified Training Library' : router.url === '/training-peaks' ? 'TrainingPeaks Integration' : router.url === '/rouvy' ? 'Rouvy Integration' : router.url === '/trainer-road' ? 'TrainerRoad Integration' : router.url === '/myfitnesspal' ? 'MyFitnessPal Integration' : router.url === '/config' ? 'System Configuration' : 'TP2Intervals' }}</span>
+      </div>
+
+      <div class="header-right">
+        <div class="app-version font-mono">v{{ appVersion }}</div>
+
+        <a href="https://ko-fi.com/freekode" target="_blank" class="header-btn font-mono" matTooltip="Support FreeKode">
+          <i class="bi bi-cup-hot"></i> Support
+        </a>
+
+        <a href="https://forum.intervals.icu/t/tp2intervals-copy-trainingpeaks-and-trainerroad-workouts-plans-to-intervals/63375"
+           target="_blank"
+           class="header-btn"
+           matTooltip="Intervals.icu Forum Link">
+          <i class="bi bi-chat-text"></i>
+        </a>
+      </div>
+    </header>
+
+    <!-- Active view content container -->
+    <main class="app-content">
+      <ng-content></ng-content>
+    </main>
+  </div>
+</div>

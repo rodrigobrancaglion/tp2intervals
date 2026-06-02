@@ -1,0 +1,70 @@
+<form [formGroup]="formGroup" novalidate (ngSubmit)="copyPlanSubmit()">
+  <div class="row">
+    <mat-form-field class="form-field">
+      <mat-label>TrainingPeaks plan</mat-label>
+      <mat-select formControlName="plan" panelWidth="null">
+        @for (item of plans; track item) {
+          <mat-option [value]="item.value">
+            {{ item.name }} [{{ item.value.isPlan ? 'plan, workouts: ' + item.value.workoutsAmount : 'folder' }}]
+          </mat-option>
+        }
+      </mat-select>
+      <mat-progress-bar *ngIf="loadingInProgress" mode="query"></mat-progress-bar>
+    </mat-form-field>
+  </div>
+
+  <div class="row" *ngIf="isPlanSelected | async">
+    <mat-form-field class="form-field">
+      <mat-label>Start Date</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="newStartDate">
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </div>
+
+  <div class="row">
+    <mat-form-field class="form-field">
+      <mat-label>My new library name</mat-label>
+      <input matInput placeholder="My New Library" formControlName="newName">
+    </mat-form-field>
+  </div>
+
+  <div class="row">
+    <mat-form-field class="form-field">
+      <mat-label>Step target (Garmin only) in Intervals.icu</mat-label>
+      <mat-select formControlName="stepModifier" panelWidth="null">
+        @for (item of stepModifiers; track item) {
+          <mat-option [value]="item.value">
+            {{ item.title }}
+          </mat-option>
+        }
+      </mat-select>
+      <mat-progress-bar *ngIf="loadingInProgress" mode="query"></mat-progress-bar>
+    </mat-form-field>
+    <i class="bi bi-stars beta-icon"
+       matTooltip="Beta feature"
+       matTooltipPosition="right"></i>
+  </div>
+
+  <div class="action-button-section">
+    <button
+      mat-raised-button
+      id="btn-confirm"
+      color="primary"
+      type="submit"
+      [disabled]="formGroup.invalid || formGroup.disabled || submitInProgress"
+    >
+      Confirm
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      style="margin-left: 10px"
+      type="reset"
+    >
+      Reset
+    </button>
+  </div>
+
+  <mat-progress-bar *ngIf="submitInProgress" mode="query"></mat-progress-bar>
+</form>

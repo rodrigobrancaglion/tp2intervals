@@ -1,0 +1,28 @@
+<div *ngIf="!platformInfo">
+  <mat-progress-bar mode="query"></mat-progress-bar>
+</div>
+
+<div *ngIf="platformInfo?.isValid === false">
+   Rouvy is not configured. Please set your credentials (email and password) in the Configuration page.
+</div>
+
+<div *ngIf="platformInfo?.isValid">
+
+  <section>
+    <h3 class="group-title">Activities</h3>
+    <mat-accordion multi>
+
+      <mat-expansion-panel expanded>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Rouvy Activities</mat-panel-title>
+          <mat-panel-description>
+            Synchronize your Rouvy activities to other platforms
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <rouvy-copy-activities-to-calendar [currentPlatform]="menuPlatform"></rouvy-copy-activities-to-calendar>
+      </mat-expansion-panel>
+
+    </mat-accordion>
+  </section>
+
+</div>

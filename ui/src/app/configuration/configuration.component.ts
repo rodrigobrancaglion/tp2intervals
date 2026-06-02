@@ -7,7 +7,7 @@ import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {finalize} from "rxjs";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
-import {NgIf} from "@angular/common";
+import {NgClass, NgIf} from "@angular/common";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {NotificationService} from "integration/notification.service";
 import {MatCheckboxModule} from "@angular/material/checkbox";
@@ -32,6 +32,7 @@ import {environment} from 'environments/environment';
     MatProgressBarModule,
     MatSnackBarModule,
     NgIf,
+    NgClass,
     MatCheckboxModule,
     MatOptionModule,
     MatSelectModule,
