@@ -1,14 +1,12 @@
 package org.freekode.tp2intervals.integration.platform.trainerroad
 
-import org.freekode.tp2intervals.integration.platform.trainerroad.activity.TrainerRoadActivityDTO
+import org.freekode.tp2intervals.integration.platform.trainerroad.activity.dto.TrainerRoadActivityDTO
 import org.freekode.tp2intervals.integration.platform.trainerroad.workout.TRFindWorkoutsResponseDTO
-import org.freekode.tp2intervals.integration.platform.trainerroad.workout.TRWorkoutResponseDTO
+import org.freekode.tp2intervals.integration.platform.trainerroad.workout.dto.TRWorkoutResponseDTO
+import org.freekode.tp2intervals.integration.platform.trainerroad.workout.dto.TrainerRoadTimelineDTO
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.core.io.Resource
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.*
 
 @FeignClient(
     value = "TrainerRoadApiClient",
@@ -18,11 +16,23 @@ import org.springframework.web.bind.annotation.RequestBody
     configuration = [TrainerRoadApiClientConfig::class]
 )
 interface TrainerRoadApiClient {
-    @GetMapping("/app/api/calendar/activities/{username}?startDate={startDate}&endDate={endDate}")
+    @GetMapping(
+        value = ["/app/api/react-calendar/{memberId}/timeline"],
+        headers = ["trainerroad-jsonformat=camel-case", "tr-cache-control=use-cache"]
+    )
+    fun getTimeline(
+        @PathVariable("memberId") memberId: Long,
+        @RequestParam("start") startDate: String,
+        @RequestParam("end") endDate: String,
+    ): TrainerRoadTimelineDTO
+
+    @GetMapping(
+        value = ["/app/api/react-calendar/{memberId}/activities"],
+        headers = ["trainerroad-jsonformat=camel-case", "tr-cache-control=use-cache"]
+    )
     fun getActivities(
-        @PathVariable("username") username: String,
-        @PathVariable("startDate") startDate: String,
-        @PathVariable("endDate") endDate: String,
+        @PathVariable("memberId") memberId: Long,
+        @RequestHeader("ids") ids: String,
     ): List<TrainerRoadActivityDTO>
 
     @GetMapping("/app/api/workouts")

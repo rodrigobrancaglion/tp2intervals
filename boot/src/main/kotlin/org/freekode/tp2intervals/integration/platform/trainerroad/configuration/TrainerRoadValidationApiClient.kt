@@ -1,6 +1,6 @@
 package org.freekode.tp2intervals.integration.platform.trainerroad.configuration
 
-import org.freekode.tp2intervals.integration.platform.trainerroad.TrainerRoadMemberDTO
+import org.freekode.tp2intervals.integration.platform.trainerroad.member.dto.TrainerRoadMemberDTO
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.HttpHeaders
 import org.springframework.web.bind.annotation.GetMapping

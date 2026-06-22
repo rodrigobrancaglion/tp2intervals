@@ -5,6 +5,7 @@ import org.freekode.tp2intervals.domain.TrainingType
 import org.freekode.tp2intervals.domain.workout.Workout
 import org.freekode.tp2intervals.domain.workout.WorkoutDetails
 import org.freekode.tp2intervals.domain.workout.structure.*
+import org.freekode.tp2intervals.integration.platform.trainerroad.workout.dto.TRWorkoutResponseDTO
 import java.time.Duration
 
 class TrainerRoadWorkoutMapper {
@@ -14,7 +15,8 @@ class TrainerRoadWorkoutMapper {
         return Workout(
             toWorkoutDetails(trWorkout.details, removeHtmlTags),
             null,
-            WorkoutStructure(WorkoutStructure.TargetUnit.FTP_PERCENTAGE, steps),
+            steps.takeIf { it.isNotEmpty() }
+                ?.let { WorkoutStructure(WorkoutStructure.TargetUnit.FTP_PERCENTAGE, it) },
         )
     }
 
@@ -39,12 +41,11 @@ class TrainerRoadWorkoutMapper {
                 continue
             }
             val stepLength = StepLength.seconds((interval.end - interval.start).toLong())
-            val ftpPercent = interval.startTargetPowerPercent
 
             val name = if (interval.name == "Fake") "Step" else interval.name
 
             val singleStep =
-                SingleStep(name, stepLength, StepTarget(ftpPercent, ftpPercent), null, false)
+                SingleStep(name, stepLength, StepTarget(interval.targetStart(), interval.targetEnd()), null, false)
             steps.add(singleStep)
         }
         return steps

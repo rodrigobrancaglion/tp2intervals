@@ -9,8 +9,13 @@ import org.springframework.stereotype.Repository
 class TRUsernameRepository(
     private val trainerRoadMemberApiClient: TrainerRoadMemberApiClient,
 ) {
-    @Cacheable
+    @Cacheable(key = "'singleton'")
     fun getUsername(): String {
         return trainerRoadMemberApiClient.getMember().Username!!
+    }
+
+    @Cacheable(cacheNames = ["trMemberIdCache"], key = "'singleton'")
+    fun getMemberId(): Long {
+        return trainerRoadMemberApiClient.getMember().MemberId
     }
 }
