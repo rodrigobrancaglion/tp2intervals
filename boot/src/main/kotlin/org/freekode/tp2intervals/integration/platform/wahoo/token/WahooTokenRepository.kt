@@ -5,14 +5,15 @@ import org.freekode.tp2intervals.integration.PlatformException
 import org.freekode.tp2intervals.integration.platform.wahoo.configuration.WahooConfigurationRepository
 import org.springframework.cache.annotation.CacheConfig
 import org.springframework.cache.annotation.Cacheable
-import org.springframework.stereotype.Repository
+import org.springframework.stereotype.Component
 
 @CacheConfig(cacheNames = ["wahooAccessTokenCache"])
-@Repository
+@Component
 class WahooTokenRepository(
     private val wahooTokenApiClient: WahooTokenApiClient,
     private val wahooConfigurationRepository: WahooConfigurationRepository,
 ) {
+
     @Cacheable(key = "'singleton'")
     fun getAccessToken(): String {
         val config = wahooConfigurationRepository.getConfiguration()

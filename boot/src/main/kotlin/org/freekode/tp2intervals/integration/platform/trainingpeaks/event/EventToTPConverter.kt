@@ -102,7 +102,6 @@ object EventToTPConverter {
             OtherType.RACE_A -> "A"
             OtherType.RACE_B -> "B"
             OtherType.RACE_C -> "C"
-            else -> null
         }
     }
 

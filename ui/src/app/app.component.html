@@ -1,5 +1,11 @@
-<app-top-bar>
-  <main>
-    <router-outlet></router-outlet>
-  </main>
-</app-top-bar>
+<ng-container *ngIf="isAuthenticated$ | async; else loginLayout">
+  <app-top-bar>
+    <main>
+      <router-outlet></router-outlet>
+    </main>
+  </app-top-bar>
+</ng-container>
+
+<ng-template #loginLayout>
+  <router-outlet></router-outlet>
+</ng-template>

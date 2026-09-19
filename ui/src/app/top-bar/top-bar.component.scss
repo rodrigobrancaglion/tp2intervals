@@ -221,10 +221,23 @@
   justify-content: center;
   width: 38px;
   height: 38px;
-  transition: color 0.2s ease;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.25s ease;
 
   &:hover {
-    color: var(--color-text-primary);
+    color: var(--color-danger);
+    background-color: var(--color-danger-bg);
+  }
+
+  &.logout-btn svg {
+    transition: transform 0.2s ease;
+  }
+
+  &.logout-btn:hover svg {
+    transform: translateX(2px);
   }
 
   .badge-dot {

@@ -18,7 +18,7 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatDividerModule} from "@angular/material/divider";
 
-import {environment} from 'environments/environment';
+//import {environment} from 'environments/environment';
 
 @Component({
   selector: 'app-configuration',
@@ -44,10 +44,11 @@ import {environment} from 'environments/environment';
   styleUrl: './configuration.component.scss'
 })
 export class ConfigurationComponent implements OnInit {
-  public config = environment;
+//  public config = environment;
 
   formGroup: FormGroup = this.formBuilder.group({
-    'intervals.api-key': [this.config.intervals_api_key, Validators.required],
+    //'intervals.api-key': [this.config.intervals_api_key, Validators.required],
+    'intervals.api-key': [null, Validators.required],
     'intervals.athlete-id': [null, Validators.required],
     'intervals.power-range': [null, [Validators.required, Validators.min(0), Validators.max(100)]],
     'intervals.hr-range': [null, [Validators.required, Validators.min(0), Validators.max(100)]],
@@ -88,6 +89,7 @@ export class ConfigurationComponent implements OnInit {
     this.configClient.getConfig().subscribe(config => {
       this.formGroup.patchValue(config.config);
 
+      /*
       if (!this.formGroup.get(['intervals.api-key'])?.value) {
         this.formGroup.patchValue({
           'intervals.api-key': this.config.intervals_api_key
@@ -142,6 +144,7 @@ export class ConfigurationComponent implements OnInit {
       if (!this.formGroup.get(['wahoo.refresh-token'])?.value && this.config.wahoo_refresh_token) {
         this.formGroup.patchValue({ 'wahoo.refresh-token': this.config.wahoo_refresh_token });
       }
+      */
 
       this.inProgress = false
       this.listenTrainingPeaksCookie()
@@ -286,6 +289,7 @@ export class ConfigurationComponent implements OnInit {
     ).subscribe(() => {
       // Sync all form fields back to environment so the session reflects the saved values
       const v = this.formGroup.getRawValue();
+      /*
       this.config.intervals_api_key = v['intervals.api-key'] ?? this.config.intervals_api_key;
       this.config.intervals_athlete_id = v['intervals.athlete-id'] ?? this.config.intervals_athlete_id;
       this.config.trainingpeaks_auth_cookie = v['training-peaks.auth-cookie'] ?? this.config.trainingpeaks_auth_cookie;
@@ -302,7 +306,7 @@ export class ConfigurationComponent implements OnInit {
       this.config.wahoo_client_id = v['wahoo.client-id'] ?? this.config.wahoo_client_id;
       this.config.wahoo_client_secret = v['wahoo.client-secret'] ?? this.config.wahoo_client_secret;
       this.config.wahoo_refresh_token = v['wahoo.refresh-token'] ?? this.config.wahoo_refresh_token;
-
+      */
       this.notificationService.success('Configuration successfully saved')
       this.router.navigate(['/home']);
     });

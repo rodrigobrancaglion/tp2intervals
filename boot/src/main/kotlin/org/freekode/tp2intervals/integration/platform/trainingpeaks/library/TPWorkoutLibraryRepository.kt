@@ -1,12 +1,12 @@
 package org.freekode.tp2intervals.integration.platform.trainingpeaks.library
 
+import org.freekode.tp2intervals.config.log.AppLogger
 import org.freekode.tp2intervals.domain.ExternalData
 import org.freekode.tp2intervals.domain.librarycontainer.LibraryContainer
 import org.freekode.tp2intervals.domain.workout.Workout
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.library.dto.TPWorkoutLibraryDTO
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.TPToWorkoutConverter
 import org.freekode.tp2intervals.integration.utils.Date
-import org.slf4j.LoggerFactory
 import org.springframework.cache.annotation.CacheConfig
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Repository
@@ -18,7 +18,7 @@ class TPWorkoutLibraryRepository(
     private val trainingPeaksWorkoutLibraryApiClient: TrainingPeaksWorkoutLibraryApiClient,
     private val tpToWorkoutConverter: TPToWorkoutConverter,
 ) {
-    private val log = LoggerFactory.getLogger(this.javaClass)
+     private val logger = AppLogger.get(this.javaClass)
 
     @Cacheable(key = "'singleton'")
     fun getAllWorkouts(): List<Workout> {
@@ -38,7 +38,7 @@ class TPWorkoutLibraryRepository(
             try {
                 tpToWorkoutConverter.toWorkout(it)
             } catch (e: Exception) {
-                log.warn("Can't convert workout, ${it.workoutId} - ${it.title}, error - ${e.message}'", e)
+                logger.warnL3In("Can't convert workout, ${it.workoutId} - ${it.title}, error - ${e.message}'", e)
                 null
             }
         }

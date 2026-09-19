@@ -5,7 +5,7 @@ import org.freekode.tp2intervals.integration.PlatformException
 import org.freekode.tp2intervals.integration.platform.strava.configuration.StravaConfigurationRepository
 import org.springframework.cache.annotation.CacheConfig
 import org.springframework.cache.annotation.Cacheable
-import org.springframework.stereotype.Repository
+import org.springframework.stereotype.Component
 
 /**
  * Exchanges the stored Strava refresh_token for a short-lived access_token.
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository
  * Parameters are sent as form-encoded body (required by Strava OAuth2 endpoint).
  */
 @CacheConfig(cacheNames = ["stravaAccessTokenCache"])
-@Repository
+@Component
 class StravaTokenRepository(
     private val stravaTokenApiClient: StravaTokenApiClient,
     private val stravaConfigurationRepository: StravaConfigurationRepository,

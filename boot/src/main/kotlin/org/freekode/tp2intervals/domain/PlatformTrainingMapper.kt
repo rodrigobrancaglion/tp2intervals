@@ -1,7 +1,7 @@
 package org.freekode.tp2intervals.domain
 
 import org.freekode.tp2intervals.domain.workout.WorkoutDetails
-import org.freekode.tp2intervals.integration.platform.intervalsicu.mapper.IntervalsTrainingTypeMapper
+import org.freekode.tp2intervals.integration.platform.intervalsicu.mapper.IcuTrainingTypeMapper
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.mapper.TPWorkoutSubTypeMapper
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.mapper.TPWorkoutTypeMapper
 
@@ -24,11 +24,11 @@ class PlatformTrainingMapper {
             val type = when {
                 // If it's BIKE, we check sub-types to decide between Ride, Gravel, or Virtual
                 workoutDetails.type == TrainingType.BIKE -> {
-                    IntervalsTrainingTypeMapper.getByType(workoutDetails.workoutSubTypeId)
+                    IcuTrainingTypeMapper.getByType(workoutDetails.workoutSubTypeId)
                 }
 
                 // For all other types (RUN, SWIM, etc.), use the direct type mapping
-                else -> IntervalsTrainingTypeMapper.getByType(workoutDetails.type)
+                else -> IcuTrainingTypeMapper.getByType(workoutDetails.type)
             }
 
             return MappedTraining(

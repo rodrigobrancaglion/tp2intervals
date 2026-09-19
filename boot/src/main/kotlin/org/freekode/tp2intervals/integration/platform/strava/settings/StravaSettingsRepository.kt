@@ -1,9 +1,9 @@
 package org.freekode.tp2intervals.integration.platform.strava.settings
 
+import org.freekode.tp2intervals.config.log.AppLogger
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.domain.settings.PowerZone
 import org.freekode.tp2intervals.integration.provider.settings.ISettingsRepository
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -11,7 +11,7 @@ class StravaSettingsRepository(
     private val stravaSettingsApiClient: StravaSettingsApiClient
 ) : ISettingsRepository {
 
-    private val log = LoggerFactory.getLogger(this.javaClass)
+     private val logger = AppLogger.get(this.javaClass)
 
     override fun platform() = Platform.STRAVA
 
@@ -25,7 +25,7 @@ class StravaSettingsRepository(
 //            "ftp" to threshold
 //        )
 //
-//        log.info("Sending Payload (FTP=$threshold) to Strava...")
+//        logger.infoL3In("Sending Payload (FTP=$threshold) to Strava...")
 //        stravaSettingsApiClient.updateAthlete(payload)
     }
 }

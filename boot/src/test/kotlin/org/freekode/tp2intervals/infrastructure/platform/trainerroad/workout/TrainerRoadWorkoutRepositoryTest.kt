@@ -1,12 +1,12 @@
 package org.freekode.tp2intervals.integration.platform.trainerroad.workout
 
 import config.mock.ObjectMapperFactory
-import config.mock.TrainerRoadApiClientMock
+import config.mock.TRApiClientMock
 import org.freekode.tp2intervals.domain.ExternalData
 import org.freekode.tp2intervals.domain.TrainingType
 import org.freekode.tp2intervals.domain.workout.structure.SingleStep
 import org.freekode.tp2intervals.domain.workout.structure.WorkoutStructure
-import org.freekode.tp2intervals.integration.platform.trainerroad.TrainerRoadApiClientService
+import org.freekode.tp2intervals.integration.platform.trainerroad.TRApiClientService
 import org.freekode.tp2intervals.integration.platform.trainerroad.configuration.TrainerRoadConfiguration
 import org.freekode.tp2intervals.integration.platform.trainerroad.configuration.TrainerRoadConfigurationRepository
 import org.freekode.tp2intervals.integration.platform.trainerroad.member.TRUsernameRepository
@@ -20,7 +20,7 @@ import org.springframework.util.ResourceUtils
 class TrainerRoadWorkoutRepositoryTest {
     private val objectMapper = ObjectMapperFactory.objectMapper()
 
-    private val trainerRoadApiClient = TrainerRoadApiClientMock(
+    private val trainerRoadApiClient = TRApiClientMock(
         objectMapper,
         ResourceUtils.getFile("classpath:tr-workoutsdetails-simple.json").inputStream(),
         ResourceUtils.getFile("classpath:tr-workoutsdetails-complex.json").inputStream(),
@@ -29,17 +29,17 @@ class TrainerRoadWorkoutRepositoryTest {
 
     private val trainerRoadConfigurationRepository = trainerRoadConfigurationRepository()
 
-    private val trainerRoadApiClientService =
-        TrainerRoadApiClientService(trainerRoadApiClient, trainerRoadConfigurationRepository)
+    private val trApiClientService =
+        TRApiClientService(trainerRoadApiClient, trainerRoadConfigurationRepository)
 
-    private val trainerRoadWorkoutRepository =
-        TrainerRoadWorkoutRepository(mock(TRUsernameRepository::class.java), trainerRoadApiClientService)
+    private val TRWorkoutRepository =
+        TRWorkoutRepository(mock(TRUsernameRepository::class.java), trApiClientService)
 
     @Test
     fun `should parse simple workout`() {
         // when
         val data = ExternalData(null, null, "simple")
-        val workout = trainerRoadWorkoutRepository.getWorkoutFromLibrary(data)
+        val workout = TRWorkoutRepository.getWorkoutFromLibrary(data)
 
         // then
         val structure = workout.structure!!
@@ -62,7 +62,7 @@ class TrainerRoadWorkoutRepositoryTest {
     fun `should parse complex workout`() {
         // when
         val data = ExternalData(null, null, "complex")
-        val workout = trainerRoadWorkoutRepository.getWorkoutFromLibrary(data)
+        val workout = TRWorkoutRepository.getWorkoutFromLibrary(data)
 
         // then
         val structure = workout.structure!!
@@ -85,7 +85,7 @@ class TrainerRoadWorkoutRepositoryTest {
     fun `should print wrong rest api response`() {
         // when
         val data = ExternalData(null, null, "another")
-        val workout = trainerRoadWorkoutRepository.getWorkoutFromLibrary(data)
+        val workout = TRWorkoutRepository.getWorkoutFromLibrary(data)
 
         // then
         val structure = workout.structure!!
@@ -96,7 +96,7 @@ class TrainerRoadWorkoutRepositoryTest {
     @Test
     fun `should exclude html tags from description`() {
         val data = ExternalData(null, null, "simple")
-        val workout = trainerRoadWorkoutRepository.getWorkoutFromLibrary(data)
+        val workout = TRWorkoutRepository.getWorkoutFromLibrary(data)
         assertEquals(
             "simple is 4x3-minute intervals of leg-speed drills at a very low 60% FTP with 3 minutes of rest between intervals. " +
                     "Keep the pressure on the pedals light and your intensity low to moderate regardless of your cadence.",

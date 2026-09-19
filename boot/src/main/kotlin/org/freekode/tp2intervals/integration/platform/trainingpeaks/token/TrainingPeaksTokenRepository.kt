@@ -5,10 +5,10 @@ import org.freekode.tp2intervals.integration.PlatformException
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.configuration.TrainingPeaksConfigurationRepository
 import org.springframework.cache.annotation.CacheConfig
 import org.springframework.cache.annotation.Cacheable
-import org.springframework.stereotype.Repository
+import org.springframework.stereotype.Component
 
 @CacheConfig(cacheNames = ["tpAccessTokenCache"])
-@Repository
+@Component
 class TrainingPeaksTokenRepository(
     private val trainingPeaksTokenApiClient: TrainingPeaksTokenApiClient,
     private val trainingPeaksConfigurationRepository: TrainingPeaksConfigurationRepository,

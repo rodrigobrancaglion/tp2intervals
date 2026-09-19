@@ -1,10 +1,11 @@
 package org.freekode.tp2intervals.service
 
+import org.freekode.tp2intervals.aspect.LogService
+import org.freekode.tp2intervals.config.log.AppLogger
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.dto.confguration.UpdateConfigurationRequest
 import org.freekode.tp2intervals.integration.provider.configuration.IConfigurationRepository
 import org.freekode.tp2intervals.integration.provider.settings.ISettingsRepository
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
@@ -12,9 +13,10 @@ class SettingService(
     repositories: List<ISettingsRepository>,
     private val configurationRepository: IConfigurationRepository
 ) {
-    private val log = LoggerFactory.getLogger(this.javaClass)
+     private val logger = AppLogger.get(this.javaClass)
     private val repositoryMap = repositories.associateBy { it.platform() }
 
+    @LogService
     fun syncPowerZones(
         sourcePlatform: Platform = Platform.TRAINING_PEAKS,
         targetPlatform1: Platform = Platform.INTERVALS,
@@ -32,10 +34,10 @@ class SettingService(
 //            targetRepo2.savePowerZones(threshold, zones)
             targetRepo3.savePowerZones(threshold, zones)
 
-            log.info("Successfully synced Power Zones from $sourcePlatform to all targets via Repositories")
+            logger.infoL3In("Successfully synced Power Zones from $sourcePlatform to all targets via Repositories")
             true
         } catch (e: Exception) {
-            log.error("Error syncing power zones", e)
+            logger.errorL3In("Error syncing power zones", e)
             false
         }
     }
@@ -47,7 +49,7 @@ class SettingService(
     }
 
     fun setSchedulerEnabled(enabled: Boolean) {
-        log.info("Setting scheduler enabled flag to: \$enabled")
+        logger.infoL3In("Setting scheduler enabled flag to: \$enabled")
         configurationRepository.updateConfig(
             UpdateConfigurationRequest(mapOf("setting_power_scheduler_enabled" to enabled.toString()))
         )

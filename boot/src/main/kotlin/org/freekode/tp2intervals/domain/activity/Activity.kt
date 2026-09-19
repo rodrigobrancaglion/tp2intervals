@@ -3,6 +3,7 @@ package org.freekode.tp2intervals.domain.activity
 import org.freekode.tp2intervals.domain.ActivityType
 import org.freekode.tp2intervals.domain.BaseType
 import org.freekode.tp2intervals.domain.TrainingType
+import org.freekode.tp2intervals.domain.workout.WorkoutComment
 import org.freekode.tp2intervals.integration.utils.Base64
 import org.springframework.core.io.Resource
 import java.time.LocalDateTime
@@ -18,6 +19,7 @@ data class Activity(
     val rpe: Int?,
     val feel: Int?,
     val deviceProductName: String? = null,
+    var workoutComments: List<WorkoutComment> = emptyList(),
 ) {
     constructor(workoutId: Long, rpe: Int?, feel: Int?) : this(workoutId, null, null, null, null, null, null, rpe, feel)
 

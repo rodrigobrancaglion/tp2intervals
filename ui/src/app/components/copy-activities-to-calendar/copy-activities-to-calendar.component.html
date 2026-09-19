@@ -12,7 +12,7 @@
 
   <div class="row">
     <mat-form-field class="form-field">
-      <mat-label>Workout Types</mat-label>
+      <mat-label>Types</mat-label>
       <mat-select formControlName="activitiesTypes" multiple>
         @for (type of activitiesTypes; track type) {
           <mat-option [value]="type.value">{{ type.title }}</mat-option>

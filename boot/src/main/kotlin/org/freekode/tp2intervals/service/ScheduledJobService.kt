@@ -2,14 +2,14 @@ package org.freekode.tp2intervals.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.freekode.tp2intervals.aspect.LogJob
+import org.freekode.tp2intervals.config.log.AppLogger
 import org.freekode.tp2intervals.domain.*
 import org.freekode.tp2intervals.dto.schedule.C2CTodayScheduledRequest
 import org.freekode.tp2intervals.dto.schedule.Schedulable
 import org.freekode.tp2intervals.integration.provider.schedule.IScheduleRequestRepository
 import org.freekode.tp2intervals.model.schedule.ScheduleRequestEntity
-import org.freekode.tp2intervals.utils.Constants
-import org.slf4j.LoggerFactory
-import org.springframework.jdbc.core.JdbcTemplate
+import org.freekode.tp2intervals.model.user.UserRepository
+import org.freekode.tp2intervals.utils.UserContextHolder
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.util.concurrent.TimeUnit
@@ -23,46 +23,22 @@ class ScheduledJobService(
     private val settingService: SettingService,
     val IScheduleRequestRepository: IScheduleRequestRepository,
     val objectMapper: ObjectMapper,
-    val jdbcTemplate: JdbcTemplate
+    private val userRepository: UserRepository
 ) {
-    private val log = LoggerFactory.getLogger(this.javaClass)
-
-
-//    @PostConstruct
-//    fun migratePlatformColumn() {
-//        try {
-//            // Add column if it doesn't exist (SQLite doesn't support IF NOT EXISTS on columns)
-//            // PRAGMA returns one row per column; check if 'platform' is present
-//            val hasPlatformColumn = jdbcTemplate.queryForList("PRAGMA table_info(schedule_requests)")
-//                .any { row -> row["name"] == "platform" }
-//
-//            if (!hasPlatformColumn) {
-//                log.info("Adding 'platform' column to schedule_requests table")
-//                jdbcTemplate.execute("ALTER TABLE schedule_requests ADD COLUMN platform TEXT")
-//            }
-//
-//            // Migrate existing rows with NULL platform to TRAINING_PEAKS
-//            val updated = jdbcTemplate.update(
-//                "UPDATE schedule_requests SET platform = 'TRAINING_PEAKS' WHERE platform IS NULL"
-//            )
-//            if (updated > 0) {
-//                log.info("Migrated $updated existing schedule(s) to platform=TRAINING_PEAKS")
-//            }
-//        } catch (e: Exception) {
-//            log.error("Error during schedule_requests platform migration: ${e.message}", e)
-//        }
-//    }
+    private val logger = AppLogger.get(this.javaClass)
 
     fun addRequest(schedulable: Schedulable, platform: String) {
         val requestJson = objectMapper.writeValueAsString(schedulable)
-        val existing = IScheduleRequestRepository.findByPlatform(platform)
+        val username = UserContextHolder.username
+        val existing = IScheduleRequestRepository.findByPlatformAndUsername(platform, username)
             .firstOrNull { it.requestJson == requestJson }
         if (existing != null) throw IllegalArgumentException("Request already exists")
-        IScheduleRequestRepository.save(ScheduleRequestEntity(requestJson, platform))
+        IScheduleRequestRepository.save(ScheduleRequestEntity(null, requestJson, platform, username))
     }
 
-    final inline fun <reified T : Enum<T>> getRequests(platform: String) =
-        IScheduleRequestRepository.findByPlatform(platform)
+    final inline fun <reified T : Enum<T>> getRequests(platform: String): List<ScheduleRequestEntity> {
+        val username = UserContextHolder.username
+        return IScheduleRequestRepository.findByPlatformAndUsername(platform, username)
             .mapNotNull { record ->
                 try {
                     val request = objectMapper.readValue(
@@ -74,88 +50,118 @@ class ScheduledJobService(
                     null
                 }
             }
+    }
 
     fun deleteRequest(id: Int) {
         IScheduleRequestRepository.deleteById(id)
     }
 
+    private fun runForEveryUser(block: () -> Unit) {
+        val users = userRepository.findAll()
+        for (user in users) {
+            UserContextHolder.username = user.username
+            try {
+                block()
+            } catch (e: Exception) {
+                logger.errorL2In("Error processing scheduled tasks for user ${user.username}: ${e.message}", e)
+            } finally {
+                UserContextHolder.clear()
+            }
+        }
+    }
+
     @LogJob
     @Scheduled(fixedRate = 20, timeUnit = TimeUnit.MINUTES)
     fun jobWorkout() {
-        val requests = IScheduleRequestRepository.findAll()
-            .filter { record ->
-                try {
-                    val request = objectMapper.readValue(record.requestJson, C2CTodayScheduledRequest::class.java)
-                    request.hasType<TrainingType>()
-                } catch (e: Exception) { false }
-            }
-            .map { it.toSchedulable() }
-        log.info("${Constants.logStringIndentation}Starting processing scheduled [WORKOUT] requests. There are ${requests.size} requests")
+        runForEveryUser {
+            val username = UserContextHolder.username
+            val requests = IScheduleRequestRepository.findByUsername(username)
+                .filter { record ->
+                    try {
+                        val request = objectMapper.readValue(record.requestJson, C2CTodayScheduledRequest::class.java)
+                        request.hasType<TrainingType>()
+                    } catch (e: Exception) { false }
+                }
+                .map { it.toSchedulable() }
+            logger.infoL4In("Starting processing scheduled [WORKOUT]. Requests for user: $username - There are ${requests.size} requests")
 
-        for (request in requests) {
-            workoutService.copyWorkoutsC2C(request.forToday())
+            for (request in requests) {
+                workoutService.copyWorkoutsC2C(request.forToday())
+            }
         }
     }
 
     @LogJob
     @Scheduled(fixedRate = 20, timeUnit = TimeUnit.MINUTES)
     fun jobWellness() {
-        val requests = IScheduleRequestRepository.findAll()
-            .mapNotNull { record ->
-                try {
-                    val request = objectMapper.readValue(record.requestJson, C2CTodayScheduledRequest::class.java)
-                    if (request.hasType<WellnessType>()) request else null
-                } catch (e: Exception) { null }
-            }
+        runForEveryUser {
+            val username = UserContextHolder.username
+            val requests = IScheduleRequestRepository.findByUsername(username)
+                .mapNotNull { record ->
+                    try {
+                        val request = objectMapper.readValue(record.requestJson, C2CTodayScheduledRequest::class.java)
+                        if (request.hasType<WellnessType>()) request else null
+                    } catch (e: Exception) { null }
+                }
 
-        log.info("${Constants.logStringIndentation}Starting processing scheduled [WELLNESS] requests. There are ${requests.size} requests")
-        for (request in requests) {
-            wellnessService.copyWellnessC2C(request.forToday())
+            logger.infoL4In("Starting processing scheduled [WELLNESS]. Requests for user: $username - There are ${requests.size} requests")
+            for (request in requests) {
+                wellnessService.copyWellnessC2C(request.forToday())
+            }
         }
     }
 
     @LogJob
     @Scheduled(fixedRate = 20, timeUnit = TimeUnit.MINUTES)
     fun jobActivities() {
-        val requests = IScheduleRequestRepository.findAll()
-            .mapNotNull { record ->
-                try {
-                    val request = objectMapper.readValue(record.requestJson, C2CTodayScheduledRequest::class.java)
-                    if (request.hasType<ActivityType>()) request else null
-                } catch (e: Exception) { null }
-            }
+        runForEveryUser {
+            val username = UserContextHolder.username
+            val requests = IScheduleRequestRepository.findByUsername(username)
+                .mapNotNull { record ->
+                    try {
+                        val request = objectMapper.readValue(record.requestJson, C2CTodayScheduledRequest::class.java)
+                        if (request.hasType<ActivityType>()) request else null
+                    } catch (e: Exception) { null }
+                }
 
-        log.info("${Constants.logStringIndentation}Starting processing scheduled [ACTIVITY] requests. There are ${requests.size} requests")
-        for (request in requests) {
-            activityService.syncActivities(request.forToday())
+            logger.infoL4In("Starting processing scheduled [ACTIVITY]. Requests for user: $username - There are ${requests.size} requests")
+            for (request in requests) {
+                activityService.syncActivities(request.forToday())
+            }
         }
     }
 
     @LogJob
     @Scheduled(fixedRate = 20, timeUnit = TimeUnit.MINUTES)
     fun jobEvents() {
-        val requests = IScheduleRequestRepository.findAll()
-            .mapNotNull { record ->
-                try {
-                    val request = objectMapper.readValue(record.requestJson, C2CTodayScheduledRequest::class.java)
-                    if (request.hasType<OtherType>()) request else null
-                } catch (e: Exception) { null }
-            }
+        runForEveryUser {
+            val username = UserContextHolder.username
+            val requests = IScheduleRequestRepository.findByUsername(username)
+                .mapNotNull { record ->
+                    try {
+                        val request = objectMapper.readValue(record.requestJson, C2CTodayScheduledRequest::class.java)
+                        if (request.hasType<OtherType>()) request else null
+                    } catch (e: Exception) { null }
+                }
 
-        log.info("${Constants.logStringIndentation}Starting processing scheduled [EVENT] requests. There are ${requests.size} requests")
-        for (request in requests) {
-            eventService.syncEvents(request.forToday())
+            logger.infoL4In("Starting processing scheduled [EVENT]. Requests for user: $username - There are ${requests.size} requests")
+            for (request in requests) {
+                eventService.syncEvents(request.forToday())
+            }
         }
     }
 
     @LogJob
     @Scheduled(cron = "0 0 22 ? * MON")
     fun scheduledPowerZoneSync() {
-        if (settingService.isSchedulerEnabled()) {
-            log.info("Running scheduled Power-zone sync (Monday)")
-            settingService.syncPowerZones(Platform.TRAINING_PEAKS, Platform.INTERVALS)
-        } else {
-            log.debug("Scheduled Power-zone sync is disabled")
+        runForEveryUser {
+            val username = UserContextHolder.username
+            if (settingService.isSchedulerEnabled()) {
+                logger.infoL2In("Running scheduled Power-zone sync (Monday) for user $username")
+                settingService.syncPowerZones(Platform.TRAINING_PEAKS, Platform.INTERVALS)
+            } else {
+                logger.infoL2In("Scheduled Power-zone sync is disabled for user $username")
+            }
         }
     }
 

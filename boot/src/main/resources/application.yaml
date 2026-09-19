@@ -63,5 +63,7 @@ management:
       enabled: true
 
 logging:
+  level:
+    org.freekode.tp2intervals.integration.platform: DEBUG
   file:
     name: tp2intervals.log

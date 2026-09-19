@@ -3,7 +3,7 @@ package org.freekode.tp2intervals.integration.utils
 import com.garmin.fit.Decode
 import com.garmin.fit.FileIdMesgListener
 import com.garmin.fit.MesgBroadcaster
-import org.slf4j.LoggerFactory
+import org.freekode.tp2intervals.config.log.AppLogger
 import java.io.ByteArrayInputStream
 import java.util.zip.GZIPInputStream
 
@@ -13,7 +13,7 @@ import java.util.zip.GZIPInputStream
  */
 object FitFileReader {
 
-    private val log = LoggerFactory.getLogger(FitFileReader::class.java)
+    private val logger = AppLogger.get(this.javaClass)
 
     /**
      * Reads the product name from a FIT file's FileId message.
@@ -43,10 +43,10 @@ object FitFileReader {
 
             inputStream.use { decode.read(it, broadcaster) }
 
-            log.debug("FIT file product name: $productName")
+            logger.debugL3In("FIT file product name: $productName")
             productName
         } catch (e: Exception) {
-            log.warn("Could not read product name from FIT file: ${e.message}")
+            logger.warnL3In("Could not read product name from FIT file: ${e.message}")
             null
         }
     }

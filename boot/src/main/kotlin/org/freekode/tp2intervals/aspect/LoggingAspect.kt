@@ -1,13 +1,15 @@
 package org.freekode.tp2intervals.aspect
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.reflect.MethodSignature
+import org.freekode.tp2intervals.config.log.AppLogger
 import org.freekode.tp2intervals.domain.Platform
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import java.time.temporal.Temporal
 
 /**
  * Aspect handling logging for methods annotated with @Loggable.
@@ -16,7 +18,7 @@ import org.springframework.stereotype.Component
 @Component
 class LoggingAspect {
 
-    private val logger = LoggerFactory.getLogger(this.javaClass)
+    private val objectMapper = ObjectMapper().registerModule(JavaTimeModule())
 
     @Around("@annotation(org.freekode.tp2intervals.aspect.LogService)")
     @Throws(Throwable::class)
@@ -25,34 +27,35 @@ class LoggingAspect {
         val signature = joinPoint.signature as MethodSignature
         val className = signature.declaringType.getSimpleName()
         val methodName = signature.name
+        val parameterNames = signature.parameterNames
         val args = joinPoint.args
 
         // Extract sourcePlatform and targetPlatform if available
         val platformInfo = extractPlatformInfo(args)
 
         // Get the logger associated with the original target class
-        val targetLogger: Logger = LoggerFactory.getLogger(signature.declaringType)
+        val logger = AppLogger.get(signature.declaringType)
 
         val logMessage = if (platformInfo.isNotEmpty()) {
-            ">>> Service | START - Method: {}.{}() called $platformInfo with arguments: {}"
+            "Service | START - Method: {}.{}() called $platformInfo with arguments: {}"
         } else {
-            ">>> Service | START - Method: {}.{}() called with arguments: {}"
+            "Service | START - Method: {}.{}() called with arguments: {}"
         }
 
-        logger.info(logMessage, className, methodName, args.contentToString())
+        logger.infoL1In(logMessage, className, methodName, formatArgsWithNames(parameterNames, args))
 
         try {
             val result = joinPoint.proceed()
-            targetLogger.info(
-                "<<< Service | EXIT (SUCCESS) - Method: {}.{}(), with result: {}",
+            logger.infoL1Out(
+                "Service | EXIT (SUCCESS) - Method: {}.{}(), with result: {}",
                 className,
                 methodName,
-                result
+                formatResult(result)
             )
             return result
         } catch (throwable: Throwable) {
-            targetLogger.error(
-                "<<< Service | END (ERROR) - Method: {}.{}() with exception: {}",
+            logger.errorL1Out(
+                "Service | END (ERROR) - Method: {}.{}() with exception: {}",
                 className,
                 methodName,
                 throwable.message
@@ -61,13 +64,21 @@ class LoggingAspect {
         }
     }
 
-    @Around("@annotation(org.freekode.tp2intervals.aspect.LogRepository)")
+    @Around("@within(org.springframework.stereotype.Repository) || @annotation(org.freekode.tp2intervals.aspect.LogRepository)")
     @Throws(Throwable::class)
     fun logExecutionRepository(joinPoint: ProceedingJoinPoint): Any? {
 
         val signature = joinPoint.signature as MethodSignature
-        val className = signature.declaringType.getSimpleName()
+        val returnType = signature.returnType
         val methodName = signature.name
+        val parameterNames = signature.parameterNames
+
+        // Ignora a execução do metodo platform() para evitar poluicao visual nos logs
+        if (methodName == "platform") {
+            return joinPoint.proceed()
+        }
+
+        val className = signature.declaringType.getSimpleName()
         val args = joinPoint.args
         val platform = try {
             val target = joinPoint.target
@@ -75,33 +86,48 @@ class LoggingAspect {
             val method = target.javaClass.getMethod("platform")
             method.invoke(target).toString()
         } catch (e: Exception) {
-            "UNKNOWN"
+            ""
         }
 
         // Get the logger associated with the original target class
-        val targetLogger: Logger = LoggerFactory.getLogger(signature.declaringType)
+        val logger = AppLogger.get(signature.declaringType)
 
-        logger.info(
-            ">>> Repository [{}] | Method: {}.{}() called with arguments: {}",
+        val logMessage = if (args.isNotEmpty()) {
+            "Repository [{}] | START - Method: {}.{}() called with arguments: {}"
+        } else {
+            "Repository [{}] | START - Method: {}.{}() called without arguments{}"
+        }
+
+        logger.infoL2In(
+            logMessage,
             platform,
             className,
             methodName,
-            args.contentToString()
+            formatArgsWithNames(parameterNames, args)
         )
 
         try {
             val result = joinPoint.proceed()
-            targetLogger.info(
-                "<<< Repository [{}] EXIT (SUCCESS) - Method: {}.{}(), with result: {}",
-                platform,
-                className,
-                methodName,
-                result
-            )
+            // Verifica se o tipo de retorno é void
+            val isVoid = returnType == Void.TYPE || returnType.name.equals("void", ignoreCase = true)
+
+            if (isVoid) {
+                logger.infoL2Out("Repository [{}] | EXIT (SUCCESS) - Method: {}.{}() void",
+                    platform,
+                    className,
+                    methodName)
+            } else {
+                logger.infoL2Out("Repository [{}] | EXIT (SUCCESS) - Method: {}.{}(), with result: {}",
+                    platform,
+                    className,
+                    methodName,
+                    formatResult(result))
+            }
+
             return result
         } catch (throwable: Throwable) {
-            targetLogger.error(
-                "<<< Repository [{}] END (ERROR) - Method: {}.{}() with exception: {}",
+            logger.errorL2Out(
+                "Repository [{}] | END (ERROR) - Method: {}.{}() with exception: {}",
                 platform,
                 className,
                 methodName,
@@ -120,26 +146,26 @@ class LoggingAspect {
         val methodName = signature.name
 
         // Get the logger associated with the original target class
-        val targetLogger: Logger = LoggerFactory.getLogger(signature.declaringType)
+        val logger = AppLogger.get(signature.declaringType)
 
-        logger.info(
-            ">>> Schedule Job | START - Method: {}.{}()",
+        logger.infoL1In(
+            "Schedule Job | START - Method: {}.{}()",
             className,
             methodName,
         )
 
         try {
             val result = joinPoint.proceed()
-            targetLogger.info(
-                "<<< Schedule Job | EXIT (SUCCESS) - Method: {}.{}(), with result: {}",
+            logger.infoL1Out(
+                "Schedule Job | EXIT (SUCCESS) - Method: {}.{}(), with result: {}",
                 className,
                 methodName,
-                result
+                formatResult(result)
             )
             return result
         } catch (throwable: Throwable) {
-            targetLogger.error(
-                "<<< Schedule Job | END (ERROR) - Method: {}.{}() with exception: {}",
+            logger.errorL1Out(
+                "Schedule Job | END (ERROR) - Method: {}.{}() with exception: {}",
                 className,
                 methodName,
                 throwable.message
@@ -147,6 +173,52 @@ class LoggingAspect {
             throw throwable
         }
     }
+
+    private fun formatArgsWithNames(parameterNames: Array<String>?, args: Array<Any?>): String {
+        if (args.isEmpty()) return "[]"
+
+        if (parameterNames == null || parameterNames.size != args.size) {
+            return try {
+                objectMapper.writeValueAsString(args)
+            } catch (e: Exception) {
+                args.contentToString()
+            }
+        }
+
+        val formattedParams = parameterNames.zip(args).joinToString(", ") { (name, value) ->
+            val formattedValue = when (value) {
+                null -> "null"
+                is Temporal -> {
+                    // Serializa como JSON e substitui os colchetes [2026,8,21] por chaves {2026,8,21}
+                    val rawJson = objectMapper.writeValueAsString(value)
+                    rawJson.replace('[', '{').replace(']', '}')
+                }
+                else -> {
+                    try {
+                        objectMapper.writeValueAsString(value)
+                    } catch (e: Exception) {
+                        value.toString()
+                    }
+                }
+            }
+            "$name: $formattedValue"
+        }
+
+        return "[$formattedParams]"
+    }
+
+    /**
+     * Converte o resultado de retorno para JSON de forma segura.
+     */
+    private fun formatResult(result: Any?): String {
+        if (result == null) return "null"
+        return try {
+            objectMapper.writeValueAsString(result)
+        } catch (e: Exception) {
+            result.toString()
+        }
+    }
+
 
     private fun extractPlatformInfo(args: Array<Any?>): String {
         // 1. Direct Platform arguments

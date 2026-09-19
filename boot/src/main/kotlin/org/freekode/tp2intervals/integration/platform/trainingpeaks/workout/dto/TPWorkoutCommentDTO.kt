@@ -1,5 +1,6 @@
 package org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.dto
 
+import org.freekode.tp2intervals.domain.workout.WorkoutComment
 import java.time.ZonedDateTime
 
 data class TPWorkoutCommentDTO(
@@ -12,4 +13,18 @@ data class TPWorkoutCommentDTO(
     val lastName: String?,
     val commenterName: String?,
     val isCoach: Boolean
-)
+) {
+    fun toDomain(): WorkoutComment {
+        return WorkoutComment(
+            id = this.id,
+            comment = this.comment,
+            dateCreated = this.dateCreated,
+            workoutId = this.workoutId,
+            commenterPersonId = this.commenterPersonId,
+            firstName = this.firstName,
+            lastName = this.lastName,
+            commenterName = this.commenterName,
+            isCoach = this.isCoach
+        )
+    }
+}

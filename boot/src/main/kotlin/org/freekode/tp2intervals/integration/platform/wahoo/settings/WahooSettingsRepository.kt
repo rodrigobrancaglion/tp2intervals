@@ -1,16 +1,16 @@
 package org.freekode.tp2intervals.integration.platform.wahoo.settings
 
+import org.freekode.tp2intervals.config.log.AppLogger
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.domain.settings.PowerZone
 import org.freekode.tp2intervals.integration.provider.settings.ISettingsRepository
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 
 @Repository
 class WahooSettingsRepository(
     private val wahooSettingsApiClient: WahooSettingsApiClient,
 ) : ISettingsRepository {
-    private val log = LoggerFactory.getLogger(WahooSettingsRepository::class.java)
+    private val logger = AppLogger.get(this.javaClass)
 
     override fun platform() = Platform.WAHOO
 
@@ -20,7 +20,7 @@ class WahooSettingsRepository(
     }
 
     override fun savePowerZones(threshold: Int, zones: List<PowerZone>) {
-        log.info("Syncing power zones to Wahoo: FTP=$threshold, Zones Count=${zones.size}")
+        logger.infoL3In("Syncing power zones to Wahoo: FTP=$threshold, Zones Count=${zones.size}")
 
         val currentZones = wahooSettingsApiClient.getPowerZones()
         // Workout Type ID 10 is typically Biking
@@ -37,10 +37,10 @@ class WahooSettingsRepository(
         }
 
         if (bikingZone != null && bikingZone.id != null) {
-            log.info("Updating existing Wahoo power zone: ID=${bikingZone.id}")
+            logger.infoL3In("Updating existing Wahoo power zone: ID=${bikingZone.id}")
             wahooSettingsApiClient.updatePowerZone(bikingZone.id, params)
         } else {
-            log.info("Creating new Wahoo power zone")
+            logger.infoL3In("Creating new Wahoo power zone")
             params["power_zone[workout_type_id]"] = 10
             wahooSettingsApiClient.createPowerZone(params)
         }

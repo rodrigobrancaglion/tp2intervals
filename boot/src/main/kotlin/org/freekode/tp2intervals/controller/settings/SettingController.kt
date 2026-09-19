@@ -1,7 +1,7 @@
 package org.freekode.tp2intervals.controller.settings
 
+import org.freekode.tp2intervals.config.log.AppLogger
 import org.freekode.tp2intervals.service.SettingService
-import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RestController
 class SettingController(
     private val settingService: SettingService
 ) {
-    private val log = LoggerFactory.getLogger(this.javaClass)
+     private val logger = AppLogger.get(this.javaClass)
 
     @PostMapping("/power/sync")
     fun syncPowerZones(): ResponseEntity<Map<String, String>> {
-        log.info("Manual trigger: Syncing power zones from TrainingPeaks to Intervals.icu")
+        logger.infoL1In("Manual trigger: Syncing power zones from TrainingPeaks to Intervals.icu")
 
         val success = settingService.syncPowerZones()
 

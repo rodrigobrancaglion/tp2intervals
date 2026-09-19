@@ -2,7 +2,7 @@ package org.freekode.tp2intervals.integration.platform.trainingpeaks.activity
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
-import org.freekode.tp2intervals.aspect.LogRepository
+import org.freekode.tp2intervals.config.log.AppLogger
 import org.freekode.tp2intervals.domain.BaseType
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.domain.activity.Activity
@@ -12,7 +12,6 @@ import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.TPTo
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.TrainingPeaksWorkoutApiClient
 import org.freekode.tp2intervals.integration.provider.activity.IActivityRepository
 import org.freekode.tp2intervals.integration.utils.FitFileReader
-import org.slf4j.LoggerFactory
 import org.springframework.cache.annotation.CacheConfig
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
@@ -31,14 +30,12 @@ class TrainingpeaksActivityRepository(
 ) : IActivityRepository {
     override fun platform() = Platform.TRAINING_PEAKS
 
-    private val log = LoggerFactory.getLogger(this.javaClass)
-
+     private val logger = AppLogger.get(this.javaClass)
 
     private val tpMapper = objectMapper.copy().apply {
         nodeFactory = JsonNodeFactory(false)
     }
 
-    @LogRepository
     override fun saveActivities(activities: List<Activity>, types: List<BaseType>) {
         val athleteId = trainingPeaksUserRepository.getUser().userId
         activities.forEach { activity ->
@@ -55,7 +52,7 @@ class TrainingpeaksActivityRepository(
                     trainingPeaksActivityApiClient.updateActivity(athleteId, newActivityDTO.workoutId, finalJson)
                 }
             } catch (e: Exception) {
-                log.error("TrainingPeaks - Error saving activity ${activity.workoutId} : ${e.message}", e)
+                logger.errorL3In("TrainingPeaks - Error saving activity ${activity.workoutId} : ${e.message}", e)
             }
         }
     }
@@ -74,21 +71,20 @@ class TrainingpeaksActivityRepository(
             uploadClient = "TP Web App"
         )
 
-        log.info("Uploading JSON Base64 to TrainingPeaks: fileName=$fileName")
+        logger.infoL3In("Uploading JSON Base64 to TrainingPeaks: fileName=$fileName")
 
         try {
             trainingPeaksActivityApiClient.uploadActivity(userId, uploadRequest)
-            log.info("TrainingPeaks - Successfully uploaded activity")
+            logger.infoL3In("TrainingPeaks - Successfully uploaded activity")
         } catch (e: Exception) {
             if (e.message?.contains("File has already been uploaded") == true) {
-                log.info("TrainingPeaks - Activity already uploaded: $fileName")
+                logger.infoL3In("TrainingPeaks - Activity already uploaded: $fileName")
             } else {
-                log.error("TrainingPeaks - Error uploading: ${e.message}", e)
+                logger.errorL3In("TrainingPeaks - Error uploading: ${e.message}", e)
             }
         }
     }
 
-    @LogRepository
     override fun getActivities(startDate: LocalDate, endDate: LocalDate): List<Activity> {
         val userId = trainingPeaksUserRepository.getUser().userId
         val tpWorkouts = trainingPeaksWorkoutApiClient.getWorkouts(userId, startDate.toString(), endDate.toString())

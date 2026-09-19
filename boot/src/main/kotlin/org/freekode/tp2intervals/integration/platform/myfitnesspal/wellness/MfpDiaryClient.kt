@@ -1,10 +1,10 @@
 package org.freekode.tp2intervals.integration.platform.myfitnesspal.wellness
 
+import org.freekode.tp2intervals.config.log.AppLogger
 import org.freekode.tp2intervals.integration.platform.myfitnesspal.configuration.dto.MfpConfiguration
 import org.freekode.tp2intervals.integration.platform.myfitnesspal.wellness.dto.MfpNutritionDTO
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.time.LocalDate
@@ -13,7 +13,7 @@ import java.time.LocalDate
 class MfpDiaryClient(
     @Value("\${app.mfp.api-url}") private val baseUrl: String,
 ) {
-    private val log = LoggerFactory.getLogger(MfpDiaryClient::class.java)
+    private val logger = AppLogger.get(this.javaClass)
 
     companion object {
         private const val DIARY_PATH = "/food/diary"
@@ -35,7 +35,7 @@ class MfpDiaryClient(
 
     private fun fetchDay(username: String, date: LocalDate, cookies: Map<String, String>): MfpNutritionDTO? {
         val url = "$baseUrl$DIARY_PATH/$username?date=$date"
-        log.debug("MFP fetching diary: $url")
+        logger.debugL3In("MFP fetching diary: $url")
         val doc: Document = Jsoup.connect(url)
             .cookies(cookies)
             .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36")
@@ -66,10 +66,10 @@ class MfpDiaryClient(
         val fat = cellValue(3)
         val protein = cellValue(4)
 
-        log.info("MFP [$date]: calories=$calories carbs=$carbohydrates fat=$fat protein=$protein")
+        logger.infoL3In("MFP [$date]: calories=$calories carbs=$carbohydrates fat=$fat protein=$protein")
 
         if (calories == null || calories == 0.0) {
-            log.info("MFP [$date]: skipping empty diary")
+            logger.infoL3In("MFP [$date]: skipping empty diary")
             return null
         }
 

@@ -1,13 +1,7 @@
 <div class="app-layout">
   <!-- Slim vertical sidebar that expands on hover -->
   <aside class="app-sidebar">
-    <!--
     <div class="sidebar-header">
-      <span class="logo-icon font-mono">TP</span>
-      <span class="logo-text font-mono">2Intervals</span>
-    </div>
-    -->
-    <div class="sidebar-header platform-badge">
       <div class="icon-wrapper"
            [style.background-image]="'url(assets/platforms/tp2intervals.png)'"
            [style.background-size]="'cover'"
@@ -15,7 +9,7 @@
       </div>
     </div>
 
-    <nav class="sidebar-nav">
+    <nav class="sidebar-nav" *ngIf="connectedPlatforms$ | async as connectedPlatforms">
       @for (button of menuButtons; track button.url) {
         <a [routerLink]="[button.url]"
            class="nav-item"
@@ -49,10 +43,13 @@
     </nav>
 
     <div class="sidebar-footer">
-      <a [href]="githubLink" target="_blank" class="footer-icon-link" matTooltip="GitHub Releases" matTooltipPosition="right">
-        <i class="bi bi-github"></i>
-        <span class="badge-dot" *ngIf="!updateAvailableBadgeHidden"></span>
-      </a>
+      <button class="footer-icon-link logout-btn" matTooltip="Logout" matTooltipPosition="right" (click)="logout()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </button>
     </div>
   </aside>
 
@@ -76,6 +73,9 @@
            class="header-btn"
            matTooltip="Intervals.icu Forum Link">
           <i class="bi bi-chat-text"></i>
+        </a>
+        <a [href]="githubLink" target="_blank" class="header-btn" matTooltip="GitHub Releases" matTooltipPosition="right">
+          <i class="bi bi-github"></i>
         </a>
       </div>
     </header>

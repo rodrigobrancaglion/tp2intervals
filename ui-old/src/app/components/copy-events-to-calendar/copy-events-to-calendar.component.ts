@@ -97,7 +97,7 @@ export class CopyEventsToCalendarComponent implements OnInit {
   }
 
   mapEventTypesToTitles(values) {
-    return values.map(value => EventTypes.getTitle(value))
+    return values.map(value => EventTypes.getTitle(value)).join(', ')
   }
 
   private copyEvents(startDate, endDate) {

@@ -1,6 +1,7 @@
 package org.freekode.tp2intervals.integration.platform.trainingpeaks.workout
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.freekode.tp2intervals.config.log.AppLogger
 import org.freekode.tp2intervals.domain.ActivityType
 import org.freekode.tp2intervals.domain.BaseType
 import org.freekode.tp2intervals.domain.ExternalData
@@ -18,7 +19,6 @@ import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.dto.
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.dto.TPWorkoutCalendarDTO
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.structure.FromTPStructureConverter
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.structure.TPWorkoutStructureDTO
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.Duration
 import java.time.LocalDate
@@ -28,7 +28,7 @@ import java.time.LocalDateTime
 class TPToWorkoutConverter(
     private val objectMapper: ObjectMapper
 ) {
-    private val log = LoggerFactory.getLogger(this.javaClass)
+     private val logger = AppLogger.get(this.javaClass)
 
     fun toWorkout(tpWorkout: TPWorkoutCalendarDTO, attachments: List<Attachment> = listOf()): Workout {
         val dateTime = if (!tpWorkout.startTime.isNullOrBlank()) {
@@ -89,10 +89,10 @@ class TPToWorkoutConverter(
                 throw IllegalArgumentException("There is no structure")
             }
             FromTPStructureConverter.toWorkoutStructure(tpWorkout.structure!!).also {
-                log.debug("Read TrainingPeaks workout {}, target preview: {}", tpWorkout.title, targetPreview(it))
+                logger.debugL3In("Read TrainingPeaks workout {}, target preview: {}", tpWorkout.title, targetPreview(it))
             }
         } catch (e: IllegalArgumentException) {
-            log.warn("Error during TP Workout conversion, skipping, id: ${tpWorkout.workoutId}, name: ${tpWorkout.title}, error - ${e.message}'")
+            logger.warnL3In("Error during TP Workout conversion, skipping, id: ${tpWorkout.workoutId}, name: ${tpWorkout.title}, error - ${e.message}'")
             null
         }
 
@@ -111,8 +111,12 @@ class TPToWorkoutConverter(
             null,
             tpWorkout.rpe,
             tpWorkout.feeling,
+            null,
+            tpWorkout.workoutComments.map { it.toDomain() }
         )
     }
+
+
 
     fun convertToPutRequest(activity: Activity, workout: TPWorkoutCalendarDTO, types: List<BaseType>): TPActivityRequestDTO {
         // Check if "RPE" is on the list of allowed update types.

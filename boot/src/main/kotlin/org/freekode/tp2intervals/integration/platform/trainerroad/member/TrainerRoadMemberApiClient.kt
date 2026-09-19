@@ -1,6 +1,6 @@
 package org.freekode.tp2intervals.integration.platform.trainerroad.member
 
-import org.freekode.tp2intervals.integration.platform.trainerroad.TrainerRoadApiClientConfig
+import org.freekode.tp2intervals.integration.platform.trainerroad.TRApiClientConfig
 import org.freekode.tp2intervals.integration.platform.trainerroad.member.dto.TrainerRoadMemberDTO
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping
     url = "\${app.trainer-road.api-url}",
     dismiss404 = true,
     primary = false,
-    configuration = [TrainerRoadApiClientConfig::class]
+    configuration = [TRApiClientConfig::class]
 )
 interface TrainerRoadMemberApiClient {
     @GetMapping("/app/api/member-info")

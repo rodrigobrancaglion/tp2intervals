@@ -43,7 +43,9 @@ class WorkoutService(
             request.endDate,
             ExternalData.empty()
         )
-        targetWorkoutRepository.saveWorkoutsToCalendar(filteredWorkoutsToSync)
+        filteredWorkoutsToSync.takeIf { it.isNotEmpty() }?.let { workouts ->
+            targetWorkoutRepository.saveWorkoutsToCalendar(workouts)
+        }
         return response
     }
 

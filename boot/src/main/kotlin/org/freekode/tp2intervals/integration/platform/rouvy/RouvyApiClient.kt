@@ -30,6 +30,19 @@ interface RouvyRidersClient {
         @RequestHeader("Accept") accept: String = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
         @RequestHeader("Accept-Language") lang: String = "en-US,en;q=0.9"
     ): String
+
+    @GetMapping("/route/{routeId}")
+    fun getRoutePage(
+        @PathVariable("routeId") routeId: String,
+        @RequestHeader("User-Agent") ua: String = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+    ): String
+
+    @GetMapping("/resources/activities-pagination.data?offset={offset}&_routes=routes%2Fresources.activities-pagination")
+    fun getActivitiesPagination(
+        @PathVariable("offset") offset: Int,
+        @RequestHeader("Cookie") cookie: String,
+        @RequestHeader("User-Agent") ua: String = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+    ): String
 }
 
 @FeignClient(name = "rouvy-activities", url = "https://activities.virtualtraining.eu")

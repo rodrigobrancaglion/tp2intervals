@@ -1,11 +1,10 @@
 package org.freekode.tp2intervals.integration.platform.rouvy.activity
 
-import org.freekode.tp2intervals.aspect.LogRepository
+import org.freekode.tp2intervals.config.log.AppLogger
 import org.freekode.tp2intervals.domain.BaseType
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.domain.activity.Activity
 import org.freekode.tp2intervals.integration.provider.activity.IActivityRepository
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
 import java.time.LocalTime
@@ -15,11 +14,10 @@ import java.util.*
 class RouvyActivityRepository(
     private val rouvySyncManager: RouvySyncManager
 ) : IActivityRepository {
-    private val log = LoggerFactory.getLogger(this.javaClass)
+     private val logger = AppLogger.get(this.javaClass)
 
     override fun platform() = Platform.ROUVY
 
-    @LogRepository
     override fun getActivities(startDate: LocalDate, endDate: LocalDate): List<Activity> {
 
         val rouvyActiviteisInfo = rouvySyncManager.getActivitiesInDateRange(startDate, endDate)
@@ -30,7 +28,7 @@ class RouvyActivityRepository(
             val activityDate = rouvyActivityInfo.date ?: LocalDate.now()
 
             if (activityDate.isBefore(startDate) || activityDate.isAfter(endDate)) {
-                log.info("Latest Rouvy activity at $activityDate is outside requested range [$startDate, $endDate]")
+                logger.infoL3In("Latest Rouvy activity at $activityDate is outside requested range [$startDate, $endDate]")
                 return emptyList()
             }
 
@@ -55,7 +53,7 @@ class RouvyActivityRepository(
                 feel = null
             ))
 
-            log.info("Rouvy activity ready for sync: id=$activityId, title=$finalTitle, date=$activityDate")
+            logger.infoL3In("Rouvy activity ready for sync: id=$activityId, title=$finalTitle, date=$activityDate")
         }
 
         return activiteisInfo
@@ -67,9 +65,8 @@ class RouvyActivityRepository(
         return numericPart?.toLongOrNull() ?: rouvyId.hashCode().toLong().let { if (it < 0) -it else it }
     }
 
-    @LogRepository
     override fun saveActivities(activities: List<Activity>, types: List<BaseType>) {
         // Rouvy is read-only in this application
-        log.info("Rouvy saveActivities called but not implemented (read-only source)")
+        logger.infoL3In("Rouvy saveActivities called but not implemented (read-only source)")
     }
 }

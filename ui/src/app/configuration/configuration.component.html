@@ -13,15 +13,15 @@
 <form [formGroup]="formGroup" novalidate (ngSubmit)="onSubmit()" class="precision-form">
 
   <!-- Intervals.icu Platform Card -->
-  <div class="precision-card" [ngClass]="formGroup.get('intervals.api-key')?.value && formGroup.get('intervals.athlete-id')?.value ? 'success' : 'danger'">
+  <div class="precision-card" [ngClass]="formGroup.get(['intervals.api-key'])?.value && formGroup.get(['intervals.athlete-id'])?.value ? 'success' : 'danger'">
     <div class="card-header">
       <h3 class="card-title">
         <span class="platform-logo-mini intervals">ICU</span>
         Intervals.icu (Target Platform)
       </h3>
-      <span class="status-badge" [ngClass]="formGroup.get('intervals.api-key')?.value && formGroup.get('intervals.athlete-id')?.value ? 'connected' : 'disconnected'">
+      <span class="status-badge" [ngClass]="formGroup.get(['intervals.api-key'])?.value && formGroup.get(['intervals.athlete-id'])?.value ? 'connected' : 'disconnected'">
         <span class="dot"></span>
-        {{ formGroup.get('intervals.api-key')?.value && formGroup.get('intervals.athlete-id')?.value ? 'Connected' : 'Missing Info' }}
+        {{ formGroup.get(['intervals.api-key'])?.value && formGroup.get(['intervals.athlete-id'])?.value ? 'Connected' : 'Missing Info' }}
       </span>
     </div>
 
@@ -60,7 +60,7 @@
   </div>
 
   <!-- TrainingPeaks Platform Card -->
-  <div class="precision-card" [ngClass]="formGroup.get('training-peaks.auth-cookie')?.value ? 'success' : 'danger'">
+  <div class="precision-card" [ngClass]="formGroup.get(['training-peaks.auth-cookie'])?.value ? 'success' : 'danger'">
     <div class="card-header">
       <h3 class="card-title">
         <span class="platform-logo-mini training-peaks"
@@ -71,9 +71,9 @@
         </span>
         TrainingPeaks
       </h3>
-      <span class="status-badge" [ngClass]="formGroup.get('training-peaks.auth-cookie')?.value ? 'connected' : 'disconnected'">
+      <span class="status-badge" [ngClass]="formGroup.get(['training-peaks.auth-cookie'])?.value ? 'connected' : 'disconnected'">
         <span class="dot"></span>
-        {{ formGroup.get('training-peaks.auth-cookie')?.value ? 'Connected' : 'Not Configured' }}
+        {{ formGroup.get(['training-peaks.auth-cookie'])?.value ? 'Connected' : 'Not Configured' }}
       </span>
     </div>
 
@@ -87,15 +87,15 @@
   </div>
 
   <!-- TrainerRoad Platform Card -->
-  <div class="precision-card" [ngClass]="formGroup.get('trainer-road.auth-cookie')?.value ? 'success' : 'danger'">
+  <div class="precision-card" [ngClass]="formGroup.get(['trainer-road.auth-cookie'])?.value ? 'success' : 'danger'">
     <div class="card-header">
       <h3 class="card-title">
         <span class="platform-logo-mini trainer-road">TR</span>
         TrainerRoad
       </h3>
-      <span class="status-badge" [ngClass]="formGroup.get('trainer-road.auth-cookie')?.value ? 'connected' : 'disconnected'">
+      <span class="status-badge" [ngClass]="formGroup.get(['trainer-road.auth-cookie'])?.value ? 'connected' : 'disconnected'">
         <span class="dot"></span>
-        {{ formGroup.get('trainer-road.auth-cookie')?.value ? 'Connected' : 'Not Configured' }}
+        {{ formGroup.get(['trainer-road.auth-cookie'])?.value ? 'Connected' : 'Not Configured' }}
       </span>
     </div>
 
@@ -116,15 +116,15 @@
   </div>
 
   <!-- Wahoo Platform Card with OAuth Actions -->
-  <div class="precision-card" [ngClass]="formGroup.get('wahoo.refresh-token')?.value ? 'success' : 'danger'">
+  <div class="precision-card" [ngClass]="formGroup.get(['wahoo.refresh-token'])?.value ? 'success' : 'danger'">
     <div class="card-header">
       <h3 class="card-title">
         <span class="platform-logo-mini wahoo">W</span>
         Wahoo Fitness (OAuth 2.0)
       </h3>
-      <span class="status-badge" [ngClass]="formGroup.get('wahoo.refresh-token')?.value ? 'connected' : 'disconnected'">
+      <span class="status-badge" [ngClass]="formGroup.get(['wahoo.refresh-token'])?.value ? 'connected' : 'disconnected'">
         <span class="dot"></span>
-        {{ formGroup.get('wahoo.refresh-token')?.value ? 'Connected' : 'Not Configured' }}
+        {{ formGroup.get(['wahoo.refresh-token'])?.value ? 'Connected' : 'Not Configured' }}
       </span>
     </div>
 
@@ -184,15 +184,15 @@
   </div>
 
   <!-- Strava Platform Card -->
-  <div class="precision-card" [ngClass]="formGroup.get('strava.refresh-token')?.value ? 'success' : 'danger'">
+  <div class="precision-card" [ngClass]="formGroup.get(['strava.refresh-token'])?.value ? 'success' : 'danger'">
     <div class="card-header">
       <h3 class="card-title">
         <span class="platform-logo-mini wahoo" style="background-color: #7B341E; color: #FEEBC8;">S</span>
         Strava (Legacy Setup)
       </h3>
-      <span class="status-badge" [ngClass]="formGroup.get('strava.refresh-token')?.value ? 'connected' : 'disconnected'">
+      <span class="status-badge" [ngClass]="formGroup.get(['strava.refresh-token'])?.value ? 'connected' : 'disconnected'">
         <span class="dot"></span>
-        {{ formGroup.get('strava.refresh-token')?.value ? 'Connected' : 'Not Configured' }}
+        {{ formGroup.get(['strava.refresh-token'])?.value ? 'Connected' : 'Not Configured' }}
       </span>
     </div>
 
@@ -215,15 +215,15 @@
   </div>
 
   <!-- Rouvy Platform Card -->
-  <div class="precision-card" [ngClass]="formGroup.get('rouvy.email')?.value ? 'success' : 'danger'">
+  <div class="precision-card" [ngClass]="formGroup.get(['rouvy.email'])?.value ? 'success' : 'danger'">
     <div class="card-header">
       <h3 class="card-title">
         <span class="platform-logo-mini rouvy">R</span>
         Rouvy
       </h3>
-      <span class="status-badge" [ngClass]="formGroup.get('rouvy.email')?.value ? 'connected' : 'disconnected'">
+      <span class="status-badge" [ngClass]="formGroup.get(['rouvy.email'])?.value ? 'connected' : 'disconnected'">
         <span class="dot"></span>
-        {{ formGroup.get('rouvy.email')?.value ? 'Connected' : 'Not Configured' }}
+        {{ formGroup.get(['rouvy.email'])?.value ? 'Connected' : 'Not Configured' }}
       </span>
     </div>
 
@@ -241,15 +241,15 @@
   </div>
 
   <!-- MyFitnessPal Platform Card -->
-  <div class="precision-card" [ngClass]="formGroup.get('mfp.session-cookie')?.value ? 'success' : 'danger'">
+  <div class="precision-card" [ngClass]="formGroup.get(['mfp.session-cookie'])?.value ? 'success' : 'danger'">
     <div class="card-header">
       <h3 class="card-title">
         <span class="platform-logo-mini myfitnesspal">MF</span>
         MyFitnessPal
       </h3>
-      <span class="status-badge" [ngClass]="formGroup.get('mfp.session-cookie')?.value ? 'connected' : 'disconnected'">
+      <span class="status-badge" [ngClass]="formGroup.get(['mfp.session-cookie'])?.value ? 'connected' : 'disconnected'">
         <span class="dot"></span>
-        {{ formGroup.get('mfp.session-cookie')?.value ? 'Connected' : 'Not Configured' }}
+        {{ formGroup.get(['mfp.session-cookie'])?.value ? 'Connected' : 'Not Configured' }}
       </span>
     </div>
 
@@ -282,15 +282,15 @@
   </div>
 
   <!-- General & Debug Settings Card -->
-  <div class="precision-card success">
+  <div class="precision-card" [ngClass]="formGroup.get(['general.debug-mode'])?.value ? 'success' : 'danger'">
     <div class="card-header">
       <h3 class="card-title">
         <i class="bi bi-terminal-fill debug-title-icon"></i>
         System & Debugging
       </h3>
-      <span class="status-badge connected">
+      <span class="status-badge" [ngClass]="formGroup.get(['general.debug-mode'])?.value ? 'connected' : 'disconnected'">
         <span class="dot"></span>
-        Active
+        {{ formGroup.get(['general.debug-mode'])?.value ? 'Active' : 'Inactive' }}
       </span>
     </div>
 

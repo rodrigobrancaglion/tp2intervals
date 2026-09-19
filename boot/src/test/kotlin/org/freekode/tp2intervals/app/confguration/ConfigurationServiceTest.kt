@@ -1,7 +1,8 @@
 package org.freekode.tp2intervals.dto.confguration
 
-import org.freekode.tp2intervals.integration.platform.intervalsicu.athlete.IntervalsAthleteApiClient
-import org.freekode.tp2intervals.integration.platform.intervalsicu.configuration.IntervalsConfigurationRepository
+import org.freekode.tp2intervals.integration.platform.intervalsicu.athlete.IcuAthleteApiClient
+import org.freekode.tp2intervals.integration.platform.intervalsicu.configuration.IcuConfigurationRepository
+import org.freekode.tp2intervals.integration.platform.wahoo.token.WahooTokenApiClient
 import org.freekode.tp2intervals.integration.provider.configuration.ConfigurationRepository
 import org.freekode.tp2intervals.integration.provider.configuration.IConfigurationCrudRepository
 import org.freekode.tp2intervals.service.ConfigurationService
@@ -12,22 +13,22 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.springframework.cache.CacheManager
 
-// TODO fix tests
 @Disabled
 class ConfigurationServiceTest {
     private val appConfigurationRepository = ConfigurationRepository(mock(IConfigurationCrudRepository::class.java))
 
     private val configurationService = ConfigurationService(
         listOf(
-            IntervalsConfigurationRepository(
+            IcuConfigurationRepository(
                 appConfigurationRepository,
-                mock(IntervalsAthleteApiClient::class.java),
+                mock(IcuAthleteApiClient::class.java),
                 mock(CacheManager::class.java)
             )
         ),
         listOf(),
         appConfigurationRepository,
-        mock(DebugModeService::class.java)
+        mock(DebugModeService::class.java),
+        mock(WahooTokenApiClient::class.java)
     )
 
     @Test

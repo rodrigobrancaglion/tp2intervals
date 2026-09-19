@@ -100,7 +100,7 @@ export class CopyActivitiesToCalendarComponent implements OnInit {
   }
 
   mapActivitiesTypesToTitles(values) {
-    return values.map(value => ActivitiesTypes.getTitle(value))
+    return values.map(value => ActivitiesTypes.getTitle(value)).join(', ')
   }
 
   private copyActiviesForOneDay(date) {

@@ -1,7 +1,6 @@
 package org.freekode.tp2intervals.integration.platform.trainingpeaks.workout
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.freekode.tp2intervals.aspect.LogRepository
 import org.freekode.tp2intervals.domain.ExternalData
 import org.freekode.tp2intervals.domain.Platform
 import org.freekode.tp2intervals.domain.librarycontainer.LibraryContainer
@@ -39,12 +38,10 @@ class TrainingPeaksWorkoutRepository(
 
     override fun platform() = Platform.TRAINING_PEAKS
 
-    @LogRepository
     override fun saveWorkoutsToCalendar(workouts: List<Workout>) {
         workouts.forEach { saveWorkoutToCalendar(it) }
     }
 
-    @LogRepository
     @Cacheable
     override fun getWorkoutsFromLibrary(libraryContainer: LibraryContainer): List<Workout> {
         val user = trainingPeaksUserRepository.getUser()
@@ -79,7 +76,6 @@ class TrainingPeaksWorkoutRepository(
         return workouts + notes
     }
 
-    @LogRepository
     override fun getWorkoutsFromCalendar(startDate: LocalDate, endDate: LocalDate): List<Workout> {
         val userId = trainingPeaksUserRepository.getUser().userId
         val tpWorkouts = trainingPeaksWorkoutApiClient.getWorkouts(userId, startDate.toString(), endDate.toString())
@@ -97,25 +93,21 @@ class TrainingPeaksWorkoutRepository(
         return workouts + notes
     }
 
-    @LogRepository
     override fun findWorkoutsFromLibraryByName(name: String): List<WorkoutDetails> {
         return tpWorkoutLibraryRepository.getAllWorkouts()
             .map { it.details }
             .filter { it.name.contains(name) }
     }
 
-    @LogRepository
     override fun getWorkoutFromLibrary(externalData: ExternalData): Workout {
         return tpWorkoutLibraryRepository.getAllWorkouts()
             .find { it.details.externalData == externalData }!!
     }
 
-    @LogRepository
     override fun saveWorkoutsToLibrary(libraryContainer: LibraryContainer, workouts: List<Workout>) {
         throw PlatformException(Platform.TRAINING_PEAKS, "TP doesn't support workout creation")
     }
 
-    @LogRepository
     override fun deleteWorkoutsFromCalendar(startDate: LocalDate, endDate: LocalDate) {
         val userId = trainingPeaksUserRepository.getUser().userId
         getWorkoutsFromCalendar(startDate, endDate).forEach {

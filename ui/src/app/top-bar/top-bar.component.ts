@@ -4,16 +4,16 @@ import {EnvironmentService} from "integration/environment.service";
 import {MatButtonModule} from "@angular/material/button";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatBadgeModule} from "@angular/material/badge";
-import {forkJoin} from "rxjs";
+import {forkJoin, Observable} from "rxjs";
 import {GitHubClient} from "integration/client/github.client";
-import {ConfigurationClient} from "integration/client/configuration.client";
 import * as semver from "semver";
 import {MatTooltipModule} from "@angular/material/tooltip";
-import {NgClass, NgIf} from "@angular/common";
-
+import {AsyncPipe, NgClass, NgIf} from "@angular/common";
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatListModule} from '@angular/material/list';
 import {MatIconModule} from '@angular/material/icon';
+import {ConnectionStatusService} from "app/connection-status.service";
+import {AuthService} from "app/login/auth.service";
 
 @Component({
   selector: 'app-top-bar',
@@ -29,7 +29,8 @@ import {MatIconModule} from '@angular/material/icon';
     MatListModule,
     MatIconModule,
     NgIf,
-    NgClass
+    NgClass,
+    AsyncPipe
   ],
   templateUrl: './top-bar.component.html',
   styleUrl: './top-bar.component.scss'
@@ -38,16 +39,8 @@ export class TopBarComponent implements OnInit {
   appVersion: string
   updateAvailableBadgeHidden = true;
   githubLink = 'https://github.com/freekode/tp2intervals'
-
-  // Dict to store connection status
-  connectedPlatforms: { [key: string]: boolean } = {
-    'training-peaks': false,
-    'wahoo': false,
-    'rouvy': false,
-    'myfitnesspal': false,
-    'trainer-road': false,
-    'intervals': false
-  };
+  connectedPlatforms$: Observable<{ [key: string]: boolean }>;
+  isAuthenticated$: Observable<boolean>;
 
   menuButtons = [
     {name: 'Home', url: '/home', icon: 'bi bi-house-door', id: 'home'},
@@ -62,34 +55,31 @@ export class TopBarComponent implements OnInit {
     protected router: Router,
     private githubClient: GitHubClient,
     private environmentService: EnvironmentService,
-    private configClient: ConfigurationClient
+    private connectionStatusService: ConnectionStatusService,
+    private authService: AuthService
   ) {
   }
 
   ngOnInit(): void {
+    this.connectedPlatforms$ = this.connectionStatusService.connectedPlatforms$;
+    this.isAuthenticated$ = this.authService.isAuthenticated$;
+
     forkJoin([
       this.githubClient.getLatestRelease(),
-      this.environmentService.getVersion(),
-      this.configClient.getConfig()
+      this.environmentService.getVersion()
     ]).subscribe(result => {
       this.appVersion = result[1]
       let latestRelease = result[0]
-      let configData = result[2]?.config || {}
 
       if (semver.gt(latestRelease.version, this.appVersion)) {
         this.updateAvailableBadgeHidden = false;
         this.githubLink = latestRelease.url
       }
-
-      // Compute connection status for each platform
-      this.connectedPlatforms['intervals'] = !!configData['intervals.api-key'] && !!configData['intervals.athlete-id'];
-      this.connectedPlatforms['training-peaks'] = !!configData['training-peaks.auth-cookie'];
-      this.connectedPlatforms['trainer-road'] = !!configData['trainer-road.auth-cookie'];
-      this.connectedPlatforms['myfitnesspal'] = !!configData['mfp.session-cookie'] || !!configData['mfp.user-id'];
-      this.connectedPlatforms['rouvy'] = !!configData['rouvy.email'];
-      this.connectedPlatforms['wahoo'] = !!configData['wahoo.refresh-token'];
-
-      console.log('App version & connection status evaluated:', this.connectedPlatforms);
     })
   }
+
+  logout() {
+    this.authService.logout();
+  }
 }
+

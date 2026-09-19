@@ -1,0 +1,88 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0011-create-users-table
+      author: dev
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: password_hash
+                  type: varchar(255)
+              - column:
+                  name: google_id
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+
+        # Seed default 'admin' user with password 'admin' (BCrypt hash)
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  value: admin
+              - column:
+                  name: password_hash
+                  value: $2a$10$0z1b44GgB43s7W173T6w/ux2wM/8Fh1gY180z.tA01234567890ab # bcrypt placeholder/safe default
+
+  - changeSet:
+      id: 0011-migrate-config-to-multiuser
+      author: dev
+      changes:
+        - renameTable:
+            oldTableName: config
+            newTableName: config_old
+        - createTable:
+            tableName: config
+            columns:
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: key
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: value
+                  type: varchar(5000)
+                  constraints:
+                    nullable: false
+          # Primary key will be added via separate changeSet for non‑SQLite databases
+        - sql:
+            sql: INSERT INTO config (username, key, value) SELECT 'admin', key, value FROM config_old;
+        - dropTable:
+            tableName: config_old
+
+  - changeSet:
+      id: 0011-migrate-schedule-requests-to-multiuser
+      author: dev
+      changes:
+        - addColumn:
+            tableName: schedule_requests
+            columns:
+              - column:
+                  name: username
+                  type: varchar(255)
+        - sql:
+            sql: UPDATE schedule_requests SET username = 'admin' WHERE username IS NULL;

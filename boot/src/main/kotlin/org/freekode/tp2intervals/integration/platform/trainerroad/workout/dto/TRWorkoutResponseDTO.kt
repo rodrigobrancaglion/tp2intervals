@@ -2,7 +2,6 @@ package org.freekode.tp2intervals.integration.platform.trainerroad.workout.dto
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonProperty
-import org.freekode.tp2intervals.integration.platform.trainerroad.workout.TrainerRoadWorkoutDetailsDTO
 import kotlin.math.roundToInt
 
 class TRWorkoutResponseDTO(
@@ -13,7 +12,7 @@ class TRWorkoutResponseDTO(
     class TRWorkout(
         @JsonProperty("Details")
         @JsonAlias("details")
-        val details: TrainerRoadWorkoutDetailsDTO,
+        val details: TRWorkoutDetailsDTO,
         @JsonProperty("IntervalData")
         @JsonAlias("intervalData")
         val intervalData: List<IntervalsDataDTO> = emptyList(),

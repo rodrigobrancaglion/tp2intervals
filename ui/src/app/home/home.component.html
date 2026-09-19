@@ -14,16 +14,16 @@
   </div>
 
   <!-- Platform Grid -->
-  <div class="platforms-grid">
+  <div class="platforms-grid" *ngIf="connectedPlatforms$ | async as connectedPlatforms">
     @for (platform of platforms; track platform.id) {
-      <div class="platform-card precision-card" 
+      <div class="platform-card precision-card"
            [ngClass]="connectedPlatforms[platform.id] ? 'success' : 'danger'"
            [routerLink]="[platform.url]">
-        
+
         <div class="card-header">
           <div class="card-title-group">
             <!-- Pure CSS Platform Badge -->
-            <div class="platform-logo-mini" 
+            <div class="platform-logo-mini"
                  [ngClass]="platform.id"
                  [style.background-image]="platform.id === 'training-peaks' ? 'url(assets/platforms/tp.jpg)' : 'none'"
                  [style.background-size]="'cover'"
@@ -34,7 +34,7 @@
             </div>
             <h3 class="platform-name">{{ platform.name }}</h3>
           </div>
-          
+
           <!-- Status Badge Indicator -->
           <span class="status-badge" [ngClass]="connectedPlatforms[platform.id] ? 'connected' : 'disconnected'">
             <span class="dot"></span>

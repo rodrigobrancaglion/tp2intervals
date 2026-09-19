@@ -15,7 +15,6 @@ class TrainingpeaksSettingsRepository(
 
     override fun getPowerZones(): Pair<Int, List<PowerZone>> {
         val userId = trainingPeaksUserRepository.getUser().userId
-            ?: throw IllegalStateException("TrainingPeaks userId not found")
         val tpSettings = trainingPeaksSettingsApiClient.getSettings(userId)
 
         val powerZonesItem = tpSettings.powerZones.firstOrNull()

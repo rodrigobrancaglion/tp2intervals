@@ -1,55 +1,87 @@
-# Third Party to Intervals.icu
+# Running Third Party to Intervals.icu (tp2intervals)
 
-Este projeto integra dados de terceiros com o Intervals.icu, possuindo um backend em Spring Boot (Java) e um frontend em Angular.
-
-## 🛠 Desenvolvimento Local (Sem Docker)
-- **Backend (Intellij)**
-    - Execute a Run Configuration 'Application'.
-    - API disponível em: http://localhost:8080
-
-- **Frontend (Angular CLI)**
-    - cd ui && npm install && ng serve
-    - **View:** http://localhost:4200
-
-
-## 💻 Modos de Execução (Docker)
-Existem duas formas de rodar o projeto com Docker, dependendo da sua necessidade:
-
-### 1. Modo Desenvolvimento (Containers Separados)
-   Ideal para quando você está programando. Usa o Docker Compose para criar dois containers distintos, permitindo ver as alterações no frontend em tempo real.
-
-- Comando:
-```shell
-docker-compose up --build
-```
-- **Backend:** http://localhost:8080
-- **Frontend:** http://localhost:4200 (com live-reload)
-- **Destaque:** No Docker Desktop, você verá dois containers: tp2intervals-backend e tp2intervals-frontend.
-
-### 2. Modo Produção / Cloud (Unificado)
-   Este modo utiliza o Dockerfile para "soldar" o Frontend dentro do Backend. É o modo obrigatório para o deploy no Google Cloud Run e para testes de performance local.
-
-- Build & Run:
-```shell
-# Constrói a imagem unificada
-docker build -t tp2intervals .
-
-# Roda o container com nome personalizado
-docker run -d --name tp2intervals-app -p 8080:8080 tp2intervals
-```
-- URL Única: http://localhost:8080 (O Java serve tanto a API quanto o site Angular)
-
-## 🖥 Desktop (App Electron)
-Para gerar e rodar a versão instalável do aplicativo:
-1. Build do App:
-
-```shell
-./app_rebuild_electron.sh
-```
-2. Executável: Localize o arquivo em: electron/dist/mac-arm64/tp2intervals.app
-
-## ☁️ Deploy no Google Cloud Run
-O deploy é automatizado via GitHub Actions sempre que um push é feito para a branch main.
-- **Nota:** O GitHub Actions utiliza o Modo Unificado (Dockerfile), gerando um único serviço no Cloud Run para otimizar custos e performance.
+This project integrates third-party workout data with [Intervals.icu](https://intervals.icu), featuring a Kotlin/Spring Boot backend and an Angular frontend.
 
 ---
+
+## 🛠 Local Development (Without Docker)
+
+### 1. Backend (Spring Boot - Java 21)
+
+- **Via CLI (Command Line):**
+  ```bash
+  cd boot
+  ./gradlew bootRun --args='--spring.profiles.active=dev'
+  ```
+  *(Or simply `./gradlew bootRun`)*
+
+- **Via IntelliJ IDEA / IDE:**
+  - Run configuration: **`boot`** (or create a Spring Boot configuration with):
+    - **Main class:** `org.freekode.tp2intervals.Application`
+    - **Active profiles:** `dev`
+    - **JDK:** Java 21
+  - **API available at:** `http://localhost:8080`
+
+### 2. Frontend (Angular)
+
+- **Via CLI (Command Line):**
+  ```bash
+  cd ui
+  npm install
+  npm run dev
+  ```
+  *(Or `ng serve`)*
+
+- **Via IntelliJ IDEA / IDE:**
+  - Run configuration: **`ui`** (npm script `dev`)
+  - **View at:** `http://localhost:4200` (with live reload proxying API calls to backend)
+
+### 3. Run Both Concurrently in IntelliJ IDEA
+
+- Execute the Compound Run Configuration: **`Application`**
+  - This simultaneously launches both the **`boot`** backend and **`ui`** frontend tasks.
+
+---
+
+## 💻 Docker Execution Modes
+
+### 1. Development Mode (Separate Containers)
+Best for containerized development with hot-reloading for the frontend.
+
+```bash
+docker-compose up --build
+```
+- **Backend:** `http://localhost:8080`
+- **Frontend:** `http://localhost:4200` (with live-reload)
+- **Containers:** `tp2intervals-backend` and `tp2intervals-frontend`
+
+### 2. Production / Cloud Mode (Unified Single Container)
+Packages the compiled Angular frontend directly inside the Spring Boot JAR. This matches the Google Cloud Run deployment setup.
+
+```bash
+# Build the unified image
+docker build -t tp2intervals .
+
+# Run the container
+docker run -d --name tp2intervals-app -p 8080:8080 tp2intervals
+```
+- **Unified URL:** `http://localhost:8080` (Spring Boot serves both API endpoints and the Angular static assets)
+
+---
+
+## 🖥 Desktop App (Electron)
+
+To build and package the native desktop application (macOS):
+
+```bash
+./createApp.sh
+```
+- **Executable path:** `electron/dist/mac-arm64/tp2intervals.app`
+- *The script also automatically copies the app to `/Applications/tp2intervals.app`.*
+
+---
+
+## ☁️ Google Cloud Run Deployment
+
+Deployment is automated via GitHub Actions on push to the `main` branch.
+- GitHub Actions builds the unified image via `Dockerfile` and deploys a single container service to Google Cloud Run.

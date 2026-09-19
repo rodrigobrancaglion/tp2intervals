@@ -1,7 +1,7 @@
 package org.freekode.tp2intervals.service
 
+import org.freekode.tp2intervals.config.log.AppLogger
 import org.freekode.tp2intervals.integration.provider.configuration.IConfigurationRepository
-import org.slf4j.LoggerFactory
 import org.springframework.boot.logging.LogLevel
 import org.springframework.boot.logging.LoggingSystem
 import org.springframework.stereotype.Component
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 class DebugModeService(
     private val IConfigurationRepository: IConfigurationRepository
 ) {
-    private val log = LoggerFactory.getLogger(this.javaClass)
+     private val logger = AppLogger.get(this.javaClass)
     private val generalDebugModeKey = "general.debug-mode"
 
     init {
@@ -33,6 +33,6 @@ class DebugModeService(
     private fun setLogLevel(logLevel: LogLevel) {
         val system: LoggingSystem = LoggingSystem.get(this::class.java.getClassLoader())
         system.setLogLevel("org.freekode.tp2intervals", logLevel)
-        log.error("Log level set to $logLevel")
+        logger.errorL3In("Log level set to $logLevel")
     }
 }

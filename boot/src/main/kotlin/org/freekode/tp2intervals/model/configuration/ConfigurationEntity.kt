@@ -1,18 +1,21 @@
 package org.freekode.tp2intervals.model.configuration
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 
+@IdClass(ConfigurationId::class)
 @Table(name = "config")
 @Entity
 data class ConfigurationEntity(
     @Id
-    val key: String?,
+    @Column(name = "username")
+    var username: String?,
 
-    @Column
+    @Id
+    @Column(name = "`key`", nullable = false)
+    var key: String?,
+
+    @Column(name = "value")
     var value: String?,
 ) {
-    constructor() : this(null, null)
+    constructor() : this(null, null, null)
 }

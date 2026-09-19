@@ -1,7 +1,7 @@
 package org.freekode.tp2intervals.integration.platform.strava.activity.dto
 
 import org.freekode.tp2intervals.domain.TrainingType
-import org.freekode.tp2intervals.integration.platform.intervalsicu.mapper.IntervalsTrainingTypeMapper
+import org.freekode.tp2intervals.integration.platform.intervalsicu.mapper.IcuTrainingTypeMapper
 import java.time.LocalDateTime
 
 /**
@@ -22,5 +22,5 @@ data class StravaActivityResponseDTO(
     val commute: Boolean?,
 ) {
     fun mapType(): TrainingType =
-        IntervalsTrainingTypeMapper.getByValue(sport_type ?: type)
+        IcuTrainingTypeMapper.getByValue(sport_type ?: type)
 }

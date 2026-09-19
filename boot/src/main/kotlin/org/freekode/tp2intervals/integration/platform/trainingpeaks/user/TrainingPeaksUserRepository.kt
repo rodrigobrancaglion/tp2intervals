@@ -2,10 +2,10 @@ package org.freekode.tp2intervals.integration.platform.trainingpeaks.user
 
 import org.springframework.cache.annotation.CacheConfig
 import org.springframework.cache.annotation.Cacheable
-import org.springframework.stereotype.Repository
+import org.springframework.stereotype.Component
 
 @CacheConfig(cacheNames = ["tpUserCache"])
-@Repository
+@Component
 class TrainingPeaksUserRepository(
     private val trainingPeaksUserApiClient: TrainingPeaksUserApiClient,
 ) {

@@ -5,7 +5,7 @@ import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.reflect.MethodSignature
-import org.slf4j.LoggerFactory
+import org.freekode.tp2intervals.config.log.AppLogger
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component
 @Aspect
 @Component
 class CatchFeignExceptionAspect {
-    private val log = LoggerFactory.getLogger(this.javaClass)
+     private val logger = AppLogger.get(this.javaClass)
 
     @Around("@annotation(org.freekode.tp2intervals.integration.CatchFeignException)")
     @Throws(Throwable::class)
@@ -24,7 +24,7 @@ class CatchFeignExceptionAspect {
         try {
             return joinPoint.proceed()
         } catch (e: FeignException) {
-            log.warn("HTTP request exception", e)
+            logger.warnL3In("HTTP request exception", e)
 
             var message = e.message ?: "Unknown error"
             if (e.status() == HttpStatus.FORBIDDEN.value() || e.status() == HttpStatus.UNAUTHORIZED.value()) {

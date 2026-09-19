@@ -100,7 +100,7 @@ export class CopyWellnessToCalendarComponent implements OnInit {
   }
 
   mapWellnessTypesToTitles(values) {
-    return values.map(value => WellnessTypes.getTitle(value))
+    return values.map(value => WellnessTypes.getTitle(value)).join(', ')
   }
 
   private copyWellnessForOneDay(date) {

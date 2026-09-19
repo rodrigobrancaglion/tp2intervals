@@ -1,16 +1,16 @@
 package org.freekode.tp2intervals.integration.platform.intervalsicu.workout
 
 import config.TestUtils
-import config.mock.IntervalsWorkoutApiClientMock
+import config.mock.IcuWorkoutApiClientMock
 import config.mock.ObjectMapperFactory
 import org.freekode.tp2intervals.domain.TrainingType
 import org.freekode.tp2intervals.domain.workout.Workout
 import org.freekode.tp2intervals.domain.workout.structure.SingleStep
 import org.freekode.tp2intervals.domain.workout.structure.StepLength
 import org.freekode.tp2intervals.domain.workout.structure.WorkoutStructure
-import org.freekode.tp2intervals.integration.platform.intervalsicu.athlete.IntervalsUserApiClient
-import org.freekode.tp2intervals.integration.platform.intervalsicu.configuration.IntervalsConfigurationRepository
-import org.freekode.tp2intervals.integration.platform.intervalsicu.configuration.dto.IntervalsConfigurationDTO
+import org.freekode.tp2intervals.integration.platform.intervalsicu.athlete.IcuUserApiClient
+import org.freekode.tp2intervals.integration.platform.intervalsicu.configuration.IcuConfigurationRepository
+import org.freekode.tp2intervals.integration.platform.intervalsicu.configuration.dto.IcuConfigurationDTO
 import org.freekode.tp2intervals.integration.platform.trainingpeaks.workout.TPPowerCalculationService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -25,29 +25,29 @@ class IntervalsWorkoutRepositoryTest {
     private val objectMapper = ObjectMapperFactory.objectMapper()
 
     private val tpPowerCalculationService = mock(TPPowerCalculationService::class.java)
-    private val toIntervalsWorkoutConverter = ToIntervalsWorkoutConverter(tpPowerCalculationService)
-    private val intervalsUserApiClient = mock(IntervalsUserApiClient::class.java)
+    private val icuEventConverter = IcuEventConverter(tpPowerCalculationService)
+    private val icuUserApiClient = mock(IcuUserApiClient::class.java)
 
-    private val intervalsWorkoutApiClient: IntervalsWorkoutApiClient = IntervalsWorkoutApiClientMock(
+    private val icuWorkoutApiClient: IcuWorkoutApiClient = IcuWorkoutApiClientMock(
         objectMapper,
         ResourceUtils.getFile("classpath:intervals-events-response.json").inputStream()
     )
 
-    private val intervalsConfigurationRepository: IntervalsConfigurationRepository =
+    private val icuConfigurationRepository: IcuConfigurationRepository =
         getIntervalsConfigurationRepository()
 
-    private val intervalsWorkoutRepository =
-        IntervalsWorkoutRepository(
-            intervalsWorkoutApiClient,
-            intervalsUserApiClient,
-            intervalsConfigurationRepository,
-            toIntervalsWorkoutConverter,
+    private val icuWorkoutRepository =
+        IcuWorkoutRepository(
+            icuWorkoutApiClient,
+            icuUserApiClient,
+            icuConfigurationRepository,
+            icuEventConverter,
         )
 
     @Test
     fun `should parse hr workout`() {
         // when
-        val workouts = intervalsWorkoutRepository.getWorkoutsFromCalendar(LocalDate.now(), LocalDate.now())
+        val workouts = icuWorkoutRepository.getWorkoutsFromCalendar(LocalDate.now(), LocalDate.now())
 
         // then
         assertTrue(workouts.isNotEmpty())
@@ -80,7 +80,7 @@ class IntervalsWorkoutRepositoryTest {
     @Test
     fun `should parse power workout`() {
         // when
-        val workouts = intervalsWorkoutRepository.getWorkoutsFromCalendar(LocalDate.now(), LocalDate.now())
+        val workouts = icuWorkoutRepository.getWorkoutsFromCalendar(LocalDate.now(), LocalDate.now())
 
         // then
         assertTrue(workouts.isNotEmpty())
@@ -118,7 +118,7 @@ class IntervalsWorkoutRepositoryTest {
     @Test
     fun `should parse pace workout`() {
         // when
-        val workouts = intervalsWorkoutRepository.getWorkoutsFromCalendar(LocalDate.now(), LocalDate.now())
+        val workouts = icuWorkoutRepository.getWorkoutsFromCalendar(LocalDate.now(), LocalDate.now())
 
         // then
         assertTrue(workouts.isNotEmpty())
@@ -148,7 +148,7 @@ class IntervalsWorkoutRepositoryTest {
     @Test
     fun `should parse pace workout with distance based steps`() {
         // when
-        val workouts = intervalsWorkoutRepository.getWorkoutsFromCalendar(LocalDate.now(), LocalDate.now())
+        val workouts = icuWorkoutRepository.getWorkoutsFromCalendar(LocalDate.now(), LocalDate.now())
 
         // then
         assertTrue(workouts.isNotEmpty())
@@ -169,7 +169,7 @@ class IntervalsWorkoutRepositoryTest {
     @Test
     fun `should parse virtual ride workout`() {
         // when
-        val workouts = intervalsWorkoutRepository.getWorkoutsFromCalendar(LocalDate.now(), LocalDate.now())
+        val workouts = icuWorkoutRepository.getWorkoutsFromCalendar(LocalDate.now(), LocalDate.now())
 
         // then
         assertTrue(workouts.isNotEmpty())
@@ -185,7 +185,7 @@ class IntervalsWorkoutRepositoryTest {
     @Test
     fun `should parse other workout`() {
         // when
-        val workouts = intervalsWorkoutRepository.getWorkoutsFromCalendar(LocalDate.now(), LocalDate.now())
+        val workouts = icuWorkoutRepository.getWorkoutsFromCalendar(LocalDate.now(), LocalDate.now())
 
         // then
         assertTrue(workouts.isNotEmpty())
@@ -202,9 +202,9 @@ class IntervalsWorkoutRepositoryTest {
         return workouts.find { it.details.name == name }!!
     }
 
-    private fun getIntervalsConfigurationRepository(): IntervalsConfigurationRepository {
-        val repo = mock(IntervalsConfigurationRepository::class.java)
-        `when`(repo.getConfiguration()).thenReturn(IntervalsConfigurationDTO("apiKey", "athleteId", 0.1f, 0.2f, 0.3f))
+    private fun getIntervalsConfigurationRepository(): IcuConfigurationRepository {
+        val repo = mock(IcuConfigurationRepository::class.java)
+        `when`(repo.getConfiguration()).thenReturn(IcuConfigurationDTO("apiKey", "athleteId", 0.1f, 0.2f, 0.3f))
         return repo
     }
 }
