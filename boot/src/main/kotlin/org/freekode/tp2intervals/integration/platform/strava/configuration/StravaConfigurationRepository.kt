@@ -20,12 +20,14 @@ class StravaConfigurationRepository(
     override fun platform() = Platform.STRAVA
 
     override fun updateConfig(request: UpdateConfigurationRequest) {
-        cacheManager.getCache("platformInfoCache")!!.evict(platform().key)
+        cacheManager.getCache("platformInfoCache")?.evict(org.freekode.tp2intervals.utils.UserContextHolder.username + "-" + platform().key)
         val updatedConfig = request.getByPrefix(platform().key)
         if (updatedConfig.isEmpty()) {
             return
         }
-        iConfigurationRepository.updateConfig(UpdateConfigurationRequest(updatedConfig))
+        val currentConfig = iConfigurationRepository.getConfigurationByPrefix(platform().key)
+        val newConfig = currentConfig.configMap + updatedConfig
+        iConfigurationRepository.updateConfig(UpdateConfigurationRequest(newConfig))
     }
 
     /**
@@ -36,7 +38,7 @@ class StravaConfigurationRepository(
         return StravaConfiguration(config)
     }
 
-    @Cacheable(key = "'strava'")
+    @Cacheable(keyGenerator = "userKeyGenerator")
     override fun platformInfo(): PlatformInfo {
         val infoMap = mapOf(
             "isValid" to getConfiguration().isValid(),

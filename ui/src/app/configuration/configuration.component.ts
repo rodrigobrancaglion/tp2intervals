@@ -47,20 +47,19 @@ export class ConfigurationComponent implements OnInit {
 //  public config = environment;
 
   formGroup: FormGroup = this.formBuilder.group({
-    //'intervals.api-key': [this.config.intervals_api_key, Validators.required],
     'intervals.api-key': [null, Validators.required],
     'intervals.athlete-id': [null, Validators.required],
-    'intervals.power-range': [null, [Validators.required, Validators.min(0), Validators.max(100)]],
-    'intervals.hr-range': [null, [Validators.required, Validators.min(0), Validators.max(100)]],
-    'intervals.pace-range': [null, [Validators.required, Validators.min(0), Validators.max(100)]],
+    'intervals.power-range': ['0.0', [Validators.required, Validators.min(0), Validators.max(100)]],
+    'intervals.hr-range': ['0.0', [Validators.required, Validators.min(0), Validators.max(100)]],
+    'intervals.pace-range': ['0.0', [Validators.required, Validators.min(0), Validators.max(100)]],
     'training-peaks.auth-cookie': [null, [Validators.pattern('^Production_tpAuth=[a-zA-Z0-9-_]*$')]],
     'trainer-road.auth-cookie': [null, [Validators.pattern('^SharedTrainerRoadAuth=.*$')]],
-    'trainer-road.remove-html-tags': [null, Validators.required],
+    'trainer-road.remove-html-tags': [false],
     'mfp.session-cookie': [null],
     'mfp.session-token-cookie': [null],
     'mfp.remember-me-cookie': [null],
-    'mfp.user-id': [null, Validators.required],
-    'mfp.username': [null, Validators.required],
+    'mfp.user-id': [null],
+    'mfp.username': [null],
     'strava.client-id': [null],
     'strava.client-secret': [null],
     'strava.refresh-token': [null],
@@ -69,7 +68,7 @@ export class ConfigurationComponent implements OnInit {
     'wahoo.client-id': [null],
     'wahoo.client-secret': [null],
     'wahoo.refresh-token': [null],
-    'general.debug-mode': [null, Validators.required],
+    'general.debug-mode': [false],
   });
 
   inProgress = false;
@@ -286,29 +285,15 @@ export class ConfigurationComponent implements OnInit {
     console.log(newConfiguration)
     this.configClient.updateConfig(newConfiguration).pipe(
       finalize(() => this.inProgress = false)
-    ).subscribe(() => {
-      // Sync all form fields back to environment so the session reflects the saved values
-      const v = this.formGroup.getRawValue();
-      /*
-      this.config.intervals_api_key = v['intervals.api-key'] ?? this.config.intervals_api_key;
-      this.config.intervals_athlete_id = v['intervals.athlete-id'] ?? this.config.intervals_athlete_id;
-      this.config.trainingpeaks_auth_cookie = v['training-peaks.auth-cookie'] ?? this.config.trainingpeaks_auth_cookie;
-      this.config.mfp_session_cookie = v['mfp.session-cookie'] ?? this.config.mfp_session_cookie;
-      this.config.mfp_session_token_cookie = v['mfp.session-token-cookie'] ?? this.config.mfp_session_token_cookie;
-      this.config.mfp_remember_me_cookie = v['mfp.remember-me-cookie'] ?? this.config.mfp_remember_me_cookie;
-      this.config.mfp_user_id = v['mfp.user-id'] ?? this.config.mfp_user_id;
-      this.config.mfp_username = v['mfp.username'] ?? this.config.mfp_username;
-      this.config.strava_client_id = v['strava.client-id'] ?? this.config.strava_client_id;
-      this.config.strava_client_secret = v['strava.client-secret'] ?? this.config.strava_client_secret;
-      this.config.strava_refresh_token = v['strava.refresh-token'] ?? this.config.strava_refresh_token;
-      this.config.rouvy_email = v['rouvy.email'] ?? this.config.rouvy_email;
-      this.config.rouvy_password = v['rouvy.password'] ?? this.config.rouvy_password;
-      this.config.wahoo_client_id = v['wahoo.client-id'] ?? this.config.wahoo_client_id;
-      this.config.wahoo_client_secret = v['wahoo.client-secret'] ?? this.config.wahoo_client_secret;
-      this.config.wahoo_refresh_token = v['wahoo.refresh-token'] ?? this.config.wahoo_refresh_token;
-      */
-      this.notificationService.success('Configuration successfully saved')
-      this.router.navigate(['/home']);
+    ).subscribe({
+      next: () => {
+        this.notificationService.success('Configuration successfully saved')
+        this.router.navigate(['/home']);
+      },
+      error: (err) => {
+        const errorMsg = err.error?.message || err.message || 'Failed to save configuration';
+        this.notificationService.error(errorMsg);
+      }
     });
   }
 

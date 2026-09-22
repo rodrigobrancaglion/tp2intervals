@@ -6,56 +6,45 @@
   overflow: hidden;
 }
 
-// Expanding Slim Sidebar
+// Sidebar Styling
 .app-sidebar {
-  width: 78px;
+  width: 76px;
   background-color: var(--color-surface);
   border-right: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 24px 0;
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  align-items: stretch;
+  padding: 18px 12px;
+  transition: width 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   overflow-x: hidden;
   overflow-y: auto;
   flex-shrink: 0;
   z-index: 10;
+  box-sizing: border-box;
 
-  &:hover {
-    width: 220px;
-    align-items: flex-start;
-    padding-left: 20px;
-    padding-right: 20px;
+  &.expanded {
+    width: 230px;
 
     .logo-text {
       opacity: 1;
       transform: translateX(0);
-      display: block;
+      pointer-events: auto;
     }
-    
+
     .nav-label {
       opacity: 1;
       transform: translateX(0);
-      display: block;
+      pointer-events: auto;
     }
 
-    .sidebar-header {
-      width: 100%;
-      justify-content: flex-start;
-      gap: 10px;
+    .nav-arrow {
+      opacity: 0.7;
+      pointer-events: auto;
     }
 
     .nav-item {
-      width: 100%;
       justify-content: flex-start;
-      padding: 0 16px;
-      border-radius: 6px;
-    }
-    
-    .sidebar-footer {
-      width: 100%;
-      justify-content: flex-start;
-      padding-left: 16px;
+      padding: 0 10px;
     }
   }
 }
@@ -64,60 +53,98 @@
   height: 48px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 32px;
+  justify-content: flex-start;
+  margin-bottom: 24px;
   width: 100%;
+  position: relative;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 0 7px;
+  gap: 14px;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease;
 
-  .logo-icon {
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--color-accent);
-    background-color: var(--color-accent-glow);
-    padding: 6px 10px;
-    border-radius: 6px;
-    border: 1px solid rgba(0, 212, 255, 0.25);
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+
+    .logo-btn {
+      transform: scale(1.05);
+      box-shadow: 0 0 12px var(--color-accent-glow);
+    }
+
+    .logo-text {
+      color: var(--color-accent);
+    }
+  }
+
+  .logo-btn {
+    border-radius: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
   .logo-text {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     color: var(--color-text-primary);
     opacity: 0;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    transform: translateX(-10px);
+    transform: translateX(-8px);
+    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s ease;
     white-space: nowrap;
-    display: none;
+    letter-spacing: 0.5px;
+    pointer-events: none;
   }
 }
 
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
   flex-grow: 1;
   width: 100%;
 }
 
 .nav-item {
-  height: 52px;
+  height: 48px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   text-decoration: none;
   color: var(--color-text-secondary);
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
   position: relative;
-  gap: 16px;
+  gap: 14px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  border-radius: 8px;
+  padding: 0 7px;
+  font-family: inherit;
+  box-sizing: border-box;
 
   &:hover {
     color: var(--color-text-primary);
-    background-color: rgba(255,255,255,0.02);
+    background-color: rgba(255,255,255,0.03);
   }
 
   &.active {
     color: var(--color-accent);
     background-color: var(--color-accent-glow);
-    box-shadow: inset 3px 0 0 var(--color-accent);
+
+    .nav-label {
+      font-weight: 600;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 3px;
+      background-color: var(--color-accent);
+      border-radius: 0 3px 3px 0;
+    }
 
     &:hover {
       background-color: rgba(0, 212, 255, 0.18);
@@ -127,6 +154,68 @@
   i {
     font-size: 20px;
     line-height: 1;
+  }
+}
+
+.nav-item-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &.active > .group-toggle {
+    color: var(--color-accent);
+  }
+
+  .nav-arrow {
+    font-size: 12px;
+    margin-left: auto;
+    opacity: 0;
+    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+  }
+}
+
+.app-sidebar:not(.expanded) {
+  .sidebar-submenu {
+    display: none !important;
+  }
+}
+
+.sidebar-submenu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 14px;
+  margin-top: 4px;
+  border-left: 2px solid var(--color-border);
+  margin-left: 26px;
+
+  .submenu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+
+    i {
+      font-size: 14px;
+    }
+
+    &:hover {
+      color: var(--color-text-primary);
+      background-color: rgba(255, 255, 255, 0.04);
+    }
+
+    &.active {
+      color: var(--color-accent);
+      background-color: var(--color-accent-glow);
+      font-weight: 600;
+    }
   }
 }
 
@@ -143,10 +232,10 @@
   font-size: 14px;
   font-weight: 500;
   opacity: 0;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  transform: translateX(-10px);
+  transform: translateX(-8px);
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
-  display: none;
+  pointer-events: none;
 }
 
 // Custom CSS-based Platform Badges

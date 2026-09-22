@@ -1,44 +1,77 @@
 <div class="app-layout">
-  <!-- Slim vertical sidebar that expands on hover -->
-  <aside class="app-sidebar">
-    <div class="sidebar-header">
-      <div class="icon-wrapper"
+  <!-- Vertical sidebar with logo toggle control -->
+  <aside class="app-sidebar" [class.expanded]="isSidebarExpanded">
+    <div class="sidebar-header"
+         (click)="toggleSidebar()"
+         [matTooltip]="isSidebarExpanded ? 'Collapse menu' : 'Expand menu'"
+         matTooltipPosition="right">
+      <div class="icon-wrapper logo-btn"
            [style.background-image]="'url(assets/platforms/tp2intervals.png)'"
            [style.background-size]="'cover'"
            [style.background-position]="'center'">
       </div>
+      <span class="logo-text">TP2Intervals</span>
     </div>
 
     <nav class="sidebar-nav" *ngIf="connectedPlatforms$ | async as connectedPlatforms">
-      @for (button of menuButtons; track button.url) {
-        <a [routerLink]="[button.url]"
-           class="nav-item"
-           [routerLinkActive]="'active'"
-           [routerLinkActiveOptions]="{ exact: true }"
-           [matTooltip]="button.name"
-           matTooltipPosition="right">
+      @for (button of menuButtons; track button.id) {
+        @if (!button.children) {
+          <a [routerLink]="[button.url]"
+             class="nav-item"
+             [routerLinkActive]="'active'"
+             [routerLinkActiveOptions]="{ exact: true }"
+             [matTooltip]="!isSidebarExpanded ? button.name : ''"
+             matTooltipPosition="right">
 
-          <!-- Render pure CSS styled platform badge or icon -->
-          <div class="icon-wrapper">
-            @if (button.id !== 'home' && button.id !== 'config') {
-              <div class="platform-badge"
-                   [ngClass]="button.id"
-                   [style.background-image]="button.icon && button.icon.startsWith('assets/') ? 'url(' + button.icon + ')' : 'none'"
-                   [style.background-size]="'cover'"
-                   [style.background-position]="'center'">
-                <span *ngIf="!(button.icon && button.icon.startsWith('assets/'))">
-                  {{ button.id === 'training-peaks' ? 'TP' : button.id === 'trainer-road' ? 'TR' : button.id === 'rouvy' ? 'R' : button.id === 'myfitnesspal' ? 'MF' : 'C' }}
-                </span>
-                <!-- Connection Dot Indicator -->
-                <span class="status-dot" [ngClass]="{'connected': connectedPlatforms[button.id], 'disconnected': !connectedPlatforms[button.id]}"></span>
+            <div class="icon-wrapper">
+              @if (button.id !== 'home' && button.id !== 'config') {
+                <div class="platform-badge"
+                     [ngClass]="button.id"
+                     [style.background-image]="button.icon && button.icon.startsWith('assets/') ? 'url(' + button.icon + ')' : 'none'"
+                     [style.background-size]="'cover'"
+                     [style.background-position]="'center'">
+                  <span *ngIf="!(button.icon && button.icon.startsWith('assets/'))">
+                    {{ button.id === 'training-peaks' ? 'TP' : button.id === 'trainer-road' ? 'TR' : button.id === 'rouvy' ? 'R' : button.id === 'myfitnesspal' ? 'MF' : 'C' }}
+                  </span>
+                  <!-- Connection Dot Indicator -->
+                  <span class="status-dot" [ngClass]="{'connected': connectedPlatforms[button.id], 'disconnected': !connectedPlatforms[button.id]}"></span>
+                </div>
+              } @else {
+                <i [class]="button.icon"></i>
+              }
+            </div>
+
+            <span class="nav-label">{{ button.name }}</span>
+          </a>
+        } @else {
+          <!-- Submenu Parent Item -->
+          <div class="nav-item-group" [ngClass]="{'open': configExpanded, 'active': isConfigRouteActive()}">
+            <button type="button"
+                    class="nav-item group-toggle"
+                    (click)="toggleConfigSubmenu()"
+                    [matTooltip]="!isSidebarExpanded ? button.name : ''"
+                    matTooltipPosition="right">
+              <div class="icon-wrapper">
+                <i [class]="button.icon"></i>
               </div>
-            } @else {
-              <i [class]="button.icon"></i>
-            }
-          </div>
+              <span class="nav-label">{{ button.name }}</span>
+              <i class="bi nav-arrow" [ngClass]="configExpanded ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+            </button>
 
-          <span class="nav-label">{{ button.name }}</span>
-        </a>
+            <!-- Accordion Submenu for expanded sidebar -->
+            <div class="sidebar-submenu" *ngIf="isSidebarExpanded && configExpanded">
+              @for (child of button.children; track child.url) {
+                <a [routerLink]="[child.url]"
+                   class="submenu-item"
+                   [routerLinkActive]="'active'"
+                   [routerLinkActiveOptions]="{ exact: true }">
+                  <i [class]="child.icon"></i>
+                  <span>{{ child.name }}</span>
+                </a>
+              }
+            </div>
+          </div>
+        }
       }
     </nav>
 
@@ -58,7 +91,7 @@
     <!-- Sleek Top Header -->
     <header class="app-header">
       <div class="header-left">
-        <span class="platform-title">{{ router.url === '/home' ? 'Unified Training Library' : router.url === '/training-peaks' ? 'TrainingPeaks Integration' : router.url === '/rouvy' ? 'Rouvy Integration' : router.url === '/trainer-road' ? 'TrainerRoad Integration' : router.url === '/myfitnesspal' ? 'MyFitnessPal Integration' : router.url === '/config' ? 'System Configuration' : 'TP2Intervals' }}</span>
+        <span class="platform-title">{{ router.url === '/home' ? 'Unified Training Library' : router.url === '/training-peaks' ? 'TrainingPeaks Integration' : router.url === '/rouvy' ? 'Rouvy Integration' : router.url === '/trainer-road' ? 'TrainerRoad Integration' : router.url === '/myfitnesspal' ? 'MyFitnessPal Integration' : router.url === '/config' ? 'System Configuration' : router.url === '/user' ? 'User Settings' : 'TP2Intervals' }}</span>
       </div>
 
       <div class="header-right">

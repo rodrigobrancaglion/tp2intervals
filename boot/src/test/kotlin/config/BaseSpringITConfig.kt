@@ -2,8 +2,8 @@ package config
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import org.freekode.tp2intervals.integration.platform.trainingpeaks.token.dto.TrainingPeaksUserTokenDTO
-import org.freekode.tp2intervals.integration.platform.trainingpeaks.user.dro.TrainingPeaksUserDTO
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.token.dto.TPUserTokenDTO
+import org.freekode.tp2intervals.integration.platform.trainingpeaks.user.dro.TPUserDTO
 import org.junit.jupiter.api.BeforeAll
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -38,7 +38,7 @@ abstract class BaseSpringITConfig {
     }
 
     fun tpTokenStub() {
-        val response = TrainingPeaksUserTokenDTO("test-token")
+        val response = TPUserTokenDTO("test-token")
         stubFor(
             get("/training-peaks/users/v3/token")
                 .willReturn(okJson(objectMapper.writeValueAsString(response)))
@@ -46,9 +46,9 @@ abstract class BaseSpringITConfig {
     }
 
     fun tpUserStub() {
-        val response = TrainingPeaksUserDTO(
+        val response = TPUserDTO(
             userId = "user-id",
-            accountStatus = TrainingPeaksUserDTO.TPUserAccountStatusDTO(isAthlete = true, isPremium = false)
+            accountStatus = TPUserDTO.TPUserAccountStatusDTO(isAthlete = true, isPremium = false)
         )
         stubFor(
             get("/training-peaks/users/v3/user")

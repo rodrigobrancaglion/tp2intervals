@@ -73,7 +73,7 @@ class LoggingAspect {
         val methodName = signature.name
         val parameterNames = signature.parameterNames
 
-        // Ignora a execução do metodo platform() para evitar poluicao visual nos logs
+        // Ignore execution of platform() method to avoid log clutter
         if (methodName == "platform") {
             return joinPoint.proceed()
         }
@@ -108,7 +108,7 @@ class LoggingAspect {
 
         try {
             val result = joinPoint.proceed()
-            // Verifica se o tipo de retorno é void
+            // Check if return type is void
             val isVoid = returnType == Void.TYPE || returnType.name.equals("void", ignoreCase = true)
 
             if (isVoid) {
@@ -189,7 +189,7 @@ class LoggingAspect {
             val formattedValue = when (value) {
                 null -> "null"
                 is Temporal -> {
-                    // Serializa como JSON e substitui os colchetes [2026,8,21] por chaves {2026,8,21}
+                    // Serialize as JSON and replace square brackets [2026,8,21] with curly braces {2026,8,21}
                     val rawJson = objectMapper.writeValueAsString(value)
                     rawJson.replace('[', '{').replace(']', '}')
                 }
@@ -208,7 +208,7 @@ class LoggingAspect {
     }
 
     /**
-     * Converte o resultado de retorno para JSON de forma segura.
+     * Safely converts the result to JSON string.
      */
     private fun formatResult(result: Any?): String {
         if (result == null) return "null"

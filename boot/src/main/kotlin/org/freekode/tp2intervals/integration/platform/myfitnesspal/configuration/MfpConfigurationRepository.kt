@@ -24,7 +24,7 @@ class MfpConfigurationRepository(
 
     @CatchFeignException(platform = Platform.MYFITNESSPAL)
     override fun updateConfig(request: UpdateConfigurationRequest) {
-        cacheManager.getCache("platformInfoCache")!!.evict(platform().key)
+        cacheManager.getCache("platformInfoCache")?.evict(org.freekode.tp2intervals.utils.UserContextHolder.username + "-" + platform().key)
         val updatedConfig = request.getByPrefix(platform().key)
         if (updatedConfig.isEmpty()) {
             return
@@ -34,7 +34,7 @@ class MfpConfigurationRepository(
         iConfigurationRepository.updateConfig(UpdateConfigurationRequest(newConfig))
     }
 
-    @Cacheable(key = "'mfp'")
+    @Cacheable(keyGenerator = "userKeyGenerator")
     override fun platformInfo(): PlatformInfo {
         val infoMap =
                 mapOf(

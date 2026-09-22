@@ -27,13 +27,13 @@ class IcuConfigurationRepository(
 
     @CatchFeignException(platform = Platform.INTERVALS)
     override fun updateConfig(request: UpdateConfigurationRequest) {
-        cacheManager.getCache("platformInfoCache")!!.evict(platform().key)
+        cacheManager.getCache("platformInfoCache")?.evict(org.freekode.tp2intervals.utils.UserContextHolder.username + "-" + platform().key)
         val newConfig = getConfigToUpdate(request)
         validateConfiguration(newConfig)
         iConfigurationRepository.updateConfig(UpdateConfigurationRequest(newConfig))
     }
 
-    @Cacheable(key = "'intervals'")
+    @Cacheable(keyGenerator = "userKeyGenerator")
     override fun platformInfo(): PlatformInfo {
         val infoMap = mapOf(
             "isValid" to isValid(),

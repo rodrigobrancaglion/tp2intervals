@@ -12,8 +12,17 @@ import {AsyncPipe, NgClass, NgIf} from "@angular/common";
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatListModule} from '@angular/material/list';
 import {MatIconModule} from '@angular/material/icon';
+import {MatMenuModule} from '@angular/material/menu';
 import {ConnectionStatusService} from "app/connection-status.service";
 import {AuthService} from "app/login/auth.service";
+
+interface MenuItem {
+  name: string;
+  url?: string;
+  icon: string;
+  id: string;
+  children?: { name: string; url: string; icon: string }[];
+}
 
 @Component({
   selector: 'app-top-bar',
@@ -28,6 +37,7 @@ import {AuthService} from "app/login/auth.service";
     MatSidenavModule,
     MatListModule,
     MatIconModule,
+    MatMenuModule,
     NgIf,
     NgClass,
     AsyncPipe
@@ -42,14 +52,47 @@ export class TopBarComponent implements OnInit {
   connectedPlatforms$: Observable<{ [key: string]: boolean }>;
   isAuthenticated$: Observable<boolean>;
 
-  menuButtons = [
+  menuButtons: MenuItem[] = [
     {name: 'Home', url: '/home', icon: 'bi bi-house-door', id: 'home'},
     {name: 'TrainingPeaks', url: '/training-peaks', icon: 'assets/platforms/tp.jpg', id: 'training-peaks'},
     {name: 'Rouvy', url: '/rouvy', icon: 'assets/platforms/rouvy.jpg', id: 'rouvy'},
     {name: 'TrainerRoad', url: '/trainer-road', icon: 'assets/platforms/tr.jpg', id: 'trainer-road'},
     {name: 'MyFitnessPal', url: '/myfitnesspal', icon: 'assets/platforms/mfp.jpg', id: 'myfitnesspal'},
-    {name: 'Configuration', url: '/config', icon: 'bi bi-sliders', id: 'config'},
+    {
+      name: 'Configuration',
+      icon: 'bi bi-sliders',
+      id: 'config',
+      children: [
+        {name: 'System Configuration', url: '/config', icon: 'bi bi-gear'},
+        {name: 'User', url: '/user', icon: 'bi bi-person'}
+      ]
+    },
   ]
+
+  configExpanded: boolean = true;
+  isSidebarExpanded: boolean = true;
+
+  toggleSidebar(): void {
+    this.isSidebarExpanded = !this.isSidebarExpanded;
+    if (!this.isSidebarExpanded) {
+      this.configExpanded = false;
+    }
+    localStorage.setItem('sidebar_expanded', this.isSidebarExpanded.toString());
+  }
+
+  toggleConfigSubmenu(): void {
+    if (!this.isSidebarExpanded) {
+      this.isSidebarExpanded = true;
+      this.configExpanded = true;
+      localStorage.setItem('sidebar_expanded', 'true');
+    } else {
+      this.configExpanded = !this.configExpanded;
+    }
+  }
+
+  isConfigRouteActive(): boolean {
+    return this.router.url === '/config' || this.router.url === '/user';
+  }
 
   constructor(
     protected router: Router,
@@ -58,6 +101,10 @@ export class TopBarComponent implements OnInit {
     private connectionStatusService: ConnectionStatusService,
     private authService: AuthService
   ) {
+    const saved = localStorage.getItem('sidebar_expanded');
+    if (saved !== null) {
+      this.isSidebarExpanded = saved === 'true';
+    }
   }
 
   ngOnInit(): void {

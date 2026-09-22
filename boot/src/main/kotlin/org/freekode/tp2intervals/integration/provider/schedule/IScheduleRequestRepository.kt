@@ -7,4 +7,5 @@ interface IScheduleRequestRepository : CrudRepository<ScheduleRequestEntity, Int
     fun findByUsername(username: String): List<ScheduleRequestEntity>
     fun findByPlatformAndUsername(platform: String, username: String): List<ScheduleRequestEntity>
     fun findByRequestJsonAndUsername(requestJson: String, username: String): ScheduleRequestEntity?
+    fun deleteByUsername(username: String)
 }

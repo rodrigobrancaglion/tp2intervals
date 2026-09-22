@@ -1,6 +1,7 @@
 import {Routes} from '@angular/router';
 import {HomeComponent} from "app/home/home.component";
 import {ConfigurationComponent} from "app/configuration/configuration.component";
+import {UserProfileComponent} from "app/user-profile/user-profile.component";
 import {canActivateHome} from "app/home/can-activate-home";
 import {TrainingPeaksComponent} from "app/training-peaks/training-peaks.component";
 import {TrainerRoadComponent} from "app/trainer-road/trainer-road.component";
@@ -41,6 +42,10 @@ export const routes: Routes = [
   {
     path: 'config',
     component: ConfigurationComponent,
+  },
+  {
+    path: 'user',
+    component: UserProfileComponent,
   },
   {
     path: '',

@@ -21,7 +21,10 @@ class AuthController(
     private val authenticationManager: AuthenticationManager,
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val jwtUtils: JwtUtils
+    private val jwtUtils: JwtUtils,
+    private val configurationCrudRepository: org.freekode.tp2intervals.integration.provider.configuration.IConfigurationCrudRepository,
+    private val scheduleRequestRepository: org.freekode.tp2intervals.integration.provider.schedule.IScheduleRequestRepository,
+    private val cacheManager: org.springframework.cache.CacheManager
 ) {
 
     @PostMapping("/login")
@@ -67,6 +70,28 @@ class AuthController(
             ResponseEntity.ok(LoginResponse(jwt, userDetails.id, userDetails.username))
         } catch (e: Exception) {
             ResponseEntity.badRequest().body(ErrorResponse(e.message ?: "Registration failed"))
+        }
+    }
+
+    @org.springframework.web.bind.annotation.DeleteMapping("/user")
+    @org.springframework.transaction.annotation.Transactional
+    fun deleteCurrentUser(): ResponseEntity<Any> {
+        return try {
+            val username = org.freekode.tp2intervals.utils.UserContextHolder.username
+            val user = userRepository.findByUsername(username)
+            if (user != null) {
+                configurationCrudRepository.deleteByUsername(username)
+                scheduleRequestRepository.deleteByUsername(username)
+                cacheManager.cacheNames.forEach { cacheName ->
+                    cacheManager.getCache(cacheName)?.clear()
+                }
+                userRepository.delete(user)
+                ResponseEntity.ok(mapOf("message" to "User deleted successfully"))
+            } else {
+                ResponseEntity.badRequest().body(ErrorResponse("User not found"))
+            }
+        } catch (e: Exception) {
+            ResponseEntity.badRequest().body(ErrorResponse(e.message ?: "Failed to delete user"))
         }
     }
 }

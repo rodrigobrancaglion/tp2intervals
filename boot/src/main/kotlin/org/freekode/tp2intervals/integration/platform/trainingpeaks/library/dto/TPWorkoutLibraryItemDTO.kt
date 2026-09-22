@@ -22,7 +22,7 @@ class TPWorkoutLibraryItemDTO(
     workoutId = exerciseLibraryItemId,
     athleteId = athleteId,
     workoutTypeValueId = workoutTypeId,
-    workoutType = null, // Não disponível no LibraryItem
+    workoutType = null, // Not available in LibraryItem
     title = itemName,
     description = description,
     coachComments = coachComments,
@@ -54,8 +54,8 @@ class TPWorkoutLibraryItemDTO(
     normalizedPowerActual = null,
     powerAverage = null,
     powerMaximum = null,
-    torqueAverage = null, // Novo campo da base
-    torqueMaximum = null, // Novo campo da base
+    torqueAverage = null, // Base field
+    torqueMaximum = null, // Base field
     heartRateAverage = null,
     heartRateMaximum = null,
     heartRateMinimum = null,
@@ -86,7 +86,7 @@ class TPWorkoutLibraryItemDTO(
     sharedWorkoutInformationExpireKey = null,
     workoutDeviceSource = null,
     hasPrivateWorkoutNoteForCaller = null,
-    code = null, // Novo campo da base
+    code = null, // Base field
 
     // IDs and Equipment
     workoutSubTypeId = null,

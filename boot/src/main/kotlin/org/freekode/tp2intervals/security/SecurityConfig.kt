@@ -43,16 +43,11 @@ class SecurityConfig(
             .cors { }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { auth ->
-//                auth.requestMatchers("/api/auth/**").permitAll()
-//                    .requestMatchers("/api/public/**").permitAll()
-//                    .requestMatchers("/", "/index.html", "/*.js", "/*.css", "/*.ico", "/*.woff2", "/*.woff", "/*.ttf", "/assets/**").permitAll()
-//                    .requestMatchers("/actuator/**").permitAll()
-//                    .anyRequest().authenticated()
                 auth.anyRequest().permitAll()
             }
 
-//        http.authenticationProvider(authenticationProvider())
-//        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+        http.authenticationProvider(authenticationProvider())
+        http.addFilterBefore(jwtAuthenticationFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter::class.java)
 
         return http.build()
     }

@@ -29,7 +29,7 @@ class WahooConfigurationRepository(
     }
 
     fun saveRefreshToken(refreshToken: String) {
-        cacheManager.getCache("platformInfoCache")!!.evict(platform().key)
+        cacheManager.getCache("platformInfoCache")?.evict(org.freekode.tp2intervals.utils.UserContextHolder.username + "-" + platform().key)
         iConfigurationRepository.updateConfig(
             UpdateConfigurationRequest(
                 mapOf("${platform().key}.refresh-token" to refreshToken)
@@ -42,7 +42,7 @@ class WahooConfigurationRepository(
         return WahooConfiguration(config)
     }
 
-    @Cacheable(key = "'wahoo'")
+    @Cacheable(keyGenerator = "userKeyGenerator")
     override fun platformInfo(): PlatformInfo {
         val infoMap = mapOf(
             "isValid" to getConfiguration().isValid(),

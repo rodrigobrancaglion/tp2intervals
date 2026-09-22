@@ -29,7 +29,7 @@ class IcuTrainingTypeMapper {
             // Search the map for the specific VALUE (e.g., "GravelRide") and return the corresponding KEY (e.g., WorkoutType.GRAVEL_BIKE)
             return categoryMap.entries
                 .find { it.value.equals(value, ignoreCase = true) }
-                ?.key ?: TrainingType.getByValue(value) // Se não achar no map, tenta o fallback do Enum
+                ?.key ?: TrainingType.getByValue(value) // If not found in map, fallback to Enum
         }
 
         fun getByType(trainingType: TrainingType?): String = categoryMap[trainingType] ?: "Other"

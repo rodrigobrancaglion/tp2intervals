@@ -4,6 +4,7 @@ import {Router} from '@angular/router';
 import {AuthService} from './auth.service';
 import {CommonModule} from '@angular/common';
 import {ToastrService} from 'ngx-toastr';
+import {ConnectionStatusService} from '../connection-status.service';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +25,8 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private connectionStatusService: ConnectionStatusService
   ) {}
 
   ngOnInit(): void {
@@ -57,8 +59,7 @@ export class LoginComponent implements OnInit {
           this.toggleMode();
           this.isLoading = false;
         },
-        error: (err) => {
-          this.toastr.error(err.error?.message || 'Registration failed');
+        error: () => {
           this.isLoading = false;
         }
       });
@@ -66,11 +67,11 @@ export class LoginComponent implements OnInit {
       this.authService.login(formValue).subscribe({
         next: () => {
           this.toastr.success('Login successful');
+          this.connectionStatusService.loadConnectionStatus();
           this.router.navigate(['/home']);
           this.isLoading = false;
         },
-        error: (err) => {
-          this.toastr.error('Login failed. Please check your credentials.');
+        error: () => {
           this.isLoading = false;
         }
       });

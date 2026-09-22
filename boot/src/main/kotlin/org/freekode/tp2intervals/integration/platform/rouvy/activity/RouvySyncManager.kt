@@ -55,7 +55,7 @@ class RouvySyncManager(
             val page = context.newPage()
 
             try {
-                // 1. Autenticação
+                // 1. Authentication
                 logger.infoL3In("Navigating to login page")
                 page.navigate("${accountUrl}/login", com.microsoft.playwright.Page.NavigateOptions().setTimeout(60000.0))
                 page.waitForLoadState(LoadState.LOAD)
@@ -83,7 +83,7 @@ class RouvySyncManager(
                 page.waitForLoadState(LoadState.DOMCONTENTLOADED)
                 page.waitForTimeout(3000.0)
 
-                // 3. Mapear IDs das atividades no intervalo
+                // 3. Map activity IDs within date range
                 // A. Fetch activities via API (including FIT URL and routeId)
                 val allCookies = context.cookies().joinToString("; ") { "${it.name}=${it.value}" }
                 val targetActivitiesMap = mutableMapOf<String, ActivityInfo>()
@@ -123,13 +123,13 @@ class RouvySyncManager(
                                     }
                                 }
                             } catch (e: Exception) {
-                                logger.errorL3In("Erro ao processar data no loop inicial: ${e.message}")
+                                logger.errorL3In("Error processing date in initial loop: ${e.message}")
                             }
                         }
                     }
                 }
 
-                // 4. Processar cada atividade encontrada (using API data when available)
+                // 4. Process each activity found (using API data when available)
                 for ((id, info) in targetActivitiesMap) {
                     try {
                         logger.infoL3In("Processing activity: {} from date: {}", id, info.date)

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class TPAttachmentService(
-    private val trainingPeaksWorkoutApiClient: TrainingPeaksWorkoutApiClient,
+    private val TPWorkoutApiClient: TPWorkoutApiClient,
     @param:Value("\${app.attachments.enabled}") private val attachmentsEnabled: Boolean,
 ) {
      private val logger = AppLogger.get(this.javaClass)
@@ -18,7 +18,7 @@ class TPAttachmentService(
             return listOf()
         }
 
-        val workoutDetails = trainingPeaksWorkoutApiClient.getWorkoutDetails(userId, workoutId)
+        val workoutDetails = TPWorkoutApiClient.getWorkoutDetails(userId, workoutId)
         val fileId = workoutDetails.firstFitFileId
         val fileName = workoutDetails.firstFitFileName
 
@@ -28,7 +28,7 @@ class TPAttachmentService(
         }
 
         logger.infoL3In("Downloading FIT file for workoutId: {$workoutId}, fileId: {$fileId}, fileName: {$fileName}")
-        val resource = trainingPeaksWorkoutApiClient.downloadWorkoutAttachment(userId, workoutId, fileId)
+        val resource = TPWorkoutApiClient.downloadWorkoutAttachment(userId, workoutId, fileId)
         return listOf(Attachment(fileName, resource))
     }
 

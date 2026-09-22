@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository
 @CacheConfig(cacheNames = ["tpWorkoutsCache"])
 @Repository
 class TPWorkoutLibraryRepository(
-    private val trainingPeaksWorkoutLibraryApiClient: TrainingPeaksWorkoutLibraryApiClient,
+    private val TPWorkoutLibraryApiClient: TPWorkoutLibraryApiClient,
     private val tpToWorkoutConverter: TPToWorkoutConverter,
 ) {
      private val logger = AppLogger.get(this.javaClass)
@@ -27,13 +27,13 @@ class TPWorkoutLibraryRepository(
     }
 
     fun getLibraries(): List<LibraryContainer> {
-        return trainingPeaksWorkoutLibraryApiClient.getWorkoutLibraries()
+        return TPWorkoutLibraryApiClient.getWorkoutLibraries()
             .map { toPlan(it) }
     }
 
     @Cacheable
     fun getLibraryWorkouts(libraryId: String): List<Workout> {
-        val items = trainingPeaksWorkoutLibraryApiClient.getWorkoutLibraryItems(libraryId)
+        val items = TPWorkoutLibraryApiClient.getWorkoutLibraryItems(libraryId)
         return items.mapNotNull {
             try {
                 tpToWorkoutConverter.toWorkout(it)

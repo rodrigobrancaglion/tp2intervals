@@ -1,7 +1,7 @@
 // UI-v2 Precision Athletic Dark Design System
 
 // 1. Color Palette Variable Declarations
-:root {
+:root, :root.dark-theme {
   --color-bg: #0D0F14;
   --color-surface: #141923;
   --color-surface-elevated: #1D2432;
@@ -23,6 +23,62 @@
   --color-text-secondary: #7E8A9F;
   --color-border: rgba(255, 255, 255, 0.06);
   --color-border-glow: rgba(0, 212, 255, 0.2);
+
+  // Button Theme Variables (Tonal for Dark)
+  --btn-primary-bg: rgba(68, 180, 202, 0.16);
+  --btn-primary-color: #44B4CA;
+  --btn-primary-border: 1px solid rgba(68, 180, 202, 0.3);
+  --btn-primary-hover-bg: rgba(68, 180, 202, 0.26);
+  --btn-primary-hover-color: #72E4F9;
+  --btn-primary-hover-border: 1px solid rgba(68, 180, 202, 0.6);
+  --btn-primary-shadow: 0 0 12px rgba(68, 180, 202, 0.15);
+
+  --btn-warn-bg: rgba(255, 77, 109, 0.15);
+  --btn-warn-color: #FF4D6D;
+  --btn-warn-border: 1px solid rgba(255, 77, 109, 0.3);
+  --btn-warn-hover-bg: rgba(255, 77, 109, 0.25);
+  --btn-warn-hover-color: #FF758F;
+  --btn-warn-hover-border: 1px solid rgba(255, 77, 109, 0.6);
+}
+
+:root.light-theme {
+  --color-bg: #F4F6F9;
+  --color-surface: #FFFFFF;
+  --color-surface-elevated: #F8FAFC;
+
+  --color-accent: #0284C7;
+  --color-accent-hover: #0369A1;
+  --color-accent-glow: rgba(2, 132, 199, 0.12);
+
+  --color-success: #10B981;
+  --color-success-bg: rgba(16, 185, 129, 0.1);
+
+  --color-warning: #F59E0B;
+  --color-warning-bg: rgba(245, 158, 11, 0.1);
+
+  --color-danger: #EF4444;
+  --color-danger-bg: rgba(239, 68, 68, 0.1);
+
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #64748B;
+  --color-border: #E2E8F0;
+  --color-border-glow: rgba(2, 132, 199, 0.25);
+
+  // Button Theme Variables (Tonal for Light)
+  --btn-primary-bg: #E0F2FE;
+  --btn-primary-color: #0369A1;
+  --btn-primary-border: 1px solid #BAE6FD;
+  --btn-primary-hover-bg: #BAE6FD;
+  --btn-primary-hover-color: #0C4A6E;
+  --btn-primary-hover-border: 1px solid #7DD3FC;
+  --btn-primary-shadow: 0 1px 3px rgba(2, 132, 199, 0.1);
+
+  --btn-warn-bg: #FEE2E2;
+  --btn-warn-color: #DC2626;
+  --btn-warn-border: 1px solid #FECACA;
+  --btn-warn-hover-bg: #FECACA;
+  --btn-warn-hover-color: #991B1B;
+  --btn-warn-hover-border: 1px solid #FCA5A5;
 }
 
 // 2. Base resets
@@ -90,25 +146,41 @@ html, body {
   background-color: var(--color-surface) !important;
   color: var(--color-text-primary) !important;
   border: 1px solid var(--color-border) !important;
-  border-left: 3px solid var(--color-accent) !important;
-  border-radius: 6px !important;
+  border-left: 3px solid var(--color-border) !important;
+  border-radius: 0 !important;
   box-shadow: none !important;
-  margin-bottom: 14px !important;
   transition: all 0.2s ease-in-out !important;
 
-  &:hover {
+  &:first-of-type {
+    border-top-left-radius: 6px !important;
+    border-top-right-radius: 6px !important;
+  }
+
+  &:last-of-type {
+    border-bottom-left-radius: 6px !important;
+    border-bottom-right-radius: 6px !important;
+  }
+
+  &:not(:first-of-type) {
+    border-top: none !important;
+  }
+
+  &:hover:not(.mat-panel-disabled) {
     border-color: rgba(255, 255, 255, 0.12) !important;
+    border-left: 3px solid var(--color-accent) !important;
     box-shadow: 0 4px 20px rgba(0,0,0,0.2) !important;
   }
 
   &.mat-expanded {
     background-color: var(--color-surface-elevated) !important;
     border-left: 3px solid var(--color-accent) !important;
+    border-radius: 6px !important;
+    border-top: 1px solid var(--color-border) !important;
   }
 
   &.mat-panel-disabled {
     opacity: 0.5;
-    border-left-color: var(--color-text-secondary) !important;
+    border-left-color: var(--color-border) !important;
   }
 }
 
@@ -134,7 +206,7 @@ html, body {
   font-family: 'Space Grotesk', sans-serif !important;
   color: var(--color-text-secondary) !important;
   border-top: 1px solid var(--color-border);
-  background-color: rgba(0,0,0,0.1);
+  background-color: var(--color-surface);
 }
 
 // Angular Material Inputs Overrides to fit Precision theme
@@ -144,7 +216,7 @@ html, body {
   font-family: 'Space Grotesk', sans-serif !important;
 
   .mdc-text-field--filled:not(.mdc-text-field--disabled) {
-    background-color: rgba(0,0,0,0.25) !important;
+    background-color: var(--color-bg) !important;
     border: 1px solid var(--color-border) !important;
     border-radius: 4px !important;
 
@@ -172,28 +244,70 @@ html, body {
   padding: 20px 24px 16px !important;
 }
 
-// Material Button Overrides
-.mat-mdc-raised-button.mat-primary {
-  background-color: var(--color-accent) !important;
-  color: var(--color-bg) !important;
+// Material Button Overrides (Tonal in Dark, Outlined in Light)
+.mat-mdc-raised-button.mat-primary,
+.mat-mdc-button.mat-primary,
+.mat-mdc-outlined-button.mat-primary {
+  background-color: var(--btn-primary-bg) !important;
+  color: var(--btn-primary-color) !important;
+  border: var(--btn-primary-border) !important;
   font-family: 'Space Grotesk', sans-serif !important;
   font-weight: 600 !important;
-  border-radius: 4px !important;
+  border-radius: 6px !important;
   letter-spacing: 0.5px !important;
-  box-shadow: 0 4px 12px var(--color-accent-glow) !important;
+  box-shadow: var(--btn-primary-shadow) !important;
   transition: all 0.2s ease-in-out !important;
 
   &:hover:not([disabled]) {
-    background-color: var(--color-accent-hover) !important;
-    box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3) !important;
+    background-color: var(--btn-primary-hover-bg) !important;
+    color: var(--btn-primary-hover-color) !important;
+    border: var(--btn-primary-hover-border) !important;
     transform: translateY(-1px);
   }
 
   &[disabled] {
-    opacity: 0.4;
-    background-color: var(--color-text-secondary) !important;
-    color: var(--color-bg) !important;
+    opacity: 0.45;
+    background-color: transparent !important;
+    border-color: var(--color-border) !important;
+    color: var(--color-text-secondary) !important;
+    box-shadow: none !important;
   }
+}
+
+.mat-mdc-raised-button.mat-warn,
+.mat-mdc-button.mat-warn,
+.mat-mdc-outlined-button.mat-warn {
+  background-color: var(--btn-warn-bg) !important;
+  color: var(--btn-warn-color) !important;
+  border: var(--btn-warn-border) !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  letter-spacing: 0.5px !important;
+  transition: all 0.2s ease-in-out !important;
+
+  &:hover:not([disabled]) {
+    background-color: var(--btn-warn-hover-bg) !important;
+    color: var(--btn-warn-hover-color) !important;
+    border: var(--btn-warn-hover-border) !important;
+    transform: translateY(-1px);
+  }
+
+  &[disabled] {
+    opacity: 0.45;
+    background-color: transparent !important;
+    border-color: var(--color-border) !important;
+    color: var(--color-text-secondary) !important;
+    box-shadow: none !important;
+  }
+}
+
+// Dialog standard buttons
+.mat-mdc-dialog-actions .mat-mdc-button {
+  border-radius: 6px !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-weight: 600 !important;
+  padding: 6px 16px !important;
 }
 
 // Card layout utility
@@ -240,38 +354,42 @@ html, body {
 
 // Action Button Styling (General UI buttons)
 .btn-precision {
-  background-color: transparent;
-  color: var(--color-accent);
-  border: 1px solid var(--color-accent);
-  border-radius: 4px;
-  padding: 8px 16px;
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-color);
+  border: var(--btn-primary-border);
+  border-radius: 6px;
+  padding: 8px 18px;
   font-family: 'Space Grotesk', sans-serif;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  box-shadow: var(--btn-primary-shadow);
   transition: all 0.2s ease;
 
   &:hover:not(:disabled) {
-    background-color: var(--color-accent-glow);
-    box-shadow: 0 0 10px var(--color-accent-glow);
+    background-color: var(--btn-primary-hover-bg);
+    color: var(--btn-primary-hover-color);
+    border: var(--btn-primary-hover-border);
+    transform: translateY(-1px);
   }
 
   &:disabled {
-    opacity: 0.4;
+    opacity: 0.45;
     cursor: not-allowed;
+    box-shadow: none;
   }
 
   &.filled {
-    background-color: var(--color-accent);
-    color: var(--color-bg);
-    border: none;
-    font-weight: 600;
+    background-color: var(--btn-primary-bg);
+    color: var(--btn-primary-color);
+    border: var(--btn-primary-border);
 
     &:hover:not(:disabled) {
-      background-color: var(--color-accent-hover);
-      box-shadow: 0 4px 15px rgba(0, 212, 255, 0.25);
+      background-color: var(--btn-primary-hover-bg);
+      color: var(--btn-primary-hover-color);
+      border: var(--btn-primary-hover-border);
     }
   }
 }
@@ -329,4 +447,50 @@ html, body {
 
 .mat-expansion-indicator::after {
   color: var(--color-text-secondary) !important
+}
+
+// Custom Material Menu Styling for Dark Theme
+.mat-mdc-menu-panel.precision-menu,
+.precision-menu .mat-mdc-menu-content,
+.mat-mdc-menu-panel {
+  background-color: var(--color-surface-elevated) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+  padding: 4px 0 !important;
+
+  .mat-mdc-menu-item {
+    color: var(--color-text-primary) !important;
+    font-family: 'Space Grotesk', sans-serif !important;
+    font-size: 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    min-height: 40px !important;
+    transition: all 0.15s ease !important;
+
+    i {
+      font-size: 16px !important;
+      color: var(--color-text-secondary) !important;
+    }
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05) !important;
+      color: var(--color-accent) !important;
+
+      i {
+        color: var(--color-accent) !important;
+      }
+    }
+
+    &.active {
+      color: var(--color-accent) !important;
+      background-color: var(--color-accent-glow) !important;
+      font-weight: 600 !important;
+
+      i {
+        color: var(--color-accent) !important;
+      }
+    }
+  }
 }

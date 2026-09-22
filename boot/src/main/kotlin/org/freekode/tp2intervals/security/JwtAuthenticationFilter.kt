@@ -3,6 +3,7 @@ package org.freekode.tp2intervals.security
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.freekode.tp2intervals.utils.UserContextHolder
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
@@ -32,18 +33,21 @@ class JwtAuthenticationFilter(
                 authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
 
                 SecurityContextHolder.getContext().authentication = authentication
+                UserContextHolder.username = username
             }
+            filterChain.doFilter(request, response)
         } catch (e: Exception) {
             logger.error("Cannot set user authentication: {}", e)
+            filterChain.doFilter(request, response)
+        } finally {
+            UserContextHolder.clear()
         }
-
-        filterChain.doFilter(request, response)
     }
 
     private fun parseJwt(request: HttpServletRequest): String? {
         val headerAuth = request.getHeader("Authorization")
         if (headerAuth != null && headerAuth.startsWith("Bearer ")) {
-            return ""//headerAuth.substring(7)
+            return headerAuth.substring(7)
         }
         return null
     }

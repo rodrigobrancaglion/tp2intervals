@@ -22,13 +22,18 @@ class RouvyConfigurationRepository(
     override fun platform() = Platform.ROUVY
 
     override fun updateConfig(request: UpdateConfigurationRequest) {
-        cacheManager.getCache("platformInfoCache")?.evict(platform().key)
-        val newConfig = getConfigToUpdate(request)
-        validateConfiguration(newConfig)
+        cacheManager.getCache("platformInfoCache")?.evict(org.freekode.tp2intervals.utils.UserContextHolder.username + "-" + platform().key)
+        val updatedConfig = request.getByPrefix(platform().key)
+        if (updatedConfig.isEmpty()) {
+            return
+        }
+        val currentConfig = iConfigurationRepository.getConfigurationByPrefix(platform().key)
+        val newConfig = currentConfig.configMap + updatedConfig
+        validateConfiguration(newConfig, true)
         iConfigurationRepository.updateConfig(UpdateConfigurationRequest(newConfig))
     }
 
-    @Cacheable(key = "'rouvy'")
+    @Cacheable(keyGenerator = "userKeyGenerator")
     override fun platformInfo(): PlatformInfo {
         val infoMap = mapOf(
             "isValid" to isValid(),
@@ -44,19 +49,22 @@ class RouvyConfigurationRepository(
     private fun isValid(): Boolean {
         return try {
             val currentConfig = iConfigurationRepository.getConfigurationByPrefix(platform().key)
-            validateConfiguration(currentConfig.configMap)
+            validateConfiguration(currentConfig.configMap, false)
             true
         } catch (e: Exception) {
             false
         }
     }
 
-    private fun getConfigToUpdate(request: UpdateConfigurationRequest): Map<String, String?> {
-        val currentConfig = iConfigurationRepository.getConfigurationByPrefix(platform().key)
-        return currentConfig.configMap + request.getByPrefix(platform().key)
-    }
-
-    private fun validateConfiguration(newConfig: Map<String, String?>) {
+    private fun validateConfiguration(newConfig: Map<String, String?>, ignoreEmpty: Boolean) {
+        val email = newConfig["${Platform.ROUVY.key}.email"]
+        val password = newConfig["${Platform.ROUVY.key}.password"]
+        if (email.isNullOrBlank() && password.isNullOrBlank()) {
+            if (ignoreEmpty) {
+                return
+            }
+            throw PlatformException(platform(), "Access to the platform is not configured")
+        }
         try {
             RouvyConfigurationDTO(newConfig)
         } catch (e: NullPointerException) {

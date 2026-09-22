@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, Observable, tap} from 'rxjs';
 import {Router} from '@angular/router';
+import {ThemeService} from '../theme.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,11 @@ export class AuthService {
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasToken());
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private themeService: ThemeService
+  ) { }
 
   login(credentials: any): Observable<any> {
     return this.http.post('/api/auth/login', credentials).pipe(
@@ -35,6 +40,7 @@ export class AuthService {
     localStorage.removeItem(this.USER_ID_KEY);
     localStorage.removeItem(this.USERNAME_KEY);
     this.isAuthenticatedSubject.next(false);
+    this.themeService.loadThemeForCurrentUser();
     this.router.navigate(['/login']);
   }
 
@@ -43,6 +49,19 @@ export class AuthService {
     localStorage.setItem(this.USER_ID_KEY, authResult.id.toString());
     localStorage.setItem(this.USERNAME_KEY, authResult.username);
     this.isAuthenticatedSubject.next(true);
+    this.themeService.loadThemeForCurrentUser();
+  }
+
+  deleteAccount(): Observable<any> {
+    return this.http.delete('/api/auth/user').pipe(
+      tap(() => {
+        this.logout();
+      })
+    );
+  }
+
+  public getUsername(): string | null {
+    return localStorage.getItem(this.USERNAME_KEY);
   }
 
   public getToken(): string | null {

@@ -10,18 +10,18 @@ class AppLogger(private val logger: Logger) {
             return AppLogger(LoggerFactory.getLogger(T::class.java))
         }
 
-        // Permite instanciar passando a classe dinâmica (usado no Aspect)
+        // Allows instantiation passing dynamic class (used in Aspect)
         fun get(clazz: Class<*>): AppLogger {
             return AppLogger(LoggerFactory.getLogger(clazz))
         }
 
-        // Permite instanciar passando um Logger nativo do SLF4J
+        // Allows instantiation passing a native SLF4J Logger
         fun get(logger: Logger): AppLogger {
             return AppLogger(logger)
         }
     }
 
-    // Conveniências de Info
+    // Info convenience methods
     fun infoL1In(message: String, vararg args: Any?) = info(LogIndent.L1_IN, message, *args)
     fun infoL1Out(message: String, vararg args: Any?) = info(LogIndent.L1_OUT, message, *args)
     fun infoL2In(message: String, vararg args: Any?) = info(LogIndent.L2_IN, message, *args)
@@ -31,7 +31,7 @@ class AppLogger(private val logger: Logger) {
     fun infoL4In(message: String, vararg args: Any?) = info(LogIndent.L4_IN, message, *args)
     fun infoL4Out(message: String, vararg args: Any?) = info(LogIndent.L4_OUT, message, *args)
 
-    // Conveniências de Error
+    // Error convenience methods
     fun errorL1In(message: String, vararg args: Any?) = error(LogIndent.L1_IN, message, *args)
     fun errorL1Out(message: String, vararg args: Any?) = error(LogIndent.L1_OUT, message, *args)
     fun errorL2In(message: String, vararg args: Any?) = error(LogIndent.L2_IN, message, *args)
@@ -41,7 +41,7 @@ class AppLogger(private val logger: Logger) {
 
     fun debugL3In(message: String, vararg args: Any?) = debug(LogIndent.L3_IN, message, *args)
 
-    // Metodo principal parametrizado por LogIndent
+    // Main method parameterized by LogIndent
     fun info(indent: LogIndent, message: String, vararg args: Any?) {
         if (logger.isInfoEnabled) {
             logger.info("${indent.prefix}$message", *args)

@@ -9,4 +9,6 @@ interface IConfigurationCrudRepository : CrudRepository<ConfigurationEntity, Con
     fun findByUsername(username: String): List<ConfigurationEntity>
 
     fun findByUsernameAndKeyLike(username: String, prefix: String): List<ConfigurationEntity>
+
+    fun deleteByUsername(username: String)
 }

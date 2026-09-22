@@ -1,0 +1,102 @@
+<div class="user-profile-container">
+  <div class="section-header">
+    <div class="header-icon">
+      <i class="bi bi-person-circle"></i>
+    </div>
+    <div class="header-text">
+      <h2>User Settings</h2>
+      <p class="subtitle">Manage your account information and preferences</p>
+    </div>
+  </div>
+
+  <div class="profile-card">
+    <div class="card-section info-section">
+      <div class="user-avatar">
+        <i class="bi bi-person"></i>
+      </div>
+      <div class="user-details">
+        <span class="user-label">Logged in as</span>
+        <span class="username">{{ username }}</span>
+      </div>
+    </div>
+
+    <!-- Appearance / Theme Settings Section -->
+    <div class="card-section theme-section">
+      <div class="theme-header">
+        <div class="theme-title">
+          <i class="bi bi-palette"></i>
+          <span>Appearance</span>
+        </div>
+        <p class="theme-subtitle">Customize your interface theme (Dark or Light mode)</p>
+      </div>
+
+      <div class="theme-options">
+        <div class="theme-option"
+             [ngClass]="{'selected': currentTheme === 'dark'}"
+             (click)="setTheme('dark')">
+          <div class="theme-preview dark-preview">
+            <div class="preview-sidebar"></div>
+            <div class="preview-content">
+              <div class="preview-line"></div>
+              <div class="preview-box"></div>
+            </div>
+          </div>
+          <div class="theme-label">
+            <i class="bi bi-moon-stars"></i>
+            <span>Dark Theme</span>
+            <i class="bi bi-check2 check-icon" *ngIf="currentTheme === 'dark'"></i>
+          </div>
+        </div>
+
+        <div class="theme-option"
+             [ngClass]="{'selected': currentTheme === 'light'}"
+             (click)="setTheme('light')">
+          <div class="theme-preview light-preview">
+            <div class="preview-sidebar"></div>
+            <div class="preview-content">
+              <div class="preview-line"></div>
+              <div class="preview-box"></div>
+            </div>
+          </div>
+          <div class="theme-label">
+            <i class="bi bi-sun"></i>
+            <span>Light Theme</span>
+            <i class="bi bi-check2 check-icon" *ngIf="currentTheme === 'light'"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="danger-zone">
+      <div class="danger-header">
+        <div class="danger-title">
+          <i class="bi bi-exclamation-triangle"></i>
+          <span>Danger Zone</span>
+        </div>
+        <p class="danger-description">
+          Deleting your account will permanently remove all your saved configurations, synced schedules, and user data. This action cannot be undone.
+        </p>
+      </div>
+
+      <div class="danger-action" *ngIf="!showConfirmDialog">
+        <button class="btn-delete" (click)="openConfirmDialog()">
+          <i class="bi bi-trash3"></i>
+          <span>Delete Account</span>
+        </button>
+      </div>
+
+      <div class="confirm-box" *ngIf="showConfirmDialog">
+        <p class="confirm-warning">
+          <strong>Are you absolutely sure?</strong> All your credentials and settings will be wiped.
+        </p>
+        <div class="confirm-buttons">
+          <button class="btn-cancel" (click)="cancelDelete()" [disabled]="isDeleting">Cancel</button>
+          <button class="btn-confirm-delete" (click)="confirmDelete()" [disabled]="isDeleting">
+            <span *ngIf="!isDeleting"><i class="bi bi-trash3-fill"></i> Yes, Delete My Account</span>
+            <span *ngIf="isDeleting">Deleting...</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

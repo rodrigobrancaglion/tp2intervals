@@ -24,7 +24,7 @@ class TrainerRoadConfigurationRepository(
 
     @CatchFeignException(platform = Platform.TRAINER_ROAD)
     override fun updateConfig(request: UpdateConfigurationRequest) {
-        cacheManager.getCache("platformInfoCache")!!.evict(platform().key)
+        cacheManager.getCache("platformInfoCache")?.evict(org.freekode.tp2intervals.utils.UserContextHolder.username + "-" + platform().key)
         val updatedConfig = request.getByPrefix(platform().key)
         if (updatedConfig.isEmpty()) {
             return
@@ -36,7 +36,7 @@ class TrainerRoadConfigurationRepository(
         iConfigurationRepository.updateConfig(UpdateConfigurationRequest(newConfig))
     }
 
-    @Cacheable(key = "'trainer-road'")
+    @Cacheable(keyGenerator = "userKeyGenerator")
     override fun platformInfo(): PlatformInfo {
         val infoMap = mapOf(
             "isValid" to isValid(),

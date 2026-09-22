@@ -10,12 +10,12 @@ class IcuWellnessConverter {
     private var wellnessDTO: IcuWellness? = null
     private var wellness: Wellness? = null
 
-    // Construtor para quando você tem o DTO (vindo do Intervals)
+    // Constructor when starting with DTO (from Intervals)
     constructor(wellnessDTO: IcuWellness) {
         this.wellnessDTO = wellnessDTO
     }
 
-    // Construtor para quando você tem o Domain (para enviar ao Intervals)
+    // Constructor when starting with Domain (to send to Intervals)
     constructor(wellness: Wellness?) {
         this.wellness = wellness
     }
@@ -23,23 +23,23 @@ class IcuWellnessConverter {
     fun toDTO(): IcuWellness {
         val outputFormatter = DateTimeFormatter.ofPattern(Wellness.DATE_FORMAT)
 
-        // 1. Calculamos a data formatada corretamente
+        // 1. Calculate properly formatted date
         val formattedDate = wellness?.date?.let { dateStr ->
             try {
                 val date = if (dateStr.contains("T")) {
                     java.time.OffsetDateTime.parse(dateStr).toLocalDate()
                 } else {
-                    // Pega os 10 primeiros caracteres e transforma em LocalDate para validar
+                    // Extract first 10 characters and parse as LocalDate to validate
                     LocalDate.parse(dateStr.take(10))
                 }
                 date.format(outputFormatter)
             } catch (e: Exception) {
-                // Se falhar, tenta retornar apenas os 10 caracteres ou o que estiver disponível
+                // If it fails, fallback to first 10 chars or available string
                 dateStr.take(10)
             }
         }
 
-        // 2. Usamos a 'formattedDate' no campo 'id' do DTO
+        // 2. Use 'formattedDate' as 'id' in DTO
         return IcuWellness(
             id = formattedDate ?: "",
             weight = wellness?.weight,

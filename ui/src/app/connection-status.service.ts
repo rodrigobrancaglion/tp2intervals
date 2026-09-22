@@ -18,13 +18,16 @@ export class ConnectionStatusService {
     this.configClient.getConfig().pipe(
       tap(config => {
         const configData = config?.config || {};
+        const isIcuConfigured = !!configData['intervals.api-key'] && !!configData['intervals.athlete-id'];
+        const isTpConfigured = !!configData['training-peaks.auth-cookie'];
+
         const connectedPlatforms = {
-          'intervals': !!configData['intervals.api-key'] && !!configData['intervals.athlete-id'],
-          'training-peaks': !!configData['training-peaks.auth-cookie'],
-          'trainer-road': !!configData['trainer-road.auth-cookie'],
-          'myfitnesspal': !!configData['mfp.session-cookie'] || !!configData['mfp.user-id'],
-          'rouvy': !!configData['rouvy.email'],
-          'wahoo': !!configData['wahoo.refresh-token']
+          'intervals': isIcuConfigured,
+          'training-peaks': isIcuConfigured && isTpConfigured,
+          'trainer-road': isIcuConfigured && !!configData['trainer-road.auth-cookie'],
+          'myfitnesspal': isIcuConfigured && (!!configData['mfp.session-cookie'] || !!configData['mfp.user-id']),
+          'rouvy': isIcuConfigured && !!configData['rouvy.email'],
+          'wahoo': isIcuConfigured && !!configData['wahoo.refresh-token']
         };
         this.connectedPlatformsSubject.next(connectedPlatforms);
       })

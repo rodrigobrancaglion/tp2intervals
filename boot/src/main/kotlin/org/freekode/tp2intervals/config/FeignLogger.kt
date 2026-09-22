@@ -18,19 +18,29 @@ class FeignLogger : Logger() {
     override fun logRequest(configKey: String, level: Level, request: Request) {
         if (isIgnoredMethod(configKey)) return
 
-        // Instancia o AppLogger dinamicamente com a interface do cliente Feign
+        // Dynamically instantiate AppLogger with the Feign client interface
         val targetLogger = getTargetLogger(configKey)
         val methodName = extractMethodName(configKey)
         val httpMethod = request.httpMethod().name
         val url = request.url()
 
+        val contentType = request.headers()["Content-Type"]?.firstOrNull()
+            ?: request.headers()["content-type"]?.firstOrNull()
+            ?: ""
+
+        val isMultipartOrBinary = isMultipartOrBinary(contentType)
+
         val bodyBytes = request.body()
-        val bodyFormatted = if (bodyBytes != null && bodyBytes.isNotEmpty()) {
+        val bodyFormatted = if (isMultipartOrBinary) {
+            "[MULTIPART / BINARY BODY SUPPRESSED]"
+        } else if (bodyBytes != null && bodyBytes.isNotEmpty()) {
             val requestJson = String(bodyBytes, StandardCharsets.UTF_8)
             if (isValidJsonString(requestJson)) {
                 sanitizeJson(requestJson)
-            } else {
+            } else if (isPrintableText(requestJson)) {
                 requestJson
+            } else {
+                "[BINARY BODY SUPPRESSED]"
             }
         } else {
             "[NO BODY]"
@@ -54,16 +64,20 @@ class FeignLogger : Logger() {
     ): Response {
         if (isIgnoredMethod(configKey)) return response
 
-        // Instancia o AppLogger dinamicamente com a interface do cliente Feign
+        // Dynamically instantiate AppLogger with the Feign client interface
         val targetLogger = getTargetLogger(configKey)
         val methodName = extractMethodName(configKey)
         val httpMethod = response.request().httpMethod().name
         val status = response.status()
 
-        val contentType = response.headers()["content-type"]?.firstOrNull() ?: ""
-        val isJsonContentType = contentType.contains("application/json", ignoreCase = true)
+        val contentType = response.headers()["content-type"]?.firstOrNull()
+            ?: response.headers()["Content-Type"]?.firstOrNull()
+            ?: ""
 
-        var bodyFormatted = "[NO BODY]"
+        val isJsonContentType = contentType.contains("application/json", ignoreCase = true)
+        val isMultipartOrBinary = isMultipartOrBinary(contentType)
+
+        var bodyFormatted = if (isMultipartOrBinary) "[BINARY BODY SUPPRESSED]" else "[NO BODY]"
         var rebufferedResponse = response
 
         if (isJsonContentType) {
@@ -74,8 +88,10 @@ class FeignLogger : Logger() {
                     val responseJson = String(bodyData, StandardCharsets.UTF_8)
                     if (isValidJsonString(responseJson)) {
                         bodyFormatted = sanitizeJson(responseJson)
-                    } else {
+                    } else if (isPrintableText(responseJson)) {
                         bodyFormatted = responseJson
+                    } else {
+                        bodyFormatted = "[BINARY BODY SUPPRESSED]"
                     }
                 }
                 rebufferedResponse = response.toBuilder().body(bodyData).build()
@@ -93,29 +109,29 @@ class FeignLogger : Logger() {
     }
 
     /**
-     * Extrai apenas o nome do metodo limpo.
-     * Transforma "org.freekode...IcuWorkoutApiClient#getEvents(String,...)" em "getEvents"
+     * Extracts only the clean method name.
+     * Transforms "org.freekode...IcuWorkoutApiClient#getEvents(String,...)" into "getEvents"
      */
     private fun extractMethodName(configKey: String): String {
         return configKey.substringBefore("(").substringAfterLast("#")
     }
 
     /**
-     * Extrai a classe/interface da configKey e instancia o AppLogger.
-     * Funciona tanto se a configKey contiver o pacote completo quanto se contiver apenas o nome simples.
+     * Extracts the class/interface from configKey and instantiates AppLogger.
+     * Works whether configKey contains the full package or just the simple name.
      */
     private fun getTargetLogger(configKey: String): AppLogger {
         val simpleClassName = configKey.substringBefore("#")
 
-        // Cria o Logger do SLF4J passando o nome simples ("TrainingPeaksUserApiClient")
+        // Creates the SLF4J logger with the target class name
         val slf4jLogger = LoggerFactory.getLogger(simpleClassName)
 
-        // Passa a instância do Logger para o AppLogger
+        // Wraps the Logger instance into AppLogger
         return AppLogger.get(slf4jLogger)
     }
 
     /**
-     * Verifica se o metodo chamado deve ser ignorado nos logs.
+     * Checks if the called method should be suppressed from logs.
      */
     private fun isIgnoredMethod(configKey: String): Boolean {
         val methodName = configKey.substringBefore("(").substringAfterLast("#")
@@ -123,7 +139,7 @@ class FeignLogger : Logger() {
     }
 
     /**
-     * Remove ou substitui o campo "data" caso esteja presente na raiz do JSON.
+     * Removes or replaces the "data" field if present at the root of JSON.
      */
     private fun sanitizeJson(jsonString: String): String {
         return try {
@@ -141,14 +157,37 @@ class FeignLogger : Logger() {
     }
 
     /**
-     * Verifica se a string limpa começa com '{' ou '[' (padrão JSON).
+     * Checks if trimmed string starts with '{' or '[' (JSON standard).
      */
     private fun isValidJsonString(content: String): Boolean {
         val trimmed = content.trim()
         return trimmed.startsWith("{") || trimmed.startsWith("[")
     }
 
+    /**
+     * Checks if Content-Type is multipart or binary.
+     */
+    private fun isMultipartOrBinary(contentType: String): Boolean {
+        val lower = contentType.lowercase()
+        return lower.contains("multipart/") ||
+                lower.contains("application/octet-stream") ||
+                lower.contains("application/zip") ||
+                lower.contains("application/x-") ||
+                lower.contains("image/") ||
+                lower.contains("audio/") ||
+                lower.contains("video/")
+    }
+
+    /**
+     * Checks if the text consists mostly of printable characters.
+     */
+    private fun isPrintableText(text: String): Boolean {
+        if (text.isEmpty()) return true
+        val nonPrintableCount = text.count { it < 0x20.toChar() && it != '\t' && it != '\r' && it != '\n' }
+        return (nonPrintableCount.toDouble() / text.length) < 0.05
+    }
+
     override fun log(configKey: String, format: String, vararg args: Any) {
-        // Vazio para suprimir cabeçalhos e metadados padrao
+        // Empty to suppress default Feign headers and metadata
     }
 }

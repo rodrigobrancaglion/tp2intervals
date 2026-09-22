@@ -30,7 +30,7 @@ data class Activity(
      * Resets metrics based on requested sync types.
      */
     fun filterActivity(requestedTypes: List<BaseType>): Activity? {
-        // Se o ID for inválido, retornamos NULL para que o mapNotNull ignore este item
+        // If ID is invalid, return null so mapNotNull ignores this item
         if (this.workoutId.toInt() == 0) {
             return null
         }

@@ -68,9 +68,8 @@
 
   <mat-divider style="margin: 24px 0;"></mat-divider>
 
-  <h3 class="group-title">Sync Other</h3>
-
-  <section>
+  <section class="sync-section">
+    <h3 class="group-title">Sync Other</h3>
     <mat-accordion multi>
       <mat-expansion-panel [disabled]="!platformInfo.isAthlete">
         <mat-expansion-panel-header>
@@ -83,11 +82,7 @@
         </mat-expansion-panel-header>
         <tp-copy-events-to-calendar [currentPlatform]="menuPlatform"></tp-copy-events-to-calendar>
       </mat-expansion-panel>
-    </mat-accordion>
-  </section>
 
-  <section>
-    <mat-accordion multi>
       <mat-expansion-panel [disabled]="!platformInfo.isAthlete">
         <mat-expansion-panel-header>
           <mat-panel-title>Health & Wellness (Metrics)</mat-panel-title>
@@ -99,11 +94,7 @@
         </mat-expansion-panel-header>
         <tp-copy-wellness-to-calendar [currentPlatform]="menuPlatform"></tp-copy-wellness-to-calendar>
       </mat-expansion-panel>
-    </mat-accordion>
-  </section>
 
-  <section>
-    <mat-accordion multi>
       <mat-expansion-panel [disabled]="!platformInfo.isAthlete">
         <mat-expansion-panel-header>
           <mat-panel-title>Settings</mat-panel-title>

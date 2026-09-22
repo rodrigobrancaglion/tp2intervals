@@ -12,7 +12,7 @@ if (require('electron-squirrel-startup')) {
 
 log.info("isDev", isDev)
 
-let isQuitting = false; // Controle de fechamento
+let isQuitting = false; // Controls graceful shutdown
 let tray: Tray | null = null;
 let splashWindow: BrowserWindow | null = null;
 let mainWindow: BrowserWindow | null = null;
@@ -21,7 +21,7 @@ const createTray = () => {
   const iconPath = getIconPath();
   let icon = nativeImage.createFromPath(iconPath);
 
-  // Redimensiona para o padrão do Mac (16x16)
+  // Resize to macOS menu bar standard (16x16)
   icon = icon.resize({ width: 16, height: 16 });
 
   tray = new Tray(icon);
@@ -110,7 +110,7 @@ const createMainWindow = async () => {
 
   mainWindow.loadURL(getMainWindowPageUrl())
 
-  // Inicializa o ícone da barra de menus
+  // Initialize menu bar icon
   createTray();
 
   mainWindow.on('ready-to-show', () => {
@@ -128,7 +128,7 @@ const createMainWindow = async () => {
   mainWindow.on('close', (event) => {
     if (!isQuitting && process.platform === 'darwin') {
       event.preventDefault();
-      mainWindow?.hide(); // Esconde a janela, mas mantém o processo e o @Scheduled ativos
+      mainWindow?.hide(); // Hide window but keep background process and @Scheduled active
     }
   });
 

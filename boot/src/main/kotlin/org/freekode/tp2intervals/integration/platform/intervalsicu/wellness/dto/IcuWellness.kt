@@ -13,7 +13,7 @@ data class IcuWellness(
     val sportInfo: List<SportInfoDTO>? = null,
     val updated: OffsetDateTime? = null,
 
-    // Métricas de Saúde (Nullables)
+    // Health Metrics (Nullables)
     val restingHR: Int? = null,
     val hrv: Double? = null,
     val hrvSDNN: Double? = null,

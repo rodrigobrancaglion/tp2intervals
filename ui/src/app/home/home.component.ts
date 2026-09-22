@@ -16,8 +16,12 @@ export class HomeComponent implements OnInit {
   connectedPlatforms$: Observable<{ [key: string]: boolean }>;
 
   platforms = [
-    { id: 'intervals', name: 'Intervals.icu', desc: 'Unified workout database and training calendar target platform.', url: '/training-peaks' },
-    { id: 'training-peaks', name: 'TrainingPeaks', desc: 'Synchronize planned workouts, full plans, events, wellness metrics, and power zones.', url: '/training-peaks' },
+    {
+      id: 'training-peaks',
+      name: 'TrainingPeaks ➔ Intervals.icu',
+      desc: 'Synchronize planned workouts, full training plans, events, wellness metrics, and power zones between TrainingPeaks and Intervals.icu.',
+      url: '/training-peaks'
+    },
     { id: 'wahoo', name: 'Wahoo Fitness', desc: 'Sync power zones directly with your Wahoo cloud.', url: '/training-peaks' },
     { id: 'rouvy', name: 'Rouvy', desc: 'Beta: Import and synchronize indoor cycling activities.', url: '/rouvy' },
     { id: 'trainer-road', name: 'TrainerRoad', desc: 'Export plans and libraries directly to your Intervals calendar.', url: '/trainer-road' },

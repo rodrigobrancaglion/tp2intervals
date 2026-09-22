@@ -70,8 +70,8 @@ class IcuActivityRepository(
         val fitBytes = Base64.getDecoder().decode(activity.resource)
         val fileName = activity.fileName ?: "${activity.workoutId}.fit"
         val multipart = ByteArrayMultipartFile(fitBytes, fileName)
-        val name = activity.description ?: activity.title ?: "" //Mantem o nome original do treino
-        val description = activity.title ?: "Activity ${activity.workoutId}" //Se a atividade for ROUVY -insere na desscricao o nome da Rota
+        val name = activity.description ?: activity.title ?: "" // Keep original workout name
+        val description = activity.title ?: "Activity ${activity.workoutId}" // If activity is from ROUVY - put route name in description
 
         logger.infoL3In("Creating activity in ICU via .fit upload: workoutId=${activity.workoutId}, fileName=$fileName, name=$name")
         return try {
