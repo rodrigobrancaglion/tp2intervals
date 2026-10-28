@@ -52,6 +52,7 @@ export class CopyWellnessToCalendarComponent implements OnInit {
   @Input() selectedWellnessTypes: string[] = [];
   @Input() directions: any[] = []
   @Input() inProgress = false
+  isScheduling = false
 
   formGroup: FormGroup
   platformsInfo: any
@@ -90,12 +91,15 @@ export class CopyWellnessToCalendarComponent implements OnInit {
     let direction = this.formGroup.value.direction
     let wellnessTypes = this.formGroup.value.wellnessTypes
 
-    this.inProgress = true
+    this.isScheduling = true
     this.wellnessClient.scheduleCopyCalendarToCalendar(startDate, endDate, wellnessTypes, direction, platformKey).pipe(
       switchMap(() => this.loadScheduleRequests()),
-      finalize(() => this.inProgress = false)
-    ).subscribe(() => {
-      this.notificationService.success(`Scheduled sync job`)
+      finalize(() => this.isScheduling = false)
+    ).subscribe({
+      next: () => {
+        this.notificationService.success(`Scheduled sync job`)
+      },
+      error: () => {}
     })
   }
 
@@ -114,9 +118,12 @@ export class CopyWellnessToCalendarComponent implements OnInit {
     this.inProgress = true
     this.wellnessClient.copyCalendarToCalendar(startDate, endDate, wellnessTypes, direction).pipe(
       finalize(() => this.inProgress = false)
-    ).subscribe((response) => {
-      this.notificationService.success(
-        `Wellness (Metrics): ${response.copied}<br> From ${response.startDate} to ${response.endDate}`)
+    ).subscribe({
+      next: (response) => {
+        this.notificationService.success(
+          `Wellness (Metrics): ${response.copied}<br> From ${response.startDate} to ${response.endDate}`)
+      },
+      error: () => {}
     })
   }
 
@@ -144,12 +151,15 @@ export class CopyWellnessToCalendarComponent implements OnInit {
   }
 
   deleteJob(jobId: any) {
-    this.inProgress = true
+    this.isScheduling = true
     this.wellnessClient.deleteScheduleRequest(jobId).pipe(
       switchMap(() => this.loadScheduleRequests()),
-      finalize(() => this.inProgress = false)
-    ).subscribe(() => {
-      this.notificationService.success(`Deleted job`)
+      finalize(() => this.isScheduling = false)
+    ).subscribe({
+      next: () => {
+        this.notificationService.success(`Deleted job`)
+      },
+      error: () => {}
     })
   }
 }

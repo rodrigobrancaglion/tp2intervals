@@ -109,7 +109,7 @@
       color="primary"
       type="button"
       matTooltip="Scheduled job runs every 20 minutes and will sync workouts for today. Jobs won't persist after app restart"
-      [disabled]="formGroup.invalid || inProgress"
+      [disabled]="formGroup.invalid || isScheduling"
       (click)="scheduleToday()"
     >
       Schedule for today

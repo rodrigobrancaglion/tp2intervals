@@ -5,9 +5,9 @@ package org.freekode.tp2intervals.domain
  * ICU supports RACE_A (priority), RACE_B (secondary), RACE_C (minor).
  */
 enum class OtherType(override val title: String) : BaseType {
-    RACE_A("Race A"),
-    RACE_B("Race B"),
-    RACE_C("Race C"),
+    RACE_A("Race"),
+    RACE_B("Race"),
+    RACE_C("Race"),
     ;
 
     companion object {

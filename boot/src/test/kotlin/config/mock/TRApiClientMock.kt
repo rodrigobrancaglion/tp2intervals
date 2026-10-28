@@ -3,7 +3,6 @@ package config.mock
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.freekode.tp2intervals.integration.platform.trainerroad.TRApiClient
 import org.freekode.tp2intervals.integration.platform.trainerroad.activity.dto.TrainerRoadActivityDTO
-import org.freekode.tp2intervals.integration.platform.trainerroad.workout.dto.TRFindWorkoutsRequestDTO
 import org.freekode.tp2intervals.integration.platform.trainerroad.workout.dto.TRFindWorkoutsResponseDTO
 import org.freekode.tp2intervals.integration.platform.trainerroad.workout.dto.TRTimelineDTO
 import org.freekode.tp2intervals.integration.platform.trainerroad.workout.dto.TRWorkoutResponseDTO
@@ -34,7 +33,7 @@ class TRApiClientMock(
         return emptyList()
     }
 
-    override fun findWorkouts(requestDTO: TRFindWorkoutsRequestDTO): TRFindWorkoutsResponseDTO {
+    override fun findWorkouts(searchText: String, pageNumber: Int, pageSize: Int): TRFindWorkoutsResponseDTO {
         TODO("Not yet implemented")
     }
 

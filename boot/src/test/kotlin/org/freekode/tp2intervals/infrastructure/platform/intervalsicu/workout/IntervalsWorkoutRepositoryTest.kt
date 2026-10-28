@@ -25,7 +25,8 @@ class IntervalsWorkoutRepositoryTest {
     private val objectMapper = ObjectMapperFactory.objectMapper()
 
     private val tpPowerCalculationService = mock(TPPowerCalculationService::class.java)
-    private val icuEventConverter = IcuEventConverter(tpPowerCalculationService)
+    private val icuWorkoutConverter = IcuWorkoutConverter(tpPowerCalculationService)
+    private val icuEventConverter = IcuEventConverter(icuWorkoutConverter)
     private val icuUserApiClient = mock(IcuUserApiClient::class.java)
 
     private val icuWorkoutApiClient: IcuWorkoutApiClient = IcuWorkoutApiClientMock(
@@ -41,6 +42,7 @@ class IntervalsWorkoutRepositoryTest {
             icuWorkoutApiClient,
             icuUserApiClient,
             icuConfigurationRepository,
+            icuWorkoutConverter,
             icuEventConverter,
         )
 

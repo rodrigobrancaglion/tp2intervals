@@ -1,1 +1,24 @@
+.destinations-section {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 
+  .destinations-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+  }
+
+  .destinations-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .destinations-error {
+    font-size: 12px;
+    color: var(--color-danger, #ff4d6d);
+  }
+}

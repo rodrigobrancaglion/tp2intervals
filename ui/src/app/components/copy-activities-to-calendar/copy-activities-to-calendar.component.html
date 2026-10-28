@@ -79,7 +79,7 @@
             <i class="bi bi-trash"></i>
           </button>
           <span style="font-size: small">
-            Platform: {{ Platform.getTitle(request.request.sourcePlatform) }} -> {{ Platform.getTitle(request.request.targetPlatform) }} |
+            Platform: {{ Platform.getTitle(request.request.sourcePlatform) }} -> {{ getTargetsTitle(request.request) }} |
             Types: {{ mapActivitiesTypesToTitles(request.request.types) }}
           </span>
         </mat-list-item>
@@ -93,7 +93,7 @@
       color="primary"
       type="button"
       matTooltip="Scheduled job runs every 20 minutes and will sync workouts for today. Jobs won't persist after app restart"
-      [disabled]="formGroup.invalid || inProgress"
+      [disabled]="formGroup.invalid || isScheduling"
       (click)="scheduleToday()"
     >
       Schedule for today

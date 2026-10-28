@@ -6,6 +6,8 @@ import com.microsoft.playwright.BrowserType
 import com.microsoft.playwright.Playwright
 import com.microsoft.playwright.options.LoadState
 import org.freekode.tp2intervals.config.log.AppLogger
+import org.freekode.tp2intervals.domain.Platform
+import org.freekode.tp2intervals.integration.PlatformException
 import org.freekode.tp2intervals.integration.platform.rouvy.RouvyRidersClient
 import org.freekode.tp2intervals.integration.platform.rouvy.activity.dto.RouvyActivityDTO
 import org.freekode.tp2intervals.integration.platform.rouvy.configuration.RouvyConfigurationRepository
@@ -43,15 +45,27 @@ class RouvySyncManager(
 
         if (email.isBlank() || password.isBlank()) {
             logger.errorL2In("Rouvy - credentials missing.")
-            return emptyList()
+            throw PlatformException(Platform.ROUVY, "Rouvy credentials missing")
         }
+
+        logger.infoL3In("---------------------------------")
+        logger.infoL3In("--- INIT [ROUVY] WEB Scraping ---")
+        logger.infoL3In("---------------------------------")
 
         val activitiesFound = mutableListOf<RouvyActivityDTO>()
         logger.infoL3In("Starting batch extraction from {} to {}", startDate, endDate)
 
         Playwright.create().use { playwright ->
-            val browser = playwright.chromium().launch(BrowserType.LaunchOptions().setHeadless(true))
+            val browser = playwright.chromium().launch(
+                BrowserType.LaunchOptions()
+                    .setHeadless(true)
+                    .setArgs(listOf(
+                        "--disable-blink-features=AutomationControlled",
+                        "--no-sandbox"
+                    ))
+            )
             val context = browser.newContext(Browser.NewContextOptions().setUserAgent(USER_AGENT))
+            context.addInitScript("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
             val page = context.newPage()
 
             try {
@@ -60,28 +74,43 @@ class RouvySyncManager(
                 page.navigate("${accountUrl}/login", com.microsoft.playwright.Page.NavigateOptions().setTimeout(60000.0))
                 page.waitForLoadState(LoadState.LOAD)
 
+                // Dismiss cookie consent banner if present BEFORE attempting login
+                dismissCookieConsentIfPresent(page)
+
                 logger.infoL3In("Performing authentication")
                 performLoginInternal(page, email, password)
 
                 // Wait for session to be established after login. Rouvy may redirect to account or riders domain.
                 logger.infoL3In("Waiting for login confirmation")
-                // Dismiss possible cookie consent banner if present
-                // Dismiss possible cookie consent banner if present (Italian)
-                try {
-                    // Italian button "Accetta tutti"
-                    page.locator("#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll").first().click()
-                } catch (e: Exception) {
-                    // ignore if not found
-                }
-                page.waitForURL({ url ->
-                    (url.contains("account.rouvy.com") || url.contains("riders.rouvy.com")) &&
-                    !url.contains("/login") && !url.contains("/reset")
-                }, com.microsoft.playwright.Page.WaitForURLOptions().setTimeout(120000.0))
-                logger.infoL3In("Logged in, current URL: {}", page.url())
-                logger.infoL3In("Transitioning to Riders Portal")
-                page.navigate("${baseUrl}/profile/overview")
+                waitForLoginConfirmation(page)
                 page.waitForLoadState(LoadState.DOMCONTENTLOADED)
-                page.waitForTimeout(3000.0)
+
+                val currentUrl = page.url()
+                logger.infoL3In("Logged in, current URL: {}", currentUrl)
+
+                if (!currentUrl.contains("/profile/overview")) {
+                    logger.infoL3In("Transitioning to Riders Portal")
+                    try {
+                        page.navigate(
+                            "${baseUrl}/profile/overview",
+                            com.microsoft.playwright.Page.NavigateOptions()
+                                .setWaitUntil(com.microsoft.playwright.options.WaitUntilState.DOMCONTENTLOADED)
+                                .setTimeout(60000.0)
+                        )
+                    } catch (e: Exception) {
+                        if (e.message?.contains("ERR_ABORTED") == true) {
+                            logger.warnL3In("Navigation to /profile/overview was aborted (likely redirect in flight), waiting for page to settle: {}", e.message)
+                            page.waitForLoadState(LoadState.DOMCONTENTLOADED)
+                        } else {
+                            throw e
+                        }
+                    }
+                } else {
+                    logger.infoL3In("Already at Riders Portal overview: {}", currentUrl)
+                }
+
+                dismissCookieConsentIfPresent(page)
+                page.waitForTimeout(2000.0)
 
                 // 3. Map activity IDs within date range
                 // A. Fetch activities via API (including FIT URL and routeId)
@@ -132,15 +161,18 @@ class RouvySyncManager(
                 // 4. Process each activity found (using API data when available)
                 for ((id, info) in targetActivitiesMap) {
                     try {
-                        logger.infoL3In("Processing activity: {} from date: {}", id, info.date)
+                        logger.infoL3In("Processing Activity: {} from date: {}", id, info.date)
                         // If we have a direct FIT URL, download it without navigating to the activity page
                         val fitBytes: ByteArray? = if (info.fitUrl != null) {
                             logger.infoL3In("Downloading FIT via direct URL for activity {}", id)
                             downloadFitFromUrl(info.fitUrl)
                         } else {
                             // Fallback to UI download (existing logic)
-                            page.navigate("${baseUrl}/activity/$id")
-                            page.waitForLoadState(LoadState.LOAD)
+                            page.navigate(
+                                "${baseUrl}/activity/$id",
+                                com.microsoft.playwright.Page.NavigateOptions().setWaitUntil(com.microsoft.playwright.options.WaitUntilState.DOMCONTENTLOADED)
+                            )
+                            page.waitForLoadState(LoadState.DOMCONTENTLOADED)
                             val download = page.waitForDownload {
                                 page.locator("button:has-text('Export'), a:has-text('FIT'), [class*='download']").first().click()
                             }
@@ -154,8 +186,11 @@ class RouvySyncManager(
                         }
 
                         // Title extraction (still via UI, as route name may depend on routeId)
-                        page.navigate("${baseUrl}/activity/$id")
-                        page.waitForLoadState(LoadState.LOAD)
+                        page.navigate(
+                            "${baseUrl}/activity/$id",
+                            com.microsoft.playwright.Page.NavigateOptions().setWaitUntil(com.microsoft.playwright.options.WaitUntilState.DOMCONTENTLOADED)
+                        )
+                        page.waitForLoadState(LoadState.DOMCONTENTLOADED)
                         val activityTitle = page.locator("h1, h2").first().textContent().trim()
 
                         // Route name: try to fetch via API using routeId if present, otherwise fallback UI
@@ -172,8 +207,11 @@ class RouvySyncManager(
                                 val routeHref = routeDetailLink.getAttribute("href")
                                 if (!routeHref.isNullOrBlank()) {
                                     logger.infoL3In("Navigating to route detail: {}", routeHref)
-                                    page.navigate("${baseUrl}$routeHref")
-                                    page.waitForLoadState(LoadState.LOAD)
+                                    page.navigate(
+                                        "${baseUrl}$routeHref",
+                                        com.microsoft.playwright.Page.NavigateOptions().setWaitUntil(com.microsoft.playwright.options.WaitUntilState.DOMCONTENTLOADED)
+                                    )
+                                    page.waitForLoadState(LoadState.DOMCONTENTLOADED)
                                     val ogTitle = page.locator("meta[property='og:title']").getAttribute("content")
                                     if (!ogTitle.isNullOrBlank()) {
                                         val parts = ogTitle.split("|").map { it.trim() }
@@ -202,14 +240,37 @@ class RouvySyncManager(
                         logger.errorL3In("Failed to process activity $id: ${e.message}")
                     }
                 }
+            } catch (e: PlatformException) {
+                logger.errorL3In("{}", e.message)
+                throw e
             } catch (e: Exception) {
                 logger.errorL3In("Batch extraction failed: {}", e.message)
+                val errorMessage = extractCleanErrorMessage(e.message)
+                throw PlatformException(Platform.ROUVY, "Batch extraction failed: $errorMessage")
             } finally {
                 browser.close()
             }
         }
 
+        logger.infoL3In("---------------------------------")
+        logger.infoL3In("--- FINE [ROUVY] WEB Scraping ---")
+        logger.infoL3In("---------------------------------")
+
         return activitiesFound
+    }
+
+    private fun dismissCookieConsentIfPresent(page: com.microsoft.playwright.Page) {
+        try {
+            val cookieBtn = page.locator("#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll, button:has-text('Allow all cookies'), button:has-text('Accetta todos')").first()
+            cookieBtn.waitFor(com.microsoft.playwright.Locator.WaitForOptions().setTimeout(5000.0))
+            if (cookieBtn.isVisible()) {
+                cookieBtn.click()
+                page.waitForTimeout(500.0)
+                logger.infoL3In("Cookiebot consent accepted.")
+            }
+        } catch (e: Exception) {
+            // ignore if not found within 5 seconds
+        }
     }
 
     private fun performLoginInternal(page: com.microsoft.playwright.Page, email: String, password: String) {
@@ -217,7 +278,92 @@ class RouvySyncManager(
         page.fill("input[name=\"email\"]", email)
         page.fill("input[name=\"password\"]", password)
         page.waitForTimeout(500.0)
-        page.keyboard().press("Enter")
+
+        val submitBtn = page.locator("button[type=\"submit\"], [data-testid=\"status-button\"]").first()
+        if (submitBtn.count() > 0 && submitBtn.isVisible()) {
+            submitBtn.click()
+        } else {
+            page.keyboard().press("Enter")
+        }
+    }
+
+    private fun waitForLoginConfirmation(page: com.microsoft.playwright.Page, timeoutMs: Long = 30000) {
+        val startTime = System.currentTimeMillis()
+        while (System.currentTimeMillis() - startTime < timeoutMs) {
+            val currentUrl = page.url()
+
+            // 1. Check if redirected to any non-login/non-reset rouvy page
+            if (currentUrl.contains("rouvy.com") && !currentUrl.contains("/login") && !currentUrl.contains("/reset")) {
+                return
+            }
+
+            // 2. Check if auth cookies or session exists in browser context
+            val cookies = page.context().cookies()
+            val hasAuthCookie = cookies.any { cookie ->
+                val name = cookie.name.lowercase()
+                name == "rouvy_session" || name == "__session" || (name.contains("token") && !name.contains("csrf"))
+            }
+            if (hasAuthCookie) {
+                // If we are still on login/reset URL, allow a brief moment for the browser to redirect naturally (up to 4s)
+                if ((currentUrl.contains("/login") || currentUrl.contains("/reset")) && System.currentTimeMillis() - startTime < 4000) {
+                    page.waitForTimeout(500.0)
+                    continue
+                }
+                logger.infoL3In("Rouvy session confirmed (URL: {}), proceeding...", currentUrl)
+                return
+            }
+
+            // 3. Check for specific error alert messages
+            val alertLocator = page.locator("[data-testid='alert-message'], [role='alert'], [class*='border-red-600'], [class*='toast']").first()
+            if (alertLocator.count() > 0 && alertLocator.isVisible()) {
+                val errorText = alertLocator.innerText().trim()
+                if (errorText.isNotBlank()) {
+                    throw PlatformException(Platform.ROUVY, "Rouvy login failed: $errorText")
+                }
+            }
+
+            // 4. Check body text for known error phrases
+            val bodyText = try { page.innerText("body") } catch (e: Exception) { "" }
+            val knownErrors = listOf(
+                "Invalid email or password",
+                "User not found",
+                "Too many unsuccessful login attempts",
+                "Your account has been locked",
+                "Please enter a valid email"
+            )
+            for (err in knownErrors) {
+                if (bodyText.contains(err, ignoreCase = true)) {
+                    throw PlatformException(Platform.ROUVY, "Rouvy login failed: $err")
+                }
+            }
+
+            // 5. Check if page shows logged-in indicators (e.g. Profile, Logout, Account)
+            if (bodyText.contains("Sign out", ignoreCase = true) || bodyText.contains("Log out", ignoreCase = true)) {
+                logger.infoL3In("Rouvy logout indicator detected on page, proceeding...")
+                return
+            }
+
+            page.waitForTimeout(500.0)
+        }
+
+        // Final check after timeout
+        val finalUrl = page.url()
+        if (finalUrl.contains("rouvy.com") && !finalUrl.contains("/login") && !finalUrl.contains("/reset")) {
+            return
+        }
+
+        val alertLocator = page.locator("[data-testid='alert-message'], [role='alert'], [class*='border-red-600'], [class*='toast']").first()
+        val errorText = if (alertLocator.count() > 0 && alertLocator.isVisible()) {
+            alertLocator.innerText().trim()
+        } else null
+
+        if (!errorText.isNullOrBlank()) {
+            throw PlatformException(Platform.ROUVY, "Rouvy login failed: $errorText")
+        }
+
+        val bodySnippet = try { page.innerText("body").replace(Regex("\\s+"), " ").trim().take(300) } catch (e: Exception) { "" }
+        logger.errorL3In("Rouvy login timed out. URL: {}, Content: {}", finalUrl, bodySnippet)
+        throw PlatformException(Platform.ROUVY, "Rouvy login timed out at $finalUrl. Page content: $bodySnippet")
     }
 
     // Helper method to download FIT file from a direct URL using RestTemplate
@@ -390,5 +536,19 @@ class RouvySyncManager(
             offset += 1
         }
         return result
+    }
+
+    companion object {
+        internal fun extractCleanErrorMessage(rawMessage: String?): String {
+            if (rawMessage.isNullOrBlank()) return "Unknown error"
+            val match = Regex("""message='([^'\n\r]+)""").find(rawMessage)
+            if (match != null) {
+                return match.groupValues[1].trim()
+            }
+            val firstValidLine = rawMessage.lines()
+                .map { it.trim() }
+                .firstOrNull { it.isNotBlank() && it != "Error {" && it != "Error:" && it != "{" }
+            return firstValidLine ?: rawMessage.trim().take(150)
+        }
     }
 }

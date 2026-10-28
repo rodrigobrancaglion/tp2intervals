@@ -66,7 +66,7 @@
   <div class="action-button-section">
     <button mat-raised-button color="primary" type="button"
       matTooltip="Scheduled job runs every 20 minutes and syncs events for today"
-      [disabled]="formGroup.invalid || inProgress" (click)="scheduleToday()">
+      [disabled]="formGroup.invalid || isScheduling" (click)="scheduleToday()">
       Schedule for today
     </button>
     <i class="bi bi-stars beta-icon" matTooltip="Beta feature" matTooltipPosition="right"></i>

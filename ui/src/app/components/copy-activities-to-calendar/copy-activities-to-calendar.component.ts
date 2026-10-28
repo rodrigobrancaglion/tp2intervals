@@ -52,6 +52,7 @@ export class CopyActivitiesToCalendarComponent implements OnInit {
   @Input() selectedActivitiesTypes: string[] = [];
   @Input() directions: any[] = []
   @Input() inProgress = false
+  isScheduling = false
 
   formGroup: FormGroup
   platformsInfo: any
@@ -90,13 +91,26 @@ export class CopyActivitiesToCalendarComponent implements OnInit {
     let direction = this.formGroup.value.direction
     let activitiesTypes = this.formGroup.value.activitiesTypes
 
-    this.inProgress = true
+    this.isScheduling = true
     this.activityClient.scheduleCopyCalendarToCalendar(startDate, endDate, activitiesTypes, direction, platformKey).pipe(
       switchMap(() => this.loadScheduleRequests()),
-      finalize(() => this.inProgress = false)
-    ).subscribe(() => {
-      this.notificationService.success(`Scheduled sync job`)
+      finalize(() => this.isScheduling = false)
+    ).subscribe({
+      next: () => {
+        this.notificationService.success(`Scheduled sync job`)
+      },
+      error: () => {}
     })
+  }
+
+  getTargetsTitle(req: any): string {
+    if (req.targetPlatforms && req.targetPlatforms.length > 0) {
+      return req.targetPlatforms.map(p => Platform.getTitle(p) || p).join(', ')
+    }
+    if (req.targetPlatform) {
+      return Platform.getTitle(req.targetPlatform) || req.targetPlatform
+    }
+    return ''
   }
 
   mapActivitiesTypesToTitles(values: any[]) {
@@ -114,9 +128,12 @@ export class CopyActivitiesToCalendarComponent implements OnInit {
     this.inProgress = true
     this.activityClient.copyCalendarToCalendar(startDate, endDate, activitiesTypes, direction).pipe(
       finalize(() => this.inProgress = false)
-    ).subscribe((response) => {
-      this.notificationService.success(
-        `Planned: ${response.filteredOut}<br> Saved: ${response.copied}<br> From ${response.startDate} to ${response.endDate}`)
+    ).subscribe({
+      next: (response) => {
+        this.notificationService.success(
+          `Planned: ${response.filteredOut}<br> Saved: ${response.copied}<br> From ${response.startDate} to ${response.endDate}`)
+      },
+      error: () => {}
     })
   }
 
@@ -144,12 +161,15 @@ export class CopyActivitiesToCalendarComponent implements OnInit {
   }
 
   deleteJob(jobId: any) {
-    this.inProgress = true
+    this.isScheduling = true
     this.activityClient.deleteScheduleRequest(jobId).pipe(
       switchMap(() => this.loadScheduleRequests()),
-      finalize(() => this.inProgress = false)
-    ).subscribe(() => {
-      this.notificationService.success(`Deleted job`)
+      finalize(() => this.isScheduling = false)
+    ).subscribe({
+      next: () => {
+        this.notificationService.success(`Deleted job`)
+      },
+      error: () => {}
     })
   }
 }

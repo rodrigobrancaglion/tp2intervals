@@ -16,7 +16,7 @@ class EventService(
     @LogService
     fun syncEvents(request: CopyC2CRequest): CopyEventsResponse {
         val sourceRepo = getRepository(request.sourcePlatform)
-        val targetRepo = getRepository(request.targetPlatform)
+        val targetRepo = getRepository(request.targetPlatform!!)
 
         val events = sourceRepo.getEvents(request.startDate, request.endDate)
         targetRepo.saveEvents(events)

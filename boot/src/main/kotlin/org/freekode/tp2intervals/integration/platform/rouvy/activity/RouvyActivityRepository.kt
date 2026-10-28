@@ -52,8 +52,6 @@ class RouvyActivityRepository(
                 rpe = null,
                 feel = null
             ))
-
-            logger.infoL3In("Rouvy activity ready for sync: id=$activityId, title=$finalTitle, date=$activityDate")
         }
 
         return activiteisInfo

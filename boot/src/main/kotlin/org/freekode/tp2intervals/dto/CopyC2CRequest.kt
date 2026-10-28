@@ -10,5 +10,17 @@ data class CopyC2CRequest(
     val types: List<BaseType>,
     val skipSynced: Boolean,
     val sourcePlatform: Platform,
-    val targetPlatform: Platform
-)
+    val targetPlatform: Platform? = null,
+    val targetPlatforms: List<Platform> = emptyList()
+) {
+    fun allTargetPlatforms(): List<Platform> {
+        return if (targetPlatforms.isNotEmpty()) {
+            targetPlatforms
+        } else if (targetPlatform != null) {
+            listOf(targetPlatform)
+        } else {
+            emptyList()
+        }
+    }
+}
+

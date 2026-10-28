@@ -52,6 +52,7 @@ export class CopyCalendarToCalendarComponent implements OnInit {
   @Input() selectedTrainingTypes: string[] = []
   @Input() directions: any[] = []
   @Input() inProgress = false
+  isScheduling = false
 
   formGroup: FormGroup
   platformsInfo: any
@@ -95,12 +96,15 @@ export class CopyCalendarToCalendarComponent implements OnInit {
     let trainingTypes = this.formGroup.value.trainingTypes
     let skipSynced = this.formGroup.value.skipSynced
 
-    this.inProgress = true
+    this.isScheduling = true
     this.workoutClient.scheduleCopyCalendarToCalendar(startDate, endDate, trainingTypes, skipSynced, direction, platformKey).pipe(
       switchMap(() => this.loadScheduleRequests()),
-      finalize(() => this.inProgress = false)
-    ).subscribe(() => {
-      this.notificationService.success(`Scheduled sync job`)
+      finalize(() => this.isScheduling = false)
+    ).subscribe({
+      next: () => {
+        this.notificationService.success(`Scheduled sync job`)
+      },
+      error: () => {}
     })
   }
 
@@ -120,9 +124,12 @@ export class CopyCalendarToCalendarComponent implements OnInit {
     this.inProgress = true
     this.workoutClient.copyCalendarToCalendar(startDate, endDate, trainingTypes, skipSynced, direction).pipe(
       finalize(() => this.inProgress = false)
-    ).subscribe((response) => {
-      this.notificationService.success(
-        `Planned: ${response.filteredOut}<br> Saved: ${response.copied}<br> From ${response.startDate} to ${response.endDate}`)
+    ).subscribe({
+      next: (response) => {
+        this.notificationService.success(
+          `Planned: ${response.filteredOut}<br> Saved: ${response.copied}<br> From ${response.startDate} to ${response.endDate}`)
+      },
+      error: () => {}
     })
   }
 
@@ -151,12 +158,15 @@ export class CopyCalendarToCalendarComponent implements OnInit {
   }
 
   deleteJob(jobId: any) {
-    this.inProgress = true
+    this.isScheduling = true
     this.workoutClient.deleteScheduleRequest(jobId).pipe(
       switchMap(() => this.loadScheduleRequests()),
-      finalize(() => this.inProgress = false)
-    ).subscribe(() => {
-      this.notificationService.success(`Deleted job`)
+      finalize(() => this.isScheduling = false)
+    ).subscribe({
+      next: () => {
+        this.notificationService.success(`Deleted job`)
+      },
+      error: () => {}
     })
   }
 }
